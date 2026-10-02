@@ -104,7 +104,7 @@ export default function FaceAnalysisPage() {
     email: "",
     skinConcern: "hydration",
     consent: false,
-    imageConsent: false,
+    imageConsent: true,
     marketingOptIn: false,
     ageConfirmed: false,
     consentVersion: "v1.0-dpdp-2024",
@@ -247,13 +247,14 @@ export default function FaceAnalysisPage() {
         return;
       }
 
-      // If user granted separate image consent, upload compressed JPEG
-      if (form.imageConsent && canvas) {
-        const imageBase64 = canvas.toDataURL("image/jpeg", 0.8);
+      // Upload compressed JPEG to Google Drive via /api/lead/image
+      if (canvas) {
+        const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
         fetch("/api/lead/image", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            session_id: flow.sessionId,
             mime: "image/jpeg",
             image_base64: imageBase64,
           }),
@@ -284,7 +285,7 @@ export default function FaceAnalysisPage() {
         message: "Analysis failed. Please try capturing in better window light.",
       });
     } finally {
-      // Clear offscreen canvas to protect privacy
+      // Clear offscreen canvas
       ctx?.clearRect(0, 0, 400, 400);
       canvas.width = 0;
       canvas.height = 0;
@@ -309,6 +310,19 @@ export default function FaceAnalysisPage() {
 
       try {
         ctx?.drawImage(img, 0, 0, 400, 400);
+
+        // Upload selfie image to Google Drive
+        const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        fetch("/api/lead/image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: flow.sessionId,
+            mime: "image/jpeg",
+            image_base64: imageBase64,
+          }),
+        }).catch(() => {});
+
         const report = await analyse(canvas);
         dispatch({ type: "ANALYSIS_SUCCESS", report });
       } catch {

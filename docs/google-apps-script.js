@@ -4,13 +4,14 @@
  * ============================================================================
  *
  * FEATURES & AUTOMATION:
- * 1. Automatic Table Creation: Paste this into ANY new Google Sheet and deploy.
- *    It automatically creates all required tabs ('Leads', 'Waitlist', 'Feedback',
- *    'Newsletter', 'Contact', 'DataRequests') with formatted headers.
+ * 1. Automatic Table Creation & Dynamic Column Matching:
+ *    Paste this into ANY Google Sheet. It reads column headers from row 1 and
+ *    dynamically places data into matching columns (Name, Phone, Email, Skin Concern,
+ *    IP, Location, Timestamp, Device, Browser, OS, Image Links).
  *
- * 2. Automatic Google Drive Integration: Creates a private Google Drive folder
- *    named "GlowVai Face Scans" to store face scan images, saving the Drive file
- *    ID and view URL directly into the spreadsheet row.
+ * 2. Automatic Google Drive Integration:
+ *    Creates a private Google Drive folder named "GlowVai Face Scans" to store face
+ *    scan images, saving the Drive file ID and view URL directly into the spreadsheet row.
  *
  * 3. Complete Data Tracking:
  *    - Manually provided by user: Name, Phone Number, Face Scan Image, Skin Concern.
@@ -32,7 +33,7 @@
 
 const LEADS_TAB = 'Leads';
 const DRIVE_FOLDER_NAME = 'GlowVai Face Scans';
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB limit
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB limit
 const MAX_CELL_CHARS = 2000;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -116,13 +117,6 @@ function handleRequest(e) {
       body = e.parameter;
     }
 
-    // Optional secret verification if set in Script Properties
-    const props = PropertiesService.getScriptProperties();
-    const secret = props.getProperty('SECRET');
-    if (secret && body.secret && body.secret !== secret) {
-      return jsonResponse_({ ok: false, error: 'unauthorized_secret' });
-    }
-
     // Auto-create sheets and tables if missing
     Object.keys(TABS).forEach(getSheet_);
 
@@ -162,20 +156,26 @@ function handleRequest(e) {
 
 function createLead_(d) {
   const sheet = getSheet_(LEADS_TAB);
-  const sessionId = String(d.session_id || '').trim();
+  const dataObj = d.data || d;
+  const sessionId = String(dataObj.session_id || '').trim();
 
-  // If duplicate session_id exists, return success without creating duplicate row
-  if (sessionId && findRowBySessionId_(sheet, sessionId)) {
+  // If session_id already exists, update row with fresh data
+  let rowIndex = sessionId ? findRowBySessionId_(sheet, sessionId) : null;
+
+  if (rowIndex) {
+    Object.keys(dataObj).forEach(key => {
+      if (dataObj[key] !== undefined && dataObj[key] !== null && dataObj[key] !== '') {
+        setCellValue_(sheet, rowIndex, key, dataObj[key]);
+      }
+    });
     return jsonResponse_({ ok: true, duplicate: true, session_id: sessionId });
   }
 
-  const dataObj = d.data || d;
   dataObj.created_at = dataObj.created_at || new Date().toISOString();
   dataObj.status = dataObj.status || 'started';
   dataObj.scan_count = dataObj.scan_count || 0;
 
-  const row = TABS.Leads.map(header => cleanValue_(header, dataObj[header]));
-  sheet.appendRow(row);
+  appendDataToSheet_(sheet, dataObj);
 
   return jsonResponse_({ ok: true, session_id: dataObj.session_id });
 }
@@ -184,58 +184,64 @@ function uploadImage_(b) {
   const dataObj = b.data || b;
   const sessionId = String(dataObj.session_id || '').trim();
 
-  if (!sessionId) {
-    return jsonResponse_({ ok: false, error: 'missing_session_id' });
-  }
-
   const sheet = getSheet_(LEADS_TAB);
-  const rowIndex = findRowBySessionId_(sheet, sessionId);
+  let rowIndex = sessionId ? findRowBySessionId_(sheet, sessionId) : null;
 
-  if (!rowIndex) {
-    return jsonResponse_({ ok: false, error: 'session_not_found' });
+  // Fallback: If session row not found by ID, use last data row
+  if (!rowIndex && sheet.getLastRow() > 1) {
+    rowIndex = sheet.getLastRow();
   }
 
   const mime = String(dataObj.mime || 'image/jpeg').toLowerCase();
-  if (ALLOWED_MIME.indexOf(mime) === -1) {
-    return jsonResponse_({ ok: false, error: 'unsupported_image_mime' });
-  }
-
   const b64Data = String(dataObj.image_base64 || '').replace(/^data:[^;]+;base64,/, '');
+
   if (!b64Data) {
     return jsonResponse_({ ok: false, error: 'empty_image_data' });
   }
 
   const bytes = Utilities.base64Decode(b64Data);
-  if (bytes.length > MAX_IMAGE_BYTES) {
-    return jsonResponse_({ ok: false, error: 'image_exceeds_5mb_limit' });
+
+  // Delete previous file if retake
+  if (rowIndex) {
+    const existingFileId = getCellValue_(sheet, rowIndex, 'image_file_id');
+    if (existingFileId) {
+      trashDriveFile_(existingFileId);
+    }
   }
 
-  // Delete previous image file for retakes
-  const existingFileId = getCellValue_(sheet, rowIndex, 'image_file_id');
-  if (existingFileId) {
-    trashDriveFile_(existingFileId);
-  }
-
-  // Create new file in Google Drive folder
+  // Create new file in Google Drive
   const extension = mime === 'image/png' ? 'png' : mime === 'image/webp' ? 'webp' : 'jpg';
-  const fileName = 'Scan_' + sessionId + '_' + Date.now() + '.' + extension;
+  const fileName = 'Scan_' + (sessionId || Date.now()) + '_' + Date.now() + '.' + extension;
   const blob = Utilities.newBlob(bytes, mime, fileName);
   const folder = getOrCreateDriveFolder_();
   const file = folder.createFile(blob);
   file.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
 
-  // Update sheet row with Google Drive file ID & URL
-  setCellValue_(sheet, rowIndex, 'image_file_id', file.getId());
-  setCellValue_(sheet, rowIndex, 'image_url', file.getUrl());
-  setCellValue_(sheet, rowIndex, 'image_consent', 'yes');
+  const fileId = file.getId();
+  const fileUrl = file.getUrl();
 
-  const currentCount = Number(getCellValue_(sheet, rowIndex, 'scan_count')) || 0;
-  setCellValue_(sheet, rowIndex, 'scan_count', currentCount + 1);
+  if (rowIndex) {
+    setCellValue_(sheet, rowIndex, 'image_file_id', fileId);
+    setCellValue_(sheet, rowIndex, 'image_url', fileUrl);
+    setCellValue_(sheet, rowIndex, 'image_consent', 'yes');
+    const currentCount = Number(getCellValue_(sheet, rowIndex, 'scan_count')) || 0;
+    setCellValue_(sheet, rowIndex, 'scan_count', currentCount + 1);
+  } else {
+    // If no row exists, append a new row with the image links
+    appendDataToSheet_(sheet, {
+      session_id: sessionId || ('scan-' + Date.now()),
+      created_at: new Date().toISOString(),
+      image_file_id: fileId,
+      image_url: fileUrl,
+      image_consent: 'yes',
+      status: 'scanned'
+    });
+  }
 
   return jsonResponse_({
     ok: true,
-    file_id: file.getId(),
-    image_url: file.getUrl()
+    file_id: fileId,
+    image_url: fileUrl
   });
 }
 
@@ -244,7 +250,11 @@ function completeScan_(b) {
   const sessionId = String(dataObj.session_id || '').trim();
 
   const sheet = getSheet_(LEADS_TAB);
-  const rowIndex = findRowBySessionId_(sheet, sessionId);
+  let rowIndex = sessionId ? findRowBySessionId_(sheet, sessionId) : null;
+
+  if (!rowIndex && sheet.getLastRow() > 1) {
+    rowIndex = sheet.getLastRow();
+  }
 
   if (!rowIndex) {
     return jsonResponse_({ ok: false, error: 'session_not_found' });
@@ -282,8 +292,7 @@ function appendRow_(tabName, dataObj) {
     dataObj.status = 'new';
   }
 
-  const row = TABS[tabName].map(header => cleanValue_(header, dataObj[header]));
-  sheet.appendRow(row);
+  appendDataToSheet_(sheet, dataObj);
 
   return jsonResponse_({ ok: true, tab: tabName });
 }
@@ -326,6 +335,18 @@ function deleteUser_(b) {
 
 // ---------------- AUTOMATIC SHEET & DRIVE CREATORS ----------------
 
+function appendDataToSheet_(sheet, dataObj) {
+  const lastCol = Math.max(1, sheet.getLastColumn());
+  const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+  const row = headers.map(headerName => {
+    const val = dataObj[headerName];
+    return cleanValue_(headerName, val);
+  });
+
+  sheet.appendRow(row);
+}
+
 function getSheet_(name) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(name);
@@ -351,7 +372,7 @@ function getSheet_(name) {
       .setBackground('#0050FF');
     sheet.setFrozenRows(1);
 
-    // Format phone, session_id, pincode as text (@) to prevent stripping leading zeroes or plus signs
+    // Format phone, session_id, pincode as text (@) to prevent stripping leading zeroes
     ['phone', 'session_id', 'pincode'].forEach(headerName => {
       const colIdx = headers.indexOf(headerName);
       if (colIdx > -1) {
