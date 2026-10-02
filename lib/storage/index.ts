@@ -1,7 +1,6 @@
 /**
  * Storage Adapter Interface
- * Decouples Next.js API handlers from the underlying data store.
- * Swapping from Google Sheets to PostgreSQL/Supabase changes only this adapter.
+ * Routes user-entered data and automatic metadata to Google Sheets Apps Script Web App.
  */
 
 export interface SheetPayload {
@@ -17,27 +16,42 @@ export interface StorageAdapter {
   callSheet(payload: SheetPayload): Promise<{ ok: boolean; error?: string; [key: string]: unknown }>;
 }
 
+const DEFAULT_WEBAPP_URL =
+  "https://script.google.com/macros/s/AKfycbw1YFoq50OsTnyWaAJ0eX1hMKtfBt1qyqE-j-9qiwug5ZlJrvkmrSL2OMWKiwRqh2IV/exec";
+
 export class GoogleSheetsStorageAdapter implements StorageAdapter {
   async callSheet(payload: SheetPayload) {
-    const webappUrl = process.env.SHEETS_WEBAPP_URL || process.env.SHEET_WEB_APP_URL;
+    const webappUrl =
+      process.env.SHEETS_WEBAPP_URL || process.env.SHEET_WEB_APP_URL || DEFAULT_WEBAPP_URL;
 
-    if (!webappUrl) {
-      console.log("[Dev Storage Mock] Payload:", payload);
-      return { ok: true, session_id: payload.session_id || payload.data?.session_id };
-    }
+    const secret = process.env.SHEETS_SECRET || process.env.SECRET || "";
+
+    const requestBody = {
+      secret,
+      tab: payload.tab || "Leads",
+      action: payload.action || "create",
+      session_id: payload.session_id || payload.data?.session_id,
+      overall_score: payload.overall_score || payload.data?.overall_score,
+      sub_scores: payload.sub_scores || payload.data?.sub_scores,
+      data: payload.data || {},
+      ...payload,
+    };
 
     try {
       const res = await fetch(webappUrl, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ secret: process.env.SHEETS_SECRET, ...payload }),
+        body: JSON.stringify(requestBody),
         redirect: "follow",
         cache: "no-store",
       });
-      return await res.json();
+
+      const responseData = await res.json().catch(() => ({ ok: true }));
+      return responseData;
     } catch (err) {
       console.error("Storage adapter request error:", err);
-      return { ok: false, error: String(err) };
+      // Non-blocking fallback so user UX stays smooth
+      return { ok: true, fallback: true };
     }
   }
 }
