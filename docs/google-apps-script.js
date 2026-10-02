@@ -12,22 +12,6 @@
  * 2. Automatic Google Drive Integration:
  *    Creates a private Google Drive folder named "GlowVai Face Scans" to store face
  *    scan images, saving the Drive file ID and view URL directly into the spreadsheet row.
- *
- * 3. Complete Data Tracking:
- *    - Manually provided by user: Name, Phone Number, Face Scan Image, Skin Concern.
- *    - Automatically detected by system: Email, IP Address, Location (City, Region, Country),
- *      Timestamp, Device, Browser, Operating System.
- *
- * DEPLOYMENT INSTRUCTIONS:
- * 1. Open your Google Sheet.
- * 2. Click Extensions -> Apps Script.
- * 3. Replace all code in the editor with this script.
- * 4. Click Deploy -> New Deployment.
- *    - Select type: Web App
- *    - Execute as: Me
- *    - Who has access: Anyone
- * 5. Click Deploy and copy the Web App URL into your .env.local file:
- *    SHEETS_WEBAPP_URL="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
  * ============================================================================
  */
 
@@ -215,7 +199,13 @@ function uploadImage_(b) {
   const blob = Utilities.newBlob(bytes, mime, fileName);
   const folder = getOrCreateDriveFolder_();
   const file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+
+  // Safe permission setting (prevents throwing on consumer Google accounts)
+  try {
+    file.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+  } catch (sharingErr) {
+    // Default folder settings apply
+  }
 
   const fileId = file.getId();
   const fileUrl = file.getUrl();
@@ -362,7 +352,6 @@ function getSheet_(name) {
     }
   }
 
-  // Create formatted table headers if empty
   if (sheet.getLastRow() === 0) {
     const headers = TABS[name] || TABS.Leads;
     sheet.getRange(1, 1, 1, headers.length)
@@ -372,7 +361,6 @@ function getSheet_(name) {
       .setBackground('#0050FF');
     sheet.setFrozenRows(1);
 
-    // Format phone, session_id, pincode as text (@) to prevent stripping leading zeroes
     ['phone', 'session_id', 'pincode'].forEach(headerName => {
       const colIdx = headers.indexOf(headerName);
       if (colIdx > -1) {
@@ -449,7 +437,6 @@ function setCellValue_(sheet, rowIndex, headerName, value) {
 function cleanValue_(header, val) {
   if (val === undefined || val === null) return '';
   let str = String(val).slice(0, MAX_CELL_CHARS);
-  // Escapes formula injection characters
   if (/^[=+\-@]/.test(str)) {
     return "'" + str;
   }
@@ -459,12 +446,4 @@ function cleanValue_(header, val) {
 function jsonResponse_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
-}
-
-// ---------------- ONE-TIME MANUAL INITIALIZER (OPTIONAL) ----------------
-function setup() {
-  Object.keys(TABS).forEach(getSheet_);
-  const folder = getOrCreateDriveFolder_();
-  Logger.log('TABLES INITIALIZED SUCCESSFULLY!');
-  Logger.log('Drive Folder URL: ' + folder.getUrl());
 }
