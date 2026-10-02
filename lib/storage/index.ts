@@ -9,6 +9,9 @@ export interface SheetPayload {
   session_id?: string;
   overall_score?: number;
   sub_scores?: Record<string, number>;
+  skin_concern?: string;
+  mime?: string;
+  image_base64?: string;
   data?: Record<string, unknown>;
 }
 

@@ -21,7 +21,7 @@ export const rawFaqItems: FaqItem[] = [
   {
     id: "faq-2",
     question: "Is my photo stored on a server?",
-    answer: "No. Your photo is analysed right inside your browser on your phone and is discarded immediately. It is never uploaded or saved.",
+    answer: "Your photo is analysed in your browser. If you check the separate photo consent box, it is saved securely to a private Drive folder and deleted after 90 days or on your request.",
     flag: true,
   },
   {

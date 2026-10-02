@@ -102,6 +102,7 @@ export async function POST(req: NextRequest) {
         name: d.name,
         phone: normalizedPhone,
         email: d.email || "",
+        skin_concern: d.skinConcern || "",
         ip,
         city,
         region,
@@ -113,16 +114,17 @@ export async function POST(req: NextRequest) {
         consent: "yes",
         consent_at: now,
         consent_version: d.consentVersion,
+        image_consent: d.imageConsent ? "yes" : "no",
         marketing_opt_in: d.marketingOptIn ? "yes" : "no",
         age_confirmed: d.ageConfirmed ? "yes" : "no",
-        scan_count: 1,
+        scan_count: 0,
         status: "started",
       },
     });
 
     if (!r.ok) throw new Error(r.error || "Storage failed");
 
-    // Set HMAC signed cookie
+    // Set HMAC signed httpOnly cookie
     await setSessionCookie(session_id);
 
     return NextResponse.json({ ok: true, session_id, sessionId: session_id });
@@ -134,7 +136,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  // HMAC Cookie signature verification
+  // HMAC Cookie signature verification (never trust session_id in request body)
   const sessionCookie = req.cookies.get("gv_session")?.value;
   const verification = verifySessionToken(sessionCookie || "");
 
@@ -158,6 +160,7 @@ export async function PATCH(req: NextRequest) {
       session_id: verification.sessionId,
       overall_score: parsed.data.overall_score,
       sub_scores: parsed.data.sub_scores,
+      skin_concern: parsed.data.skin_concern || "",
     });
 
     if (!r.ok) throw new Error(r.error || "Patch failed");

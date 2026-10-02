@@ -102,7 +102,9 @@ export default function FaceAnalysisPage() {
     name: "",
     phone: "",
     email: "",
+    skinConcern: "hydration",
     consent: false,
+    imageConsent: false,
     marketingOptIn: false,
     ageConfirmed: false,
     consentVersion: "v1.0-dpdp-2024",
@@ -245,15 +247,28 @@ export default function FaceAnalysisPage() {
         return;
       }
 
+      // If user granted separate image consent, upload compressed JPEG
+      if (form.imageConsent && canvas) {
+        const imageBase64 = canvas.toDataURL("image/jpeg", 0.8);
+        fetch("/api/lead/image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mime: "image/jpeg",
+            image_base64: imageBase64,
+          }),
+        }).catch(() => {});
+      }
+
       // Save scores via PATCH
       if (flow.sessionId) {
         fetch("/api/lead", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            session_id: flow.sessionId,
             overall_score: report.overall,
             sub_scores: report.subScores,
+            skin_concern: form.skinConcern,
           }),
         }).catch(() => {});
       }
@@ -479,6 +494,22 @@ export default function FaceAnalysisPage() {
                       />
                     </div>
 
+                    <div className="space-y-1">
+                      <label className="block text-xs font-bold text-ink">Primary skin concern</label>
+                      <select
+                        value={form.skinConcern}
+                        onChange={(e) => setForm({ ...form, skinConcern: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl border border-ink/20 text-xs focus:border-brand focus:outline-none bg-white font-semibold"
+                      >
+                        <option value="hydration">Dehydration & Dryness</option>
+                        <option value="texture">Uneven Texture & Roughness</option>
+                        <option value="tone">Dullness & Hyperpigmentation</option>
+                        <option value="clarity">Blemishes & Congestion</option>
+                        <option value="sensitivity">Redness & Sensitivity</option>
+                        <option value="anti-aging">Fine Lines & Elasticity</option>
+                      </select>
+                    </div>
+
                     {/* Age Gate Checkbox */}
                     <div className="pt-1">
                       <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
@@ -498,7 +529,7 @@ export default function FaceAnalysisPage() {
                       )}
                     </div>
 
-                    {/* Required Consent Checkbox */}
+                    {/* Required Privacy Consent Checkbox */}
                     <div>
                       <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
                         <input
@@ -520,6 +551,19 @@ export default function FaceAnalysisPage() {
                           {errors.consent}
                         </p>
                       )}
+                    </div>
+
+                    {/* Separate Image Consent Checkbox (Unchecked by default) */}
+                    <div>
+                      <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={form.imageConsent}
+                          onChange={(e) => setForm({ ...form, imageConsent: e.target.checked })}
+                          className="mt-0.5 rounded text-brand focus:ring-brand"
+                        />
+                        <span>Allow storing my face photo privately in Google Drive for quality review and report generation (optional).</span>
+                      </label>
                     </div>
 
                     {/* Optional Marketing Consent */}

@@ -91,10 +91,10 @@ export default function PrivacyPage() {
             <section space-y-2 className="bg-skymist/50 p-4 rounded-2xl border border-brand/15 text-ink">
               <h2 className="font-display font-bold text-base text-brand flex items-center gap-1.5">
                 <Lock className="w-4 h-4" />
-                <span>3. What We Do NOT Collect or Store (Face Photo Guarantee)</span>
+                <span>3. Face Photo Storage Policy</span>
               </h2>
               <p className="text-xs">
-                Your face photo or video feed is processed entirely on your phone inside your browser canvas. It is NEVER uploaded, logged, saved to local storage, or transmitted to any server. Once analysis completes, the image frame is wiped immediately.
+                Your face photo is processed in your browser. If and only if you check the separate image consent box, your image is saved securely to a private Google Drive folder owned by our business account for quality review and report generation. Face photos are automatically purged after 90 days and can be erased at any time via the data request form below.
               </p>
             </section>
 

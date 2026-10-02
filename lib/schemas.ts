@@ -6,7 +6,9 @@ export const leadFormSchema = z.object({
   name: z.string().trim().min(2, "Full name must be at least 2 characters").max(80, "Name too long"),
   phone: z.string().trim().regex(phoneRegex, "Valid 10-digit phone number required"),
   email: z.string().trim().email("Invalid email format").optional().or(z.literal("")),
+  skinConcern: z.string().trim().max(100).optional(),
   consent: z.literal(true, { message: "Required privacy consent must be accepted" }),
+  imageConsent: z.boolean().default(false),
   marketingOptIn: z.boolean().default(false),
   ageConfirmed: z.literal(true, { message: "You must confirm you are 18 or older to proceed" }),
   consentVersion: z.string().default("v1.0-dpdp-2024"),
@@ -19,6 +21,7 @@ export const leadFormSchema = z.object({
 export const leadPatchSchema = z.object({
   overall_score: z.number().min(0).max(100),
   sub_scores: z.record(z.string(), z.number().min(0).max(100)),
+  skin_concern: z.string().trim().max(100).optional(),
 });
 
 export const dataRequestSchema = z.object({

@@ -101,7 +101,7 @@ export function Hero({ city = "Hyderabad" }: HeroProps) {
 
               <div className="flex items-center gap-1.5 text-ink-muted">
                 <Lock className="w-4 h-4 text-brand shrink-0" />
-                <span className="font-semibold text-ink">Photo never stored</span>
+                <span className="font-semibold text-ink">Private photo storage</span>
               </div>
 
               <div className="flex items-center gap-1.5 text-ink-muted">

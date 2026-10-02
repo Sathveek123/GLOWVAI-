@@ -10,7 +10,7 @@ interface AnnouncementBarProps {
 
 const provableMessages = [
   "Free skin scan - instant cosmetic insights",
-  "Photos processed on-device, never stored",
+  "Photos stored privately in Drive with consent",
   "Doorstep express delivery in ~15 minutes",
 ];
 

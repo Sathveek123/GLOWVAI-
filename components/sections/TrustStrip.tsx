@@ -27,6 +27,7 @@ export function TrustStrip() {
 
   const iconMap: Record<string, React.ReactNode> = {
     freeScan: <ScanFace className="w-5 h-5 text-brand shrink-0" strokeWidth={1.75} />,
+    imageStoredPrivately: <Lock className="w-5 h-5 text-brand shrink-0" strokeWidth={1.75} />,
     photoNeverStored: <Lock className="w-5 h-5 text-brand shrink-0" strokeWidth={1.75} />,
     madeInIndia: <MapPin className="w-5 h-5 text-brand shrink-0" strokeWidth={1.75} />,
     dermatologistTested: <ShieldCheck className="w-5 h-5 text-brand shrink-0" strokeWidth={1.75} />,
