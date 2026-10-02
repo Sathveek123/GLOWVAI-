@@ -107,6 +107,25 @@
   .animate-marquee-paused {
     animation-play-state: paused !important;
   }
+
+  .animate-scan-laser {
+    animation: scanLaser 3.5s ease-in-out infinite;
+  }
+}
+
+@keyframes scanLaser {
+  0% {
+    top: 8%;
+    opacity: 0.4;
+  }
+  50% {
+    top: 78%;
+    opacity: 1;
+  }
+  100% {
+    top: 8%;
+    opacity: 0.4;
+  }
 }
 
 @keyframes marquee {

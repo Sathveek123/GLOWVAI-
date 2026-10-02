@@ -55,15 +55,15 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Link
               href="/"
-              className="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-xl"
+              className="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-2xl group"
             >
-              <div className="relative h-10 w-auto flex items-center bg-white/10 p-2 rounded-xl border border-white/15">
+              <div className="relative h-12 w-auto flex items-center bg-white p-2 rounded-2xl shadow-md border border-white/20 group-hover:scale-105 transition-transform duration-300">
                 <Image
                   src="/images/logo/glowvai-logo.png"
                   alt={BRAND_NAME}
-                  width={160}
-                  height={44}
-                  className="h-7 w-auto object-contain brightness-0 invert"
+                  width={180}
+                  height={48}
+                  className="h-8 w-auto object-contain"
                 />
               </div>
             </Link>

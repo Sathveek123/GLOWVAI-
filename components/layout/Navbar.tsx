@@ -19,7 +19,7 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -30,41 +30,41 @@ export function Navbar() {
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 w-full transition-all duration-300 bg-white",
+          "sticky top-0 z-40 w-full transition-all duration-300",
           isScrolled
-            ? "bg-white/95 backdrop-blur-md border-b border-ink/10 shadow-xs py-3"
-            : "py-4 sm:py-5 border-b border-transparent"
+            ? "bg-white/95 backdrop-blur-xl border-b border-ink/10 shadow-sm py-2.5 sm:py-3"
+            : "bg-white/90 backdrop-blur-md py-3.5 sm:py-4 border-b border-ink/5"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo Image */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+          {/* Brand Logo Image with Prominent Sizing & Visibility */}
           <Link
             href="/"
-            className="group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-xl"
+            className="group flex items-center gap-2 p-1 -ml-1 rounded-2xl hover:bg-skymist/60 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
-            <div className="relative h-9 sm:h-10 w-auto flex items-center">
+            <div className="relative h-10 sm:h-12 lg:h-14 w-auto flex items-center">
               <Image
                 src="/images/logo/glowvai-logo.png"
                 alt={BRAND_NAME}
-                width={150}
-                height={40}
+                width={220}
+                height={60}
                 priority
-                className="h-9 sm:h-10 w-auto object-contain group-hover:scale-105 transition-transform"
+                className="h-10 sm:h-12 lg:h-14 w-auto object-contain drop-shadow-xs group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           </Link>
 
-          {/* Desktop Links */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navLinks.map((link) => (
               <Link
                 key={link.title}
                 href={link.href}
-                className="relative px-3.5 py-2 text-[15px] font-medium text-ink/80 hover:text-ink hover:bg-ink/5 rounded-xl transition-all flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="relative px-4 py-2 text-[15px] font-semibold text-ink/80 hover:text-brand hover:bg-skymist/70 rounded-xl transition-all flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 <span>{link.title}</span>
                 {link.badge && (
-                  <span className="text-[10px] font-bold bg-blush text-ink px-2 py-0.5 rounded-full border border-coral/20">
+                  <span className="text-[10px] font-extrabold bg-gradient-to-r from-coral to-amber-500 text-white px-2 py-0.5 rounded-full shadow-2xs border border-white/40 animate-pulse">
                     {link.badge}
                   </span>
                 )}
@@ -72,45 +72,45 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Right Action Icons & CTA */}
+          {/* Right Action Buttons & Primary CTA */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Search Icon */}
             <button
               aria-label="Search skincare products"
-              className="p-2 sm:p-2.5 rounded-xl text-ink hover:bg-ink/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="p-2.5 rounded-xl text-ink/80 hover:text-brand hover:bg-skymist/70 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Cart Icon with Item Count Badge */}
+            {/* Shopping Cart Trigger with Animated Count Badge */}
             <button
               onClick={() => setIsCartOpen(true)}
               aria-label={`Shopping cart with ${cartItemCount} items`}
-              className="relative p-2 sm:p-2.5 rounded-xl text-ink hover:bg-ink/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="relative p-2.5 rounded-xl text-ink/80 hover:text-brand hover:bg-skymist/70 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand group"
             >
-              <ShoppingBag className="w-5 h-5 text-ink" />
+              <ShoppingBag className="w-5 h-5 text-ink group-hover:scale-110 transition-transform" />
               {cartItemCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-coral text-ink font-bold text-[10px] flex items-center justify-center shadow-xs">
+                <span className="absolute top-1.5 right-1.5 w-4.5 h-4.5 rounded-full bg-coral text-ink font-extrabold text-[11px] flex items-center justify-center shadow-xs ring-2 ring-white">
                   {cartItemCount}
                 </span>
               )}
             </button>
 
-            {/* Desktop Scan My Face Primary CTA */}
+            {/* Scan My Face Primary Action Button */}
             <div className="hidden sm:block">
               <Link href="/face-analysis">
-                <Button variant="primary" size="md" className="gap-2 shadow-coral-glow text-button-label">
-                  <Sparkles className="w-4 h-4 text-ink" />
+                <Button variant="primary" size="md" className="gap-2 shadow-coral-glow hover:scale-[1.03] transition-transform text-button-label font-bold rounded-xl px-5">
+                  <Sparkles className="w-4.5 h-4.5 text-ink animate-spin-slow" />
                   <span>Scan my face</span>
                 </Button>
               </Link>
             </div>
 
-            {/* Mobile Hamburger Button */}
+            {/* Mobile Hamburger Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open Navigation Menu"
-              className="md:hidden p-2 rounded-xl text-ink hover:bg-ink/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="md:hidden p-2.5 rounded-xl text-ink hover:bg-skymist/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               <Menu className="w-6 h-6" />
             </button>

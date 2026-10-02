@@ -151,149 +151,145 @@ export function FaceAnalysisFeature() {
             </div>
           </div>
 
-          {/* Right Column (7 cols): Phone Mockup Composition */}
+          {/* Right Column (7 cols): Vertical Smartphone Face Scanner Composition */}
           <div className="lg:col-span-7 flex justify-center lg:justify-end relative">
             
             {/* Butter Yellow Circle Peeking at Top-Right + 3 Coral Dots */}
-            <div className="absolute -top-4 right-6 w-24 h-24 rounded-full bg-yellow opacity-80 pointer-events-none z-0" />
-            <div className="absolute top-2 right-12 flex gap-1.5 z-0">
-              <span className="w-2.5 h-2.5 rounded-full bg-coral animate-pulse" />
+            <div className="absolute -top-6 right-4 sm:right-12 w-32 h-32 rounded-full bg-yellow/80 blur-xl pointer-events-none z-0" />
+            <div className="absolute top-4 right-16 flex gap-1.5 z-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-coral animate-ping" />
               <span className="w-2.5 h-2.5 rounded-full bg-coral opacity-80" />
               <span className="w-2.5 h-2.5 rounded-full bg-coral opacity-60" />
             </div>
 
-            {/* Tiny Floating Chip Near Top-Left */}
-            <div className="absolute top-6 left-2 sm:left-6 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-card border border-ink/10 text-[10px] font-bold text-brand flex items-center gap-1.5 z-30">
-              <Sparkles className="w-3.5 h-3.5 text-yellow fill-yellow" />
-              <span>4 markers checked</span>
+            {/* Floating Scan Marker Badge Near Top-Left */}
+            <div className="absolute -top-3 left-0 sm:left-4 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-lg border border-brand/20 text-xs font-bold text-brand flex items-center gap-2 z-30 animate-bounce-short">
+              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>4 skin markers checked</span>
             </div>
 
-            {/* PhoneFrame (300px wide, 19.5:9 aspect, 36px radius, 8px Ink bezel, tilted -3deg) */}
-            <div
-              className="relative w-[290px] sm:w-[310px] aspect-[19.5/9] rounded-[36px] bg-ink p-2 shadow-2xl transform -rotate-3 transition-transform duration-500 hover:rotate-0 z-10"
-              style={{ height: "auto" }}
-            >
-              {/* Screen Inner Wrapper */}
-              <div className="w-full h-full bg-white rounded-[28px] p-4 space-y-3 overflow-hidden text-ink relative">
+            {/* True Vertical Smartphone Frame (Width ~300px, Height ~580px, 9:18.5 aspect, 44px corner radius) */}
+            <div className="relative w-[295px] sm:w-[320px] h-[570px] sm:h-[600px] rounded-[48px] bg-ink p-2.5 shadow-2xl border-[4px] border-slate-800 transform -rotate-2 hover:rotate-0 transition-all duration-500 z-10 group">
+              
+              {/* Side Phone Buttons */}
+              <div className="absolute -left-[5px] top-24 w-[5px] h-10 bg-slate-700 rounded-l-md" />
+              <div className="absolute -left-[5px] top-38 w-[5px] h-10 bg-slate-700 rounded-l-md" />
+              <div className="absolute -right-[5px] top-28 w-[5px] h-14 bg-slate-700 rounded-r-md" />
+
+              {/* Screen Inner Container */}
+              <div className="w-full h-full bg-slate-950 rounded-[40px] overflow-hidden text-white relative flex flex-col justify-between p-3.5 border border-white/10">
                 
-                {/* Screen Notch Pill */}
-                <div className="w-20 h-3.5 bg-ink rounded-full mx-auto mb-2 shrink-0" />
+                {/* Background Image: High Quality Face Selfie Scan */}
+                <Image
+                  src="/images/hero/face-scan-selfie.png"
+                  alt="Real-time face analysis selfie scan"
+                  fill
+                  priority
+                  className="object-cover object-center z-0 opacity-90 scale-105 group-hover:scale-110 transition-transform duration-700"
+                />
 
-                {/* Visually Hidden Screen Reader Summary */}
-                <div className="sr-only">
-                  Example report: overall score 76, hydration 82, texture 64, tone 78, clarity 80. This is a sample, not a real result.
-                </div>
+                {/* Dark Overlay Gradient for High Text Contrast */}
+                <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-transparent to-ink/90 z-0 pointer-events-none" />
 
-                {/* Sample Report Preview Header */}
-                <div className="flex items-center justify-between border-b border-ink/10 pb-2">
-                  <div>
-                    <span className="text-[9px] font-bold text-ink-muted uppercase tracking-wider block">Your skin report</span>
-                    <span className="text-[10px] font-bold text-ink">{new Date().toLocaleDateString()}</span>
+                {/* Top Dynamic Island Notch */}
+                <div className="relative z-20 flex items-center justify-between w-full pt-1 px-1">
+                  <div className="w-20 h-4 bg-black/90 backdrop-blur-md rounded-full mx-auto flex items-center justify-center gap-1.5 border border-white/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+                    <div className="w-2.5 h-1 bg-white/30 rounded-full" />
                   </div>
-                  <span className="text-[9px] font-bold bg-yellow text-ink px-2 py-0.5 rounded-full border border-yellow-600/20">
-                    SAMPLE REPORT
-                  </span>
                 </div>
 
-                {/* SVG Score Ring (120px) */}
-                <div className="flex flex-col items-center justify-center space-y-1 py-1">
-                  <div className="relative w-24 h-24 flex items-center justify-center" role="img" aria-label="Overall skin score 76 out of 100">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 110 110">
-                      <circle
-                        cx="55"
-                        cy="55"
-                        r={radius}
-                        className="text-skymist stroke-current"
-                        strokeWidth="10"
-                        fill="transparent"
-                      />
-                      <circle
-                        cx="55"
-                        cy="55"
-                        r={radius}
-                        className="text-brand stroke-current transition-all duration-1000 ease-out motion-reduce:transition-none"
-                        strokeWidth="10"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeOffset}
-                        strokeLinecap="round"
-                        fill="transparent"
-                      />
-                    </svg>
-                    <span className="absolute font-display text-3xl font-extrabold text-brand tabular-nums">
-                      {sampleOverall}
-                    </span>
+                {/* Face Scanner HUD Grid & Laser Sweep Overlay */}
+                <div className="absolute inset-x-4 top-16 bottom-36 border-2 border-dashed border-cyan-400/60 rounded-3xl z-10 pointer-events-none flex flex-col justify-between p-3">
+                  {/* Corner HUD Markers */}
+                  <div className="flex justify-between w-full">
+                    <div className="w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
+                    <div className="w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
                   </div>
-                  <span className="text-[9.5px] font-bold text-emerald-800 bg-mint px-2.5 py-0.5 rounded-full inline-block">
-                    Balanced
-                  </span>
+
+                  {/* Live Status Badge */}
+                  <div className="self-center bg-brand/90 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span>Live Face AI Scan</span>
+                  </div>
+
+                  {/* Bottom Corner HUD Markers */}
+                  <div className="flex justify-between w-full">
+                    <div className="w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
+                    <div className="w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
+                  </div>
+
+                  {/* Scanning Laser Beam Line */}
+                  <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_12px_#22d3ee] animate-scan-laser" />
                 </div>
 
-                {/* 4 Sub-Score Progress Bars */}
-                <div className="space-y-1.5 pt-1 border-t border-ink/10">
-                  {[
-                    { name: "Hydration", score: 82, color: "bg-brand" },
-                    { name: "Texture", score: 64, color: "bg-coral" },
-                    { name: "Tone", score: 78, color: "bg-yellow" },
-                    { name: "Clarity", score: 80, color: "bg-brand" },
-                  ].map((s, idx) => (
-                    <div key={s.name} className="space-y-0.5">
-                      <div className="flex justify-between text-[10px] font-semibold text-ink">
-                        <span>{s.name}</span>
-                        <span className="font-bold">{s.score}</span>
+                {/* Floating Marker Pins on Face */}
+                <div className="absolute top-28 left-8 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-cyan-400/40 text-[10px] font-bold text-cyan-300 z-10 shadow-md">
+                  • Hydration: 82%
+                </div>
+                <div className="absolute top-44 right-6 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-coral/50 text-[10px] font-bold text-coral-light z-10 shadow-md">
+                  • Barrier score: 64
+                </div>
+
+                {/* Bottom Overlaid Instant Skin Report Card */}
+                <div className="relative z-20 bg-white/95 backdrop-blur-xl text-ink p-3 rounded-2xl shadow-xl border border-white/50 space-y-2">
+                  <div className="flex items-center justify-between border-b border-ink/10 pb-1.5">
+                    <div>
+                      <span className="text-[9px] font-extrabold text-ink-muted uppercase tracking-wider block">Scan Result</span>
+                      <span className="text-[11px] font-bold text-ink">Hydration & Barrier Score</span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-brand text-white text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg shadow-xs">
+                      <span>Score:</span>
+                      <span className="text-yellow font-black">76</span>
+                    </div>
+                  </div>
+
+                  {/* 4 Skin Marker Progress Metrics */}
+                  <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                    <div className="bg-skymist/60 p-1.5 rounded-lg border border-brand/10">
+                      <div className="flex justify-between font-bold">
+                        <span className="text-brand">Hydration</span>
+                        <span>82</span>
                       </div>
-                      <div className="w-full h-2 bg-skymist rounded-full overflow-hidden" role="img" aria-label={`${s.name} score ${s.score} out of 100`}>
-                        <div
-                          className={`h-full rounded-full ${s.color} transition-all duration-700 ease-out motion-reduce:transition-none`}
-                          style={{
-                            width: isVisible ? `${s.score}%` : "0%",
-                            transitionDelay: `${idx * 80}ms`,
-                          }}
-                        />
+                      <div className="w-full h-1.5 bg-brand/20 rounded-full mt-1 overflow-hidden">
+                        <div className="h-full bg-brand rounded-full w-[82%]" />
                       </div>
                     </div>
-                  ))}
-                </div>
 
-                {/* Plain-Language Summary Line */}
-                <p className="text-[10px] text-ink-muted leading-tight pt-1">
-                  Your skin is holding water well. Texture needs a little help.
-                </p>
-
-                {/* Two Sample Product Rows */}
-                <div className="border-t border-ink/10 pt-2 space-y-1.5">
-                  <span className="text-[9px] font-bold text-ink uppercase tracking-wider block">Recommended Routine:</span>
-                  {sampleProds.map((prod) => (
-                    <div
-                      key={prod.id}
-                      className="flex items-center justify-between p-1.5 rounded-xl border border-ink/10 bg-skymist/30"
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-white shrink-0 border border-ink/10">
-                          <Image src={prod.image} alt={prod.name} fill className="object-cover" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-bold text-[10px] text-ink truncate">{prod.name}</p>
-                          <p className="text-[9px] text-brand font-bold">{formatPrice(prod.price)}</p>
-                        </div>
+                    <div className="bg-blush/70 p-1.5 rounded-lg border border-coral/10">
+                      <div className="flex justify-between font-bold">
+                        <span className="text-coral">Texture</span>
+                        <span>64</span>
                       </div>
-                      <span className="text-[9px] font-bold text-ink bg-white px-2 py-0.5 rounded-md border border-ink/10" aria-hidden="true">
-                        Add
-                      </span>
+                      <div className="w-full h-1.5 bg-coral/20 rounded-full mt-1 overflow-hidden">
+                        <div className="h-full bg-coral rounded-full w-[64%]" />
+                      </div>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* CTA Inside Smartphone Screen */}
+                  <Link href="/face-analysis" className="block w-full">
+                    <button className="w-full py-2 bg-gradient-to-r from-coral via-amber-500 to-coral text-white font-bold text-xs rounded-xl shadow-md hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
+                      <span>Start free scan now</span>
+                    </button>
+                  </Link>
                 </div>
+
+                {/* Bottom Home Indicator Bar */}
+                <div className="relative z-20 w-28 h-1 bg-white/40 rounded-full mx-auto mt-1" />
 
               </div>
             </div>
 
-            {/* Overlapping Product Recommendation Card (Bottom-Left, Tilted +2deg, Floating) */}
-            <div className="absolute bottom-2 left-0 sm:left-4 bg-white p-3 rounded-2xl shadow-lg border border-ink/10 max-w-[200px] transform rotate-2 animate-float z-20 hidden sm:flex items-center gap-2.5">
+            {/* Overlapping Product Recommendation Floating Pill (Bottom Left) */}
+            <div className="absolute bottom-4 left-0 sm:left-2 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-2xl border border-ink/10 max-w-[210px] transform rotate-3 hover:rotate-0 transition-transform z-20 hidden sm:flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl bg-skymist relative overflow-hidden shrink-0 border border-ink/10">
                 <Image src={sampleProds[0].image} alt={sampleProds[0].name} fill className="object-cover" />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-bold text-ink truncate">{sampleProds[0].name}</p>
-                <p className="text-[9px] text-coral font-semibold">Matched for Texture score 64</p>
+                <p className="text-[10px] font-extrabold text-ink truncate">{sampleProds[0].name}</p>
+                <p className="text-[9px] text-coral font-bold">Matched for Texture 64</p>
               </div>
             </div>
 
