@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-page: #FFFFFF;
+    --color-brand: #0050FF;
+    --color-coral: #FF6B57;
+    --color-yellow: #FFD84D;
+    --color-skymist: #E6EEFF;
+    --color-blush: #FFE6EA;
+    --color-mint: #DDF7EC;
+    --color-ink: #0B1220;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: #FFFFFF;
+    color: #0B1220;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #FFFFFF !important;
+    color: #0B1220;
+    font-family: var(--font-body), sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: #0050FF;
+    color: #FFFFFF;
+  }
+
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Fluid Type Scale Utility Classes */
+@layer utilities {
+  .text-hero-display {
+    font-size: clamp(2.5rem, 1.5rem + 3.6vw, 4.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+  }
+
+  .text-h1-page {
+    font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+
+  .text-h2-section {
+    font-size: clamp(1.875rem, 1.3rem + 2.2vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+  }
+
+  .text-h3-card {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+
+  .text-body-lg {
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .text-eyebrow {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    font-family: var(--font-body), sans-serif;
+  }
+
+  .text-button-label {
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+
+  .bg-grid-subtle {
+    background-image: radial-gradient(rgba(0, 80, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .animate-marquee {
+    animation: marquee 40s linear infinite;
+  }
+
+  .animate-marquee-paused {
+    animation-play-state: paused !important;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Hide scrollbars for smooth horizontal marquee/carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

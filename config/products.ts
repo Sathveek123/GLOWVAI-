@@ -1,0 +1,227 @@
+/**
+ * GLOW VAI Product Catalog Registry
+ * SAMPLE DATA: For demonstration and development testing.
+ * All sample products carry INCI lists and Indian cosmetics labelling fields.
+ */
+
+export interface ProductVariant {
+  size: string;
+  price: number;
+  mrp: number;
+}
+
+export interface Product {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  category: "serum" | "moisturiser" | "sunscreen" | "cleanser" | "lip" | "body";
+  concerns: string[]; // e.g. ["dryness", "dullness", "acne", "sun-care"]
+  skinTypes: string[]; // e.g. ["Normal", "Dry", "Oily", "Combination", "Sensitive"]
+  price: number; // INR Rupees
+  mrp: number; // INR Rupees
+  size: string;
+  sizes?: ProductVariant[];
+  images: string[];
+  ingredients: string; // Full INCI list
+  keyIngredients: string[];
+  howToUse: string[];
+  cautions: string;
+  shelfLife: string;
+  countryOfOrigin: string;
+  marketerName: string;
+  marketerAddress: string;
+  status: "draft" | "published";
+  seo: {
+    title: string;
+    description: string;
+  };
+}
+
+export const sampleProducts: Product[] = [
+  {
+    id: "prod-1",
+    slug: "dew-barrier-daily-hydrator",
+    name: "Dew Barrier Daily Hydrator",
+    tagline: "Lightweight gel-cream with 2% Hyaluronic Acid & Ceramide NP",
+    description: "Formulated specifically for Indian humidity. Delivers 24-hour weightless hydration without clogging pores or leaving an oily sheen.",
+    category: "moisturiser",
+    concerns: ["dryness", "dullness"],
+    skinTypes: ["Normal", "Dry", "Combination", "Sensitive"],
+    price: 499,
+    mrp: 599,
+    size: "50ml",
+    sizes: [
+      { size: "50ml", price: 499, mrp: 599 },
+      { size: "100ml", price: 849, mrp: 999 },
+    ],
+    images: ["/images/products/moisturiser-1.png", "/images/products/moisturiser-2.png"],
+    ingredients: "Aqua, Glycerin, Niacinamide, Sodium Hyaluronate, Ceramide NP, Carbomer, Phenoxyethanol, Ethylhexylglycerin, Sodium Hydroxide.",
+    keyIngredients: ["Sodium Hyaluronate (2%)", "Ceramide NP", "Centella Asiatica Extract"],
+    howToUse: [
+      "Apply 2 pumps to clean, damp face and neck morning and evening.",
+      "Gently massage upward until fully absorbed.",
+    ],
+    cautions: "Patch test behind ear 24 hours before first full face application.",
+    shelfLife: "24 months from manufacturing date",
+    countryOfOrigin: "India",
+    marketerName: "GLOW VAI Technologies Pvt. Ltd.",
+    marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+    status: "published",
+    seo: {
+      title: "Dew Barrier Daily Hydrator | GLOW VAI",
+      description: "Lightweight gel-cream moisturiser with Hyaluronic Acid & Ceramides built for Indian weather.",
+    },
+  },
+  {
+    id: "prod-2",
+    slug: "clarity-pop-niacinamide-serum",
+    name: "Clarity Pop Niacinamide Serum",
+    tagline: "10% Niacinamide + 1% Zinc PCA texture clarifying serum",
+    description: "Visibly refines pore appearance, regulates excess sebum, and evens out post-acne marks in 3 weeks.",
+    category: "serum",
+    concerns: ["acne", "dullness"],
+    skinTypes: ["Oily", "Combination", "Normal"],
+    price: 549,
+    mrp: 699,
+    size: "30ml",
+    images: ["/images/products/serum-1.png", "/images/products/serum-2.png"],
+    ingredients: "Aqua, Niacinamide, Zinc PCA, Dimethyl Isosorbide, Propanediol, Phenoxyethanol, Chlorphenesin, Xanthan Gum.",
+    keyIngredients: ["Niacinamide (10%)", "Zinc PCA (1%)", "Sarcosine"],
+    howToUse: [
+      "Dispense 3 to 4 drops onto fingertips.",
+      "Pat gently into face after cleansing, before moisturiser.",
+    ],
+    cautions: "Avoid direct contact with broken skin or eyes. Patch test recommended.",
+    shelfLife: "24 months from manufacturing date",
+    countryOfOrigin: "India",
+    marketerName: "GLOW VAI Technologies Pvt. Ltd.",
+    marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+    status: "published",
+    seo: {
+      title: "Clarity Pop Niacinamide Serum | GLOW VAI",
+      description: "10% Niacinamide & 1% Zinc PCA clarifying serum for pore refinement and oil balance.",
+    },
+  },
+  {
+    id: "prod-3",
+    slug: "sun-shield-invisible-fluid-spf50",
+    name: "Sun Shield Invisible Fluid SPF 50",
+    tagline: "PA++++ ultra-lightweight fluid sunscreen with zero white cast",
+    description: "High-protection broad-spectrum SPF 50 fluid that absorbs in 10 seconds. Sweat-resistant and non-comedogenic.",
+    category: "sunscreen",
+    concerns: ["sun-care", "dullness"],
+    skinTypes: ["Normal", "Oily", "Combination", "Dry", "Sensitive"],
+    price: 599,
+    mrp: 749,
+    size: "50ml",
+    images: ["/images/products/sunscreen-1.png", "/images/products/sunscreen-2.png"],
+    ingredients: "Aqua, Ethylhexyl Salicylate, Homosalate, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Glycerin, Silica, Tocopherol.",
+    keyIngredients: ["Modern UV Filters (Tinosorb S)", "Vitamin E", "Aloe Barbadensis Leaf Juice"],
+    howToUse: [
+      "Apply two fingers' length of sunscreen to face and neck 15 minutes before sun exposure.",
+      "Reapply every 3 to 4 hours during outdoor activity.",
+    ],
+    cautions: "External use only. Reapply after heavy sweating or swimming.",
+    shelfLife: "24 months from manufacturing date",
+    countryOfOrigin: "India",
+    marketerName: "GLOW VAI Technologies Pvt. Ltd.",
+    marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+    status: "published",
+    seo: {
+      title: "Sun Shield Invisible Fluid SPF 50 PA++++ | GLOW VAI",
+      description: "Zero white-cast SPF 50 fluid sunscreen formulated for Indian sun & sweat.",
+    },
+  },
+  {
+    id: "prod-4",
+    slug: "velvet-cloud-cica-cleanser",
+    name: "Velvet Cloud Cica Cleanser",
+    tagline: "pH 5.5 gentle hydrating facial cleanser with Centella & Oat extract",
+    description: "Cleanses away dirt, grime, and excess oil without stripping your natural skin barrier.",
+    category: "cleanser",
+    concerns: ["dryness", "acne"],
+    skinTypes: ["Normal", "Dry", "Sensitive", "Combination"],
+    price: 399,
+    mrp: 499,
+    size: "120ml",
+    images: ["/images/products/cleanser-1.png", "/images/products/cleanser-2.png"],
+    ingredients: "Aqua, Sodium Cocoyl Isethionate, Cocamidopropyl Betaine, Glycerin, Centella Asiatica Leaf Extract, Colloidal Oatmeal, Citric Acid.",
+    keyIngredients: ["Centella Asiatica (Cica)", "Colloidal Oatmeal", "Glycerin"],
+    howToUse: [
+      "Massage 1 pump onto wet face for 40 seconds.",
+      "Rinse thoroughly with lukewarm water and pat dry.",
+    ],
+    cautions: "If irritation occurs, discontinue use and consult a physician.",
+    shelfLife: "24 months from manufacturing date",
+    countryOfOrigin: "India",
+    marketerName: "GLOW VAI Technologies Pvt. Ltd.",
+    marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+    status: "published",
+    seo: {
+      title: "Velvet Cloud Cica Cleanser | GLOW VAI",
+      description: "pH 5.5 gentle hydrating facial cleanser with Centella and Oat extract.",
+    },
+  },
+  {
+    id: "prod-5",
+    slug: "petal-plump-peptide-lip-butter",
+    name: "Petal Plump Peptide Lip Butter",
+    tagline: "Nourishing peptide & Shea butter treatment for dry chapped lips",
+    description: "Locks in deep moisture overnight and leaves a soft, healthy shine during the day.",
+    category: "lip",
+    concerns: ["dryness"],
+    skinTypes: ["Normal", "Dry", "Sensitive"],
+    price: 299,
+    mrp: 349,
+    size: "15g",
+    images: ["/images/products/lip-1.png"],
+    ingredients: "Butyrospermum Parkii (Shea) Butter, Caprylic/Capric Triglyceride, Palmitoyl Tripeptide-1, Tocopheryl Acetate, Hydrogenated Polyisobutene.",
+    keyIngredients: ["Palmitoyl Tripeptide-1", "Organic Shea Butter", "Vitamin E"],
+    howToUse: [
+      "Apply liberally to clean lips whenever dryness occurs.",
+      "Layer generously before sleep as an overnight lip mask.",
+    ],
+    cautions: "Store in a cool dry place below 30°C.",
+    shelfLife: "24 months from manufacturing date",
+    countryOfOrigin: "India",
+    marketerName: "GLOW VAI Technologies Pvt. Ltd.",
+    marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+    status: "published",
+    seo: {
+      title: "Petal Plump Peptide Lip Butter | GLOW VAI",
+      description: "Peptide-infused nourishing lip butter treatment for long-lasting hydration.",
+    },
+  },
+  {
+    id: "prod-6",
+    slug: "velvet-smooth-body-lotion-aha",
+    name: "Velvet Smooth Exfoliating Body Lotion",
+    tagline: "5% Lactic Acid + 2% Squalane smoothing body lotion for bumpy skin",
+    description: "Gently exfoliates dead skin cells, softens strawberry skin (KP), and deeply hydrates dry arms and legs.",
+    category: "body",
+    concerns: ["dryness", "dullness"],
+    skinTypes: ["Normal", "Dry", "Combination"],
+    price: 649,
+    mrp: 799,
+    size: "200ml",
+    images: ["/images/products/body-1.png"],
+    ingredients: "Aqua, Lactic Acid, Squalane, Cetearyl Alcohol, Caprylic/Capric Triglyceride, Sodium Hyaluronate, Phenoxyethanol, Sodium Hydroxide.",
+    keyIngredients: ["Lactic Acid (5%)", "Plant Squalane (2%)", "Sodium Hyaluronate"],
+    howToUse: [
+      "Smooth onto clean body skin daily after showering, focusing on rough elbows and knees.",
+      "Use sun protection on exposed body areas when using AHA products.",
+    ],
+    cautions: "Contains AHA which may increase sun sensitivity. Apply sunscreen.",
+    shelfLife: "24 months from manufacturing date",
+    countryOfOrigin: "India",
+    marketerName: "GLOW VAI Technologies Pvt. Ltd.",
+    marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+    status: "published",
+    seo: {
+      title: "Velvet Smooth Exfoliating Body Lotion | GLOW VAI",
+      description: "5% Lactic Acid & Squalane body lotion for smooth, bump-free skin.",
+    },
+  },
+];
