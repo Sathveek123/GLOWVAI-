@@ -162,6 +162,32 @@ export default function FaceAnalysisPage() {
     dispatch({ type: "SUBMIT_START" });
     trackEvent({ name: "scan_form_submit", ageConfirmed: form.ageConfirmed });
 
+    // Send direct POST payload to Apps Script Web App URL
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
+    
+    try {
+      const directPayload = {
+        action: "create",
+        data: {
+          name: form.name,
+          phone: form.phone,
+          email: form.email || "",
+          skin_concern: form.skinConcern || "Hydration",
+          browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
+          os: typeof navigator !== "undefined" ? navigator.platform : "OS",
+          location: "India",
+          ip: "Client IP"
+        }
+      };
+
+      fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(directPayload),
+        mode: "no-cors",
+      }).catch(() => {});
+    } catch (e) {}
+
     try {
       const res = await fetch("/api/lead", {
         method: "POST",
@@ -247,9 +273,31 @@ export default function FaceAnalysisPage() {
         return;
       }
 
-      // Upload compressed JPEG to Google Drive via /api/lead/image
+      // Upload compressed JPEG to Google Drive & Apps Script
       if (canvas) {
         const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
+        
+        fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "create",
+            data: {
+              name: form.name,
+              phone: form.phone,
+              email: form.email || "",
+              skin_concern: form.skinConcern || "Hydration",
+              image_base64: imageBase64,
+              browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
+              os: typeof navigator !== "undefined" ? navigator.platform : "OS",
+              location: "India",
+              ip: "Client IP"
+            }
+          }),
+          mode: "no-cors",
+        }).catch(() => {});
+
         fetch("/api/lead/image", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -313,6 +361,27 @@ export default function FaceAnalysisPage() {
 
         // Upload selfie image to Google Drive
         const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
+
+        fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "create",
+            data: {
+              name: form.name,
+              phone: form.phone,
+              email: form.email || "",
+              skin_concern: form.skinConcern || "Hydration",
+              image_base64: imageBase64,
+              browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
+              os: typeof navigator !== "undefined" ? navigator.platform : "OS",
+              location: "India",
+              ip: "Client IP"
+            }
+          }),
+          mode: "no-cors",
+        }).catch(() => {});
         fetch("/api/lead/image", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
