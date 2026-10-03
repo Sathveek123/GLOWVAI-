@@ -103,6 +103,7 @@ export async function POST(req: NextRequest) {
         phone: normalizedPhone,
         email: d.email || "",
         skin_concern: d.skinConcern || "",
+        image_base64: d.image_base64 || "",
         ip,
         city,
         region,

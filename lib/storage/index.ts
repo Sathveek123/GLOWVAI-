@@ -20,7 +20,7 @@ export interface StorageAdapter {
 }
 
 const DEFAULT_WEBAPP_URL =
-  "https://script.google.com/macros/s/AKfycbw1YFoq50OsTnyWaAJ0eX1hMKtfBt1qyqE-j-9qiwug5ZlJrvkmrSL2OMWKiwRqh2IV/exec";
+  "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
 
 export class GoogleSheetsStorageAdapter implements StorageAdapter {
   async callSheet(payload: SheetPayload) {

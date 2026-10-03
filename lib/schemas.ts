@@ -7,6 +7,7 @@ export const leadFormSchema = z.object({
   phone: z.string().trim().regex(phoneRegex, "Valid 10-digit phone number required"),
   email: z.string().trim().email("Invalid email format").optional().or(z.literal("")),
   skinConcern: z.string().trim().max(100).optional(),
+  image_base64: z.string().optional(),
   consent: z.literal(true, { message: "Required privacy consent must be accepted" }),
   imageConsent: z.boolean().default(false),
   marketingOptIn: z.boolean().default(false),

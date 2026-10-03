@@ -12,6 +12,8 @@ import { formatPrice } from "@/lib/utils";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { Camera, Sparkles, Filter, X, ShoppingBag } from "lucide-react";
 
+export const dynamic = "force-static";
+
 export const metadata = {
   title: `Shop Skincare | ${BRAND_NAME}`,
   description: "Explore clean, transparent skincare formulas built for Indian weather. Fast delivery to your doorstep.",
@@ -23,7 +25,7 @@ export const metadata = {
 };
 
 interface ShopPageProps {
-  searchParams: Promise<{
+  searchParams?: Promise<{
     concern?: string;
     skin?: string;
     category?: string;
@@ -33,7 +35,7 @@ interface ShopPageProps {
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const params = await searchParams;
+  const params = searchParams ? await searchParams : {};
   const products = filterProducts({
     concern: params.concern,
     skinType: params.skin,

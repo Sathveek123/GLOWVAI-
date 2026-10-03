@@ -2,76 +2,39 @@
  * ============================================================================
  * GLOW VAI: Google Sheets + Google Drive Production WebApp Script
  * ============================================================================
+ * TARGET GOOGLE DRIVE FOLDER ID: 1Fa4wfLJvDZiRduv0nq4iH-dTfBrh2q47
  *
- * FEATURES & AUTOMATION:
- * 1. Automatic Table Creation & Dynamic Column Matching:
- *    Paste this into ANY Google Sheet. It reads column headers from row 1 and
- *    dynamically places data into matching columns (Name, Phone, Email, Skin Concern,
- *    IP, Location, Timestamp, Device, Browser, OS, Image Links).
- *
- * 2. Automatic Google Drive Integration:
- *    Creates a private Google Drive folder named "GlowVai Face Scans" to store face
- *    scan images, saving the Drive file ID and view URL directly into the spreadsheet row.
+ * SPREADSHEET COLUMNS (Single Clean 'Leads' Sheet):
+ * 1. Timestamp (IST - Indian Standard Time)
+ * 2. IP Address
+ * 3. Location
+ * 4. Browser
+ * 5. OS
+ * 6. Name
+ * 7. Phone
+ * 8. Email
+ * 9. Skin Concern
+ * 10. Image URL
+ * 11. Image ID
  * ============================================================================
  */
 
-const LEADS_TAB = 'Leads';
-const DRIVE_FOLDER_NAME = 'GlowVai Face Scans';
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB limit
-const MAX_CELL_CHARS = 2000;
-const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
+const TARGET_FOLDER_ID = '1Fa4wfLJvDZiRduv0nq4iH-dTfBrh2q47';
+const SHEET_NAME = 'Leads';
 
-// Table Header Maps for Automatic Table Creation
-const TABS = {
-  Leads: [
-    'session_id',
-    'created_at',
-    'name',
-    'phone',
-    'email',
-    'skin_concern',
-    'ip',
-    'city',
-    'region',
-    'country',
-    'device',
-    'browser',
-    'os',
-    'referrer',
-    'utm_source',
-    'utm_campaign',
-    'consent',
-    'consent_version',
-    'image_consent',
-    'marketing_opt_in',
-    'age_confirmed',
-    'consent_at',
-    'status',
-    'completed_at',
-    'overall_score',
-    'sub_scores',
-    'scan_count',
-    'image_file_id',
-    'image_url'
-  ],
-  Waitlist: ['created_at', 'email', 'pincode', 'city', 'consent', 'source'],
-  Feedback: [
-    'created_at',
-    'first_name',
-    'city',
-    'skin_type',
-    'product',
-    'rating',
-    'message',
-    'consent_to_publish',
-    'status'
-  ],
-  Newsletter: ['created_at', 'email', 'source', 'consent', 'consent_at'],
-  Contact: ['created_at', 'name', 'email', 'phone', 'topic', 'message', 'status'],
-  DataRequests: ['created_at', 'contact', 'type', 'status']
-};
-
-// ---------------- ENTRY POINTS (POST & GET) ----------------
+const HEADERS = [
+  'Timestamp',
+  'IP Address',
+  'Location',
+  'Browser',
+  'OS',
+  'Name',
+  'Phone',
+  'Email',
+  'Skin Concern',
+  'Image URL',
+  'Image ID'
+];
 
 function doPost(e) {
   return handleRequest(e);
@@ -85,9 +48,7 @@ function handleRequest(e) {
   const lock = LockService.getScriptLock();
   try {
     lock.waitLock(15000);
-  } catch (err) {
-    // Lock timeout fallback
-  }
+  } catch (err) {}
 
   try {
     let body = {};
@@ -101,346 +62,142 @@ function handleRequest(e) {
       body = e.parameter;
     }
 
-    // Auto-create sheets and tables if missing
-    Object.keys(TABS).forEach(getSheet_);
+    const payload = body.data || body;
 
-    const action = body.action || (body.data && body.data.action);
+    // 1. Get or setup active sheet without creating extra tabs
+    const sheet = getOrSetupSheet_();
 
-    switch (action) {
-      case 'create':
-        return createLead_(body.data || body);
-      case 'upload_image':
-        return uploadImage_(body);
-      case 'complete':
-        return completeScan_(body);
-      case 'delete_user':
-        return deleteUser_(body);
-      case 'append':
-        return appendRow_(body.tab || 'Leads', body.data || body);
-      default:
-        // Default smart fallback: if lead details exist, create lead record
-        if (body.name || body.phone || body.session_id || (body.data && body.data.name)) {
-          return createLead_(body.data || body);
-        }
-        return jsonResponse_({
-          ok: true,
-          message: 'GLOW VAI WebApp Endpoint Active & Ready'
-        });
+    // 2. Handle image upload if base64 image data is provided
+    let imageUrl = payload.image_url || '';
+    let imageId = payload.image_file_id || payload.image_id || '';
+
+    if (payload.image_base64) {
+      const driveResult = saveToGoogleDrive_(payload.image_base64, payload.name || payload.phone || 'User');
+      if (driveResult.ok) {
+        imageUrl = driveResult.image_url;
+        imageId = driveResult.image_id;
+      }
     }
+
+    // 3. Format Timestamp in Indian Standard Time (IST: UTC+5:30)
+    const istTimestamp = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd/MM/yyyy HH:mm:ss");
+
+    // 4. Extract location string
+    let locationStr = payload.location || '';
+    if (!locationStr) {
+      const city = payload.city || '';
+      const region = payload.region || '';
+      const country = payload.country || '';
+      locationStr = [city, region, country].filter(Boolean).join(', ') || 'India';
+    }
+
+    // 5. Construct single clean data row matching HEADERS exactly
+    const newRow = [
+      istTimestamp,                                // 1. Timestamp (IST)
+      payload.ip || '127.0.0.1',                  // 2. IP Address
+      locationStr,                                 // 3. Location
+      payload.browser || 'Chrome',                 // 4. Browser
+      payload.os || 'Android',                     // 5. OS
+      payload.name || '',                          // 6. Name
+      payload.phone || '',                         // 7. Phone
+      payload.email || '',                         // 8. Email
+      payload.skin_concern || payload.skinConcern || '', // 9. Skin Concern
+      imageUrl,                                    // 10. Image URL
+      imageId                                      // 11. Image ID
+    ];
+
+    sheet.appendRow(newRow);
+
+    return jsonResponse_({
+      ok: true,
+      timestamp: istTimestamp,
+      image_url: imageUrl,
+      image_id: imageId
+    });
+
   } catch (err) {
     return jsonResponse_({ ok: false, error: err.toString() });
   } finally {
     try {
       lock.releaseLock();
-    } catch (e) {}
+    } catch (err) {}
   }
 }
 
-// ---------------- ACTIONS & BUSINESS LOGIC ----------------
+// ---------------- GOOGLE DRIVE IMAGE SAVER ----------------
 
-function createLead_(d) {
-  const sheet = getSheet_(LEADS_TAB);
-  const dataObj = d.data || d;
-  const sessionId = String(dataObj.session_id || '').trim();
-
-  // If session_id already exists, update row with fresh data
-  let rowIndex = sessionId ? findRowBySessionId_(sheet, sessionId) : null;
-
-  if (rowIndex) {
-    Object.keys(dataObj).forEach(key => {
-      if (dataObj[key] !== undefined && dataObj[key] !== null && dataObj[key] !== '') {
-        setCellValue_(sheet, rowIndex, key, dataObj[key]);
-      }
-    });
-    return jsonResponse_({ ok: true, duplicate: true, session_id: sessionId });
-  }
-
-  dataObj.created_at = dataObj.created_at || new Date().toISOString();
-  dataObj.status = dataObj.status || 'started';
-  dataObj.scan_count = dataObj.scan_count || 0;
-
-  appendDataToSheet_(sheet, dataObj);
-
-  return jsonResponse_({ ok: true, session_id: dataObj.session_id });
-}
-
-function uploadImage_(b) {
-  const dataObj = b.data || b;
-  const sessionId = String(dataObj.session_id || '').trim();
-
-  const sheet = getSheet_(LEADS_TAB);
-  let rowIndex = sessionId ? findRowBySessionId_(sheet, sessionId) : null;
-
-  // Fallback: If session row not found by ID, use last data row
-  if (!rowIndex && sheet.getLastRow() > 1) {
-    rowIndex = sheet.getLastRow();
-  }
-
-  const mime = String(dataObj.mime || 'image/jpeg').toLowerCase();
-  const b64Data = String(dataObj.image_base64 || '').replace(/^data:[^;]+;base64,/, '');
-
-  if (!b64Data) {
-    return jsonResponse_({ ok: false, error: 'empty_image_data' });
-  }
-
-  const bytes = Utilities.base64Decode(b64Data);
-
-  // Delete previous file if retake
-  if (rowIndex) {
-    const existingFileId = getCellValue_(sheet, rowIndex, 'image_file_id');
-    if (existingFileId) {
-      trashDriveFile_(existingFileId);
-    }
-  }
-
-  // Create new file in Google Drive
-  const extension = mime === 'image/png' ? 'png' : mime === 'image/webp' ? 'webp' : 'jpg';
-  const fileName = 'Scan_' + (sessionId || Date.now()) + '_' + Date.now() + '.' + extension;
-  const blob = Utilities.newBlob(bytes, mime, fileName);
-  const folder = getOrCreateDriveFolder_();
-  const file = folder.createFile(blob);
-
-  // Safe permission setting (prevents throwing on consumer Google accounts)
+function saveToGoogleDrive_(base64String, userName) {
   try {
-    file.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
-  } catch (sharingErr) {
-    // Default folder settings apply
+    const cleanB64 = base64String.replace(/^data:image\/[^;]+;base64,/, '');
+    const bytes = Utilities.base64Decode(cleanB64);
+    
+    // Determine mime type
+    let mime = 'image/jpeg';
+    if (base64String.indexOf('image/png') > -1) mime = 'image/png';
+    if (base64String.indexOf('image/webp') > -1) mime = 'image/webp';
+
+    const timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyyMMdd_HHmmss");
+    const cleanName = String(userName).replace(/[^a-zA-Z0-9]/g, '_');
+    const fileName = `GlowVai_Scan_${cleanName}_${timestampStr}.jpg`;
+
+    const blob = Utilities.newBlob(bytes, mime, fileName);
+    
+    // Target Google Drive Folder ID: 1Fa4wfLJvDZiRduv0nq4iH-dTfBrh2q47
+    const folder = DriveApp.getFolderById(TARGET_FOLDER_ID);
+    const file = folder.createFile(blob);
+
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (e) {}
+
+    return {
+      ok: true,
+      image_id: file.getId(),
+      image_url: file.getUrl()
+    };
+  } catch (err) {
+    return { ok: false, error: err.toString() };
   }
-
-  const fileId = file.getId();
-  const fileUrl = file.getUrl();
-
-  if (rowIndex) {
-    setCellValue_(sheet, rowIndex, 'image_file_id', fileId);
-    setCellValue_(sheet, rowIndex, 'image_url', fileUrl);
-    setCellValue_(sheet, rowIndex, 'image_consent', 'yes');
-    const currentCount = Number(getCellValue_(sheet, rowIndex, 'scan_count')) || 0;
-    setCellValue_(sheet, rowIndex, 'scan_count', currentCount + 1);
-  } else {
-    // If no row exists, append a new row with the image links
-    appendDataToSheet_(sheet, {
-      session_id: sessionId || ('scan-' + Date.now()),
-      created_at: new Date().toISOString(),
-      image_file_id: fileId,
-      image_url: fileUrl,
-      image_consent: 'yes',
-      status: 'scanned'
-    });
-  }
-
-  return jsonResponse_({
-    ok: true,
-    file_id: fileId,
-    image_url: fileUrl
-  });
 }
 
-function completeScan_(b) {
-  const dataObj = b.data || b;
-  const sessionId = String(dataObj.session_id || '').trim();
+// ---------------- SPREADSHEET INITIALIZER (NO EXTRA TABS) ----------------
 
-  const sheet = getSheet_(LEADS_TAB);
-  let rowIndex = sessionId ? findRowBySessionId_(sheet, sessionId) : null;
-
-  if (!rowIndex && sheet.getLastRow() > 1) {
-    rowIndex = sheet.getLastRow();
-  }
-
-  if (!rowIndex) {
-    return jsonResponse_({ ok: false, error: 'session_not_found' });
-  }
-
-  const score = Number(dataObj.overall_score);
-  if (!isNaN(score)) {
-    setCellValue_(sheet, rowIndex, 'overall_score', score);
-  }
-
-  if (dataObj.sub_scores) {
-    const subScoresStr = typeof dataObj.sub_scores === 'string'
-      ? dataObj.sub_scores
-      : JSON.stringify(dataObj.sub_scores);
-    setCellValue_(sheet, rowIndex, 'sub_scores', subScoresStr);
-  }
-
-  if (dataObj.skin_concern) {
-    setCellValue_(sheet, rowIndex, 'skin_concern', dataObj.skin_concern);
-  }
-
-  setCellValue_(sheet, rowIndex, 'status', 'completed');
-  setCellValue_(sheet, rowIndex, 'completed_at', new Date().toISOString());
-
-  return jsonResponse_({ ok: true, session_id: sessionId, status: 'completed' });
-}
-
-function appendRow_(tabName, dataObj) {
-  if (!TABS[tabName]) {
-    tabName = 'Leads';
-  }
-  const sheet = getSheet_(tabName);
-  dataObj.created_at = dataObj.created_at || new Date().toISOString();
-  if (TABS[tabName].indexOf('status') > -1 && !dataObj.status) {
-    dataObj.status = 'new';
-  }
-
-  appendDataToSheet_(sheet, dataObj);
-
-  return jsonResponse_({ ok: true, tab: tabName });
-}
-
-function deleteUser_(b) {
-  const dataObj = b.data || b;
-  const sheet = getSheet_(LEADS_TAB);
-  const data = sheet.getDataRange().getValues();
-  if (data.length < 2) return jsonResponse_({ ok: true, removed: 0 });
-
-  const headers = data[0];
-  const idxSession = headers.indexOf('session_id');
-  const idxPhone = headers.indexOf('phone');
-  const idxEmail = headers.indexOf('email');
-  const idxFileId = headers.indexOf('image_file_id');
-
-  const targetSession = String(dataObj.session_id || '').trim();
-  const targetPhone = String(dataObj.phone || '').trim();
-  const targetEmail = String(dataObj.email || '').trim().toLowerCase();
-
-  let removedCount = 0;
-
-  for (let r = data.length - 1; r >= 1; r--) {
-    const row = data[r];
-    const matchSession = targetSession && String(row[idxSession]) === targetSession;
-    const matchPhone = targetPhone && String(row[idxPhone]) === targetPhone;
-    const matchEmail = targetEmail && String(row[idxEmail]).toLowerCase() === targetEmail;
-
-    if (matchSession || matchPhone || matchEmail) {
-      if (idxFileId > -1 && row[idxFileId]) {
-        trashDriveFile_(String(row[idxFileId]));
-      }
-      sheet.deleteRow(r + 1);
-      removedCount++;
-    }
-  }
-
-  return jsonResponse_({ ok: true, removed: removedCount });
-}
-
-// ---------------- AUTOMATIC SHEET & DRIVE CREATORS ----------------
-
-function appendDataToSheet_(sheet, dataObj) {
-  const lastCol = Math.max(1, sheet.getLastColumn());
-  const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-
-  const row = headers.map(headerName => {
-    const val = dataObj[headerName];
-    return cleanValue_(headerName, val);
-  });
-
-  sheet.appendRow(row);
-}
-
-function getSheet_(name) {
+function getOrSetupSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(name);
+  let sheet = ss.getSheetByName(SHEET_NAME);
 
   if (!sheet) {
     const existingSheets = ss.getSheets();
-    // Rename default Sheet1 if blank
-    if (existingSheets.length === 1 && existingSheets[0].getName() === 'Sheet1' && existingSheets[0].getLastRow() === 0) {
+    if (existingSheets.length > 0) {
       sheet = existingSheets[0];
-      sheet.setName(name);
+      sheet.setName(SHEET_NAME);
     } else {
-      sheet = ss.insertSheet(name);
+      sheet = ss.insertSheet(SHEET_NAME);
     }
   }
 
   if (sheet.getLastRow() === 0) {
-    const headers = TABS[name] || TABS.Leads;
-    sheet.getRange(1, 1, 1, headers.length)
-      .setValues([headers])
+    sheet.getRange(1, 1, 1, HEADERS.length)
+      .setValues([HEADERS])
       .setFontWeight('bold')
       .setFontColor('#FFFFFF')
-      .setBackground('#0050FF');
+      .setBackground('#0050FF'); // GLOW VAI Electric Blue
     sheet.setFrozenRows(1);
 
-    ['phone', 'session_id', 'pincode'].forEach(headerName => {
-      const colIdx = headers.indexOf(headerName);
-      if (colIdx > -1) {
-        sheet.getRange(2, colIdx + 1, sheet.getMaxRows() - 1, 1).setNumberFormat('@');
-      }
-    });
+    // Format phone column as plain text '@'
+    sheet.getRange(2, 7, sheet.getMaxRows() - 1, 1).setNumberFormat('@');
 
     try {
-      sheet.autoResizeColumns(1, headers.length);
+      sheet.autoResizeColumns(1, HEADERS.length);
     } catch (e) {}
   }
 
   return sheet;
 }
 
-function getOrCreateDriveFolder_() {
-  const props = PropertiesService.getScriptProperties();
-  const folderId = props.getProperty('FOLDER_ID');
-
-  if (folderId) {
-    try {
-      return DriveApp.getFolderById(folderId);
-    } catch (e) {}
-  }
-
-  const folders = DriveApp.getFoldersByName(DRIVE_FOLDER_NAME);
-  if (folders.hasNext()) {
-    const folder = folders.next();
-    props.setProperty('FOLDER_ID', folder.getId());
-    return folder;
-  }
-
-  const newFolder = DriveApp.createFolder(DRIVE_FOLDER_NAME);
-  props.setProperty('FOLDER_ID', newFolder.getId());
-  return newFolder;
-}
-
-function trashDriveFile_(fileId) {
-  try {
-    DriveApp.getFileById(fileId).setTrashed(true);
-  } catch (e) {}
-}
-
-function findRowBySessionId_(sheet, sessionId) {
-  if (!sessionId) return null;
-  const data = sheet.getDataRange().getValues();
-  if (data.length < 2) return null;
-  const sessionCol = data[0].indexOf('session_id');
-  if (sessionCol === -1) return null;
-
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][sessionCol]).trim() === String(sessionId).trim()) {
-      return i + 1; // 1-indexed sheet row number
-    }
-  }
-  return null;
-}
-
-function getCellValue_(sheet, rowIndex, headerName) {
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const colIdx = headers.indexOf(headerName);
-  if (colIdx === -1) return '';
-  return String(sheet.getRange(rowIndex, colIdx + 1).getValue() || '');
-}
-
-function setCellValue_(sheet, rowIndex, headerName, value) {
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const colIdx = headers.indexOf(headerName);
-  if (colIdx > -1) {
-    sheet.getRange(rowIndex, colIdx + 1).setValue(cleanValue_(headerName, value));
-  }
-}
-
-function cleanValue_(header, val) {
-  if (val === undefined || val === null) return '';
-  let str = String(val).slice(0, MAX_CELL_CHARS);
-  if (/^[=+\-@]/.test(str)) {
-    return "'" + str;
-  }
-  return str;
+function testSetup() {
+  const sheet = getOrSetupSheet_();
+  Logger.log("SUCCESS! Connected to spreadsheet. Header created: " + sheet.getName());
 }
 
 function jsonResponse_(obj) {
