@@ -200,49 +200,50 @@ export function FaceAnalysisFeature() {
                 </div>
 
                 {/* Face Scanner HUD Grid & Laser Sweep Overlay */}
-                <div className="absolute inset-x-4 top-16 bottom-36 border-2 border-dashed border-cyan-400/60 rounded-3xl z-10 pointer-events-none flex flex-col justify-between p-3">
-                  {/* Corner HUD Markers */}
-                  <div className="flex justify-between w-full">
-                    <div className="w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
-                    <div className="w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
-                  </div>
+                <div className="absolute inset-x-3 top-14 bottom-14 border-2 border-dashed border-cyan-400/60 rounded-3xl z-10 pointer-events-none flex flex-col justify-between p-2.5">
+                  {/* Corner HUD Markers & Top Badge */}
+                  <div className="flex justify-between items-start w-full">
+                    <div className="w-3.5 h-3.5 border-t-2 border-l-2 border-cyan-400" />
+                    
+                    {/* Live Status Badge (Positioned at Top of HUD - Away from Face) */}
+                    <div className="bg-brand/90 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md border border-white/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      <span>Live AI Scan</span>
+                    </div>
 
-                  {/* Live Status Badge */}
-                  <div className="self-center bg-brand/90 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span>Live Face AI Scan</span>
+                    <div className="w-3.5 h-3.5 border-t-2 border-r-2 border-cyan-400" />
                   </div>
 
                   {/* Bottom Corner HUD Markers */}
                   <div className="flex justify-between w-full">
-                    <div className="w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
-                    <div className="w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
+                    <div className="w-3.5 h-3.5 border-b-2 border-l-2 border-cyan-400" />
+                    <div className="w-3.5 h-3.5 border-b-2 border-r-2 border-cyan-400" />
                   </div>
 
                   {/* Scanning Laser Beam Line */}
                   <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_12px_#22d3ee] animate-scan-laser" />
                 </div>
 
-                {/* Floating Marker Pins on Face */}
-                <div className="absolute top-28 left-8 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-cyan-400/40 text-[10px] font-bold text-cyan-300 z-10 shadow-md">
+                {/* Floating Marker Pins on Face (Positioned cleanly on sides) */}
+                <div className="absolute top-20 left-4 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-lg border border-cyan-400/50 text-[9px] font-bold text-cyan-300 z-10 shadow-md">
                   • Hydration: 82%
                 </div>
-                <div className="absolute top-44 right-6 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-coral/50 text-[10px] font-bold text-coral-light z-10 shadow-md">
-                  • Barrier score: 64
+                <div className="absolute top-28 right-4 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-lg border border-coral/50 text-[9px] font-bold text-coral-light z-10 shadow-md">
+                  • Barrier: 64
                 </div>
 
-                {/* Bottom Action Button (Unobstructed View of Selfie Scan) */}
-                <div className="relative z-20 w-full pt-2">
+                {/* Bottom Action Button (Positioned at absolute bottom below chin & face) */}
+                <div className="relative z-20 w-full pt-1 mt-auto">
                   <Link href="/face-analysis" className="block w-full">
-                    <button className="w-full py-2.5 bg-gradient-to-r from-brand via-blue-600 to-brand text-white font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 border border-white/20">
-                      <Sparkles className="w-4 h-4 text-yellow" />
+                    <button className="w-full py-2 bg-gradient-to-r from-brand via-blue-600 to-brand text-white font-extrabold text-[11px] rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-1.5 border border-white/20">
+                      <Sparkles className="w-3.5 h-3.5 text-yellow" />
                       <span>Start free scan now</span>
                     </button>
                   </Link>
                 </div>
 
                 {/* Bottom Home Indicator Bar */}
-                <div className="relative z-20 w-28 h-1 bg-white/40 rounded-full mx-auto mt-2" />
+                <div className="relative z-20 w-24 h-1 bg-white/40 rounded-full mx-auto mt-1.5" />
 
               </div>
             </div>
