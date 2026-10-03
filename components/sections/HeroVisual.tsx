@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { assetConfig } from "@/config/assets";
+import { getAssetPath } from "@/lib/utils";
 import { heroContent } from "@/config/content";
 import { proofClaims } from "@/config/claims";
 import { Sparkles, Leaf } from "lucide-react";
@@ -49,7 +50,7 @@ export function HeroVisual({ city = "Hyderabad" }: HeroVisualProps) {
         {!imageError ? (
           <div className="relative w-full h-full max-h-[460px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white">
             <Image
-              src={assetConfig.hero.product}
+              src={getAssetPath(assetConfig.hero.product)}
               alt="GLOW VAI Cosmetics skincare serums and ointments collection"
               fill
               priority
