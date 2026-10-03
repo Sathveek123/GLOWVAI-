@@ -99,11 +99,11 @@ export default function OurStoryPage() {
         {/* Formulation Studio & Skincare Brand Hero Photo Slot */}
         <div className="relative w-full aspect-[16/7] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-xl mb-20 border-4 border-skymist bg-skymist group">
           <Image
-            src="/images/hero/product.png"
+            src="/images/hero/skincare-studio-hero.jpg"
             alt={`${BRAND_NAME} formulation studio and skincare collection`}
             fill
             priority
-            className="object-contain object-center p-6 bg-skymist/80 group-hover:scale-105 transition-transform duration-700"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent flex items-end p-6 sm:p-8 text-white">
             <div>
