@@ -9,6 +9,7 @@ import { complianceConfig } from "@/config/compliance";
 import { trustStripClaimsList } from "@/config/claims";
 import { Container } from "@/components/ui/Container";
 import { MapPin, ArrowUp, Mail, Phone } from "lucide-react";
+import { getAssetPath } from "@/lib/utils";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -87,7 +88,7 @@ export function Footer() {
             >
               <div className="relative h-12 w-auto inline-flex items-center bg-white px-4 py-2 rounded-2xl shadow-lg border border-white/30 group-hover:scale-105 transition-transform duration-300">
                 <Image
-                  src="/images/logo/glowvai-logo.png"
+                  src={getAssetPath("/images/logo/glowvai-logo.png")}
                   alt={BRAND_NAME}
                   width={180}
                   height={48}

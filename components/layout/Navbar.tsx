@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Sparkles, ShoppingBag, Search, Menu } from "lucide-react";
 import { MobileMenu } from "./MobileMenu";
 import { CartDrawer } from "./CartDrawer";
-import { cn } from "@/lib/utils";
+import { getAssetPath, cn } from "@/lib/utils";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -110,7 +110,7 @@ export function Navbar() {
           >
             <div className="relative h-10 sm:h-12 lg:h-14 w-auto flex items-center">
               <Image
-                src="/images/logo/glowvai-logo.png"
+                src={getAssetPath("/images/logo/glowvai-logo.png")}
                 alt={BRAND_NAME}
                 width={220}
                 height={60}

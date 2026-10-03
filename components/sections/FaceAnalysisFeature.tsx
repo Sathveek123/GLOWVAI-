@@ -10,7 +10,7 @@ import { Accent } from "@/components/ui/Accent";
 import { bestsellerProducts } from "@/config/content";
 import { trustStripClaimsList } from "@/config/claims";
 import { siteConfig } from "@/config/site";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getAssetPath } from "@/lib/utils";
 import {
   ScanFace,
   Lock,
@@ -181,7 +181,7 @@ export function FaceAnalysisFeature() {
                 
                 {/* Background Image: High Quality Face Selfie Scan */}
                 <Image
-                  src="/images/hero/face-scan-selfie.png"
+                  src={getAssetPath("/images/hero/face-scan-selfie.png")}
                   alt="Real-time face analysis selfie scan"
                   fill
                   priority

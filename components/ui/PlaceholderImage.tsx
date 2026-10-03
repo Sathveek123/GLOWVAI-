@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Camera } from "lucide-react";
+import { getAssetPath } from "@/lib/utils";
 
 interface PlaceholderImageProps {
   src?: string;
@@ -19,9 +20,10 @@ export function PlaceholderImage({
   objectPosition = "object-center",
 }: PlaceholderImageProps) {
   if (src && src.trim().length > 0 && !src.includes("placeholder")) {
+    const finalSrc = getAssetPath(src);
     return (
       <Image
-        src={src}
+        src={finalSrc}
         alt={alt}
         fill
         sizes="(max-width: 768px) 100vw, 50vw"

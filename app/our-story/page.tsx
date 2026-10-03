@@ -9,6 +9,7 @@ import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { storyData } from "@/config/story";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { brandValuesClaims } from "@/config/claims";
+import { getAssetPath } from "@/lib/utils";
 import { Camera, Lock, ArrowRight, ArrowDown } from "lucide-react";
 
 export const metadata = {
@@ -99,7 +100,7 @@ export default function OurStoryPage() {
         {/* Formulation Studio & Skincare Brand Hero Photo Slot */}
         <div className="relative w-full aspect-[16/7] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-xl mb-20 border-4 border-skymist bg-skymist group">
           <Image
-            src="/images/hero/skincare-studio-hero.jpg"
+            src={getAssetPath("/images/hero/skincare-studio-hero.jpg")}
             alt={`${BRAND_NAME} formulation studio and skincare collection`}
             fill
             priority
