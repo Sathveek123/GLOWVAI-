@@ -8,6 +8,7 @@ interface PlaceholderImageProps {
   caption?: string;
   aspectRatio?: string;
   className?: string;
+  objectPosition?: string;
 }
 
 export function PlaceholderImage({
@@ -15,6 +16,7 @@ export function PlaceholderImage({
   alt,
   caption,
   className = "",
+  objectPosition = "object-center",
 }: PlaceholderImageProps) {
   if (src && src.trim().length > 0 && !src.includes("placeholder")) {
     return (
@@ -23,7 +25,7 @@ export function PlaceholderImage({
         alt={alt}
         fill
         sizes="(max-width: 768px) 100vw, 50vw"
-        className={`object-cover ${className}`}
+        className={`object-cover ${objectPosition} ${className}`}
       />
     );
   }

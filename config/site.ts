@@ -6,9 +6,9 @@ export const siteConfig = {
   description: "Skincare that understands your face, delivered in minutes. Cosmetic quick-commerce powered by smart AI face scanning.",
   url: "https://glowvai.com",
   ogImage: "https://glowvai.com/og.jpg",
-  supportEmail: "hello@glowvai.com",
-  phone: "+91 98765 43210",
-  address: "Studio 4B, Design District, Hyderabad, Telangana 500081",
+  supportEmail: "contact@glowvai.in",
+  phone: "+91 89778 55998",
+  address: "Andhra Pradesh, India",
   deliveryEstimateMinutes: 15,
   defaultCity: "Hyderabad",
   // Real ratings and customer counts go here ONLY when verified before launch.
@@ -21,10 +21,10 @@ export const siteConfig = {
     licenceNumber: "", // e.g. "COS-AP-2024-8891"
   },
   socials: {
-    instagram: "https://instagram.com/glowvai.skin",
-    twitter: "https://twitter.com/glowvai",
-    youtube: "https://youtube.com/@glowvai",
-    linkedin: "https://linkedin.com/company/glowvai",
+    instagram: "https://www.instagram.com/glowvai?stkn=MTV6Znk1ZHd2OGd5eg==",
+    twitter: "https://x.com/Glowvai",
+    youtube: "",
+    linkedin: "https://www.linkedin.com/company/glowvai/",
   },
 };
 

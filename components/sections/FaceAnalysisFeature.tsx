@@ -231,53 +231,18 @@ export function FaceAnalysisFeature() {
                   • Barrier score: 64
                 </div>
 
-                {/* Bottom Overlaid Instant Skin Report Card */}
-                <div className="relative z-20 bg-white/95 backdrop-blur-xl text-ink p-3 rounded-2xl shadow-xl border border-white/50 space-y-2">
-                  <div className="flex items-center justify-between border-b border-ink/10 pb-1.5">
-                    <div>
-                      <span className="text-[9px] font-extrabold text-ink-muted uppercase tracking-wider block">Scan Result</span>
-                      <span className="text-[11px] font-bold text-ink">Hydration & Barrier Score</span>
-                    </div>
-                    <div className="flex items-center gap-1 bg-brand text-white text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg shadow-xs">
-                      <span>Score:</span>
-                      <span className="text-yellow font-black">76</span>
-                    </div>
-                  </div>
-
-                  {/* 4 Skin Marker Progress Metrics */}
-                  <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                    <div className="bg-skymist/60 p-1.5 rounded-lg border border-brand/10">
-                      <div className="flex justify-between font-bold">
-                        <span className="text-brand">Hydration</span>
-                        <span>82</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-brand/20 rounded-full mt-1 overflow-hidden">
-                        <div className="h-full bg-brand rounded-full w-[82%]" />
-                      </div>
-                    </div>
-
-                    <div className="bg-blush/70 p-1.5 rounded-lg border border-coral/10">
-                      <div className="flex justify-between font-bold">
-                        <span className="text-coral">Texture</span>
-                        <span>64</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-coral/20 rounded-full mt-1 overflow-hidden">
-                        <div className="h-full bg-coral rounded-full w-[64%]" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* CTA Inside Smartphone Screen */}
+                {/* Bottom Action Button (Unobstructed View of Selfie Scan) */}
+                <div className="relative z-20 w-full pt-2">
                   <Link href="/face-analysis" className="block w-full">
-                    <button className="w-full py-2 bg-gradient-to-r from-coral via-amber-500 to-coral text-white font-bold text-xs rounded-xl shadow-md hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-white" />
+                    <button className="w-full py-2.5 bg-gradient-to-r from-brand via-blue-600 to-brand text-white font-bold text-xs rounded-xl shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 border border-white/20">
+                      <Sparkles className="w-4 h-4 text-yellow" />
                       <span>Start free scan now</span>
                     </button>
                   </Link>
                 </div>
 
                 {/* Bottom Home Indicator Bar */}
-                <div className="relative z-20 w-28 h-1 bg-white/40 rounded-full mx-auto mt-1" />
+                <div className="relative z-20 w-28 h-1 bg-white/40 rounded-full mx-auto mt-2" />
 
               </div>
             </div>
