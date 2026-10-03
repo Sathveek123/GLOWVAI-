@@ -53,74 +53,77 @@ export function WhyWeStarted() {
             </div>
           </div>
 
-          {/* Right Column (7 cols desktop): Layered Collage & Timeline Card */}
-          <div className="lg:col-span-7 relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[540px] aspect-[4/3] sm:aspect-[16/12]">
-              
-              {/* Organic Sky Mist Backdrop Shape */}
-              <div className="absolute inset-0 bg-skymist/70 rounded-[40px] transform -rotate-2 border border-brand/10" />
-
-              {/* Butter Yellow Circle (80px) behind top-right frame */}
-              <div className="absolute top-2 right-2 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-yellow opacity-85 z-0" />
-
-              {/* Frame 1: Sardhar Musthafa (Founder & Vision) */}
-              <div className="absolute top-2 left-2 sm:left-4 w-[52%] sm:w-[50%] aspect-[4/5] rounded-2xl overflow-hidden shadow-xl border-[6px] border-white transform -rotate-2 bg-white z-10 group">
-                <PlaceholderImage
-                  src={assetConfig.story.teamAtDesk.src}
-                  alt="SK Sardhar Musthafa - Founder"
-                  caption={assetConfig.story.teamAtDesk.caption}
-                  objectPosition="object-center"
-                />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent p-2.5 text-white z-20">
-                  <p className="text-[11px] font-bold leading-tight">SK Sardhar Musthafa</p>
-                  <p className="text-[9px] text-yellow font-semibold">Founder & Vision</p>
-                </div>
+          {/* Right Column (7 cols desktop): Clean 3-Founder Showcase Grid & Timeline */}
+          <div className="lg:col-span-7 relative flex flex-col justify-center items-center lg:items-end space-y-4">
+            
+            {/* 3-Founder Card Showcase Container */}
+            <div className="relative w-full max-w-[560px] bg-skymist/50 backdrop-blur-md p-3.5 sm:p-5 rounded-[36px] border border-brand/15 shadow-xl space-y-3">
+              <div className="flex items-center justify-between border-b border-brand/10 pb-2 px-1">
+                <span className="text-[11px] font-bold text-brand uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
+                  <span>Founding Team • Andhra Pradesh</span>
+                </span>
+                <span className="text-[10px] text-ink-muted font-medium">3 Co-Founders</span>
               </div>
 
-              {/* Frame 2: Nalla Satvik (Lead Technologist) */}
-              <div className="absolute top-6 right-2 sm:right-4 w-[48%] sm:w-[46%] aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-[6px] border-white transform rotate-3 bg-white z-20 group">
-                <PlaceholderImage
-                  src={assetConfig.story.workingMoment.src}
-                  alt="Nalla Satvik - Lead Technologist"
-                  caption={assetConfig.story.workingMoment.caption}
-                  objectPosition="object-center"
-                />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent p-2.5 text-white z-20">
-                  <p className="text-[11px] font-bold leading-tight">Nalla Satvik</p>
-                  <p className="text-[9px] text-cyan-300 font-semibold">Lead Technologist</p>
+              {/* 3 Founder Cards Side-by-Side (0 Overlaps - All 3 Faces 100% Clear) */}
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5">
+                
+                {/* Founder 1: Sardhar Musthafa */}
+                <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 sm:border-4 border-white bg-white group hover:scale-[1.03] transition-transform">
+                  <PlaceholderImage
+                    src={assetConfig.story.teamAtDesk.src}
+                    alt="SK Sardhar Musthafa - Founder"
+                    caption={assetConfig.story.teamAtDesk.caption}
+                    objectPosition="object-center"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent p-2 text-white">
+                    <p className="text-[10px] sm:text-xs font-extrabold leading-tight">Sardhar</p>
+                    <p className="text-[8px] sm:text-[9px] text-yellow font-semibold truncate">Founder, Vision</p>
+                  </div>
                 </div>
+
+                {/* Founder 2: Nalla Satvik */}
+                <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 sm:border-4 border-white bg-white group hover:scale-[1.03] transition-transform">
+                  <PlaceholderImage
+                    src={assetConfig.story.workingMoment.src}
+                    alt="Nalla Satvik - Lead Technologist"
+                    caption={assetConfig.story.workingMoment.caption}
+                    objectPosition="object-center"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent p-2 text-white">
+                    <p className="text-[10px] sm:text-xs font-extrabold leading-tight">Nalla Satvik</p>
+                    <p className="text-[8px] sm:text-[9px] text-cyan-300 font-semibold truncate">Lead Tech</p>
+                  </div>
+                </div>
+
+                {/* Founder 3: Rahimath (object-top so face is 100% visible) */}
+                <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 sm:border-4 border-white bg-white group hover:scale-[1.03] transition-transform">
+                  <PlaceholderImage
+                    src={assetConfig.story.productCloseUp.src}
+                    alt="Rahimath - Market Explorer"
+                    caption={assetConfig.story.productCloseUp.caption}
+                    objectPosition="object-top"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent p-2 text-white">
+                    <p className="text-[10px] sm:text-xs font-extrabold leading-tight">Rahimath</p>
+                    <p className="text-[8px] sm:text-[9px] text-coral-light font-semibold truncate">Market Explorer</p>
+                  </div>
+                </div>
+
               </div>
 
-              {/* Frame 3: Rahimath (Market Explorer) - Positioned at object-top so face is 100% visible */}
-              <div className="absolute bottom-2 left-1/3 w-[46%] sm:w-[44%] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-[6px] border-white transform -rotate-3 bg-white z-30 group">
-                <PlaceholderImage
-                  src={assetConfig.story.productCloseUp.src}
-                  alt="Rahimath - Market Explorer"
-                  caption={assetConfig.story.productCloseUp.caption}
-                  objectPosition="object-top"
-                />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent p-2.5 text-white z-20">
-                  <p className="text-[11px] font-bold leading-tight">Rahimath</p>
-                  <p className="text-[9px] text-coral-light font-semibold">Market Explorer</p>
-                </div>
-              </div>
-
-              {/* Timeline Card Overlay (Overlapping bottom-left, hidden if < 2 rows pass) */}
+              {/* Timeline Card Row inside container */}
               {showTimelineCard && (
-                <div className="absolute -bottom-6 left-2 sm:left-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-card border border-ink/10 max-w-[260px] w-full space-y-2 z-20">
-                  <span className="text-[10px] font-bold text-brand uppercase tracking-wider block border-b border-ink/10 pb-1">
-                    Timeline
-                  </span>
-                  <div className="space-y-1.5 text-xs">
+                <div className="pt-2 border-t border-brand/10">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
                     {activeTimelineRows.map((row, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-[11px] gap-2">
-                        <div className="flex items-center gap-1.5 min-w-0">
+                      <div key={idx} className="bg-white/80 p-2 rounded-xl border border-ink/5">
+                        <div className="flex items-center gap-1 font-bold text-ink">
                           <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
-                          <span className="font-bold text-ink truncate">{row.label}</span>
+                          <span className="truncate">{row.label}</span>
                         </div>
-                        {row.date && row.date.trim() !== "" && (
-                          <span className="text-ink-muted text-[10px] shrink-0">{row.date}</span>
-                        )}
+                        {row.date && <p className="text-[9px] text-ink-muted pl-2.5">{row.date}</p>}
                       </div>
                     ))}
                   </div>

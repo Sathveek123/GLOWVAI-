@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { Accent } from "@/components/ui/Accent";
@@ -95,46 +96,19 @@ export default function OurStoryPage() {
           </div>
         </div>
 
-        {/* 3 Founders Photo Banner */}
-        <div className="relative w-full rounded-3xl overflow-hidden shadow-xl mb-20 border-4 border-skymist bg-gradient-to-r from-slate-900 via-brand to-slate-900 p-4 sm:p-6 text-white">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Founder 1 */}
-            <div className="relative aspect-[4/3] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 border-white/20 group">
-              <PlaceholderImage
-                src="/images/founders/sardhar-musthafa.jpeg"
-                alt="SK Sardhar Musthafa - Founder"
-                objectPosition="object-center"
-              />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 text-white">
-                <p className="text-sm font-extrabold">SK Sardhar Musthafa</p>
-                <p className="text-xs text-yellow font-semibold">Founder & Vision</p>
-              </div>
-            </div>
-
-            {/* Founder 2 */}
-            <div className="relative aspect-[4/3] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 border-white/20 group">
-              <PlaceholderImage
-                src="/images/founders/nalla-satvik.jpg"
-                alt="Nalla Satvik - Lead Technologist"
-                objectPosition="object-center"
-              />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 text-white">
-                <p className="text-sm font-extrabold">Nalla Satvik</p>
-                <p className="text-xs text-cyan-300 font-semibold">Lead Technologist</p>
-              </div>
-            </div>
-
-            {/* Founder 3 */}
-            <div className="relative aspect-[4/3] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 border-white/20 group">
-              <PlaceholderImage
-                src="/images/founders/rahimath.jpeg"
-                alt="Rahimath - Market Explorer"
-                objectPosition="object-top"
-              />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 text-white">
-                <p className="text-sm font-extrabold">Rahimath</p>
-                <p className="text-xs text-coral-light font-semibold">Market Explorer</p>
-              </div>
+        {/* Formulation Studio & Skincare Brand Hero Photo Slot */}
+        <div className="relative w-full aspect-[16/7] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-xl mb-20 border-4 border-skymist bg-skymist group">
+          <Image
+            src="/images/hero/lifestyle.webp"
+            alt={`${BRAND_NAME} formulation studio and skincare collection`}
+            fill
+            priority
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent flex items-end p-6 sm:p-8 text-white">
+            <div>
+              <span className="text-xs font-bold text-yellow uppercase tracking-widest block mb-1">Formulated in Andhra Pradesh</span>
+              <p className="font-display text-xl sm:text-2xl font-bold">Smart skincare technology meets honest ingredients.</p>
             </div>
           </div>
         </div>
