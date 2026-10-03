@@ -23,6 +23,7 @@ export function getAssetPath(path: string): string {
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   if (cleanPath.startsWith("/GLOWVAI-")) return cleanPath;
-  const prefix = process.env.NODE_ENV === "production" ? "/GLOWVAI-" : "";
+  const isCustomDomain = process.env.CUSTOM_DOMAIN === "true";
+  const prefix = process.env.NODE_ENV === "production" && !isCustomDomain ? "/GLOWVAI-" : "";
   return `${prefix}${cleanPath}`;
 }
