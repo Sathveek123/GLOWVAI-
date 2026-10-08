@@ -285,36 +285,7 @@ export default function FaceAnalysisPage() {
     <div className="bg-white text-slate-900 font-sans min-h-screen flex flex-col justify-between selection:bg-[#0050FF] selection:text-white">
       <CartDrawer />
 
-      {/* Top Vijayawada Announcement Bar */}
-      <div className="bg-[#0050FF] text-white text-xs font-bold py-2 px-4 text-center flex items-center justify-center gap-2">
-        <MapPin className="w-3.5 h-3.5" />
-        <span>Delivering GLOW VAI routine orders directly to Vijayawada • Free Instant AI Face Scan</span>
-      </div>
 
-      {/* Header */}
-      <header className="border-b border-slate-200 py-3.5 bg-white sticky top-0 z-40">
-        <Container>
-          <div className="flex items-center justify-between">
-            <Link href="/" className="font-display font-black text-xl text-slate-900 flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#0050FF] text-white flex items-center justify-center font-black text-base shadow-sm">
-                G
-              </div>
-              <span>
-                GLOW<span className="text-[#0050FF]">VAI</span>
-              </span>
-            </Link>
-
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200">
-                Skin Diagnostic Portal
-              </span>
-              <Link href="/" className="text-xs font-semibold text-slate-600 hover:text-[#0050FF] transition-colors">
-                Back to Store
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </header>
 
       {/* Main Content Area */}
       <main className="py-8 sm:py-12 flex-1 bg-slate-50/50">
