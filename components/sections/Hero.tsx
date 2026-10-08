@@ -43,13 +43,13 @@ export function Hero({ city = "Hyderabad" }: HeroProps) {
             </div>
 
             {/* Headline with Bricolage Grotesque & Instrument Serif Accent */}
-            <h1 className="font-display text-hero-display text-ink text-wrap-balance leading-[1.08] max-w-[15ch]">
-              Skincare that <Accent underline>knows</Accent> your face. At your door in 15.
+            <h1 className="font-display text-hero-display text-ink text-wrap-balance leading-[1.08] max-w-[18ch]">
+              Your bestie says you’re <Accent underline>glowing</Accent>. Let’s see if your skin agrees. 👀
             </h1>
 
             {/* Supporting Line */}
             <p className="text-body-lg text-ink-muted max-w-[52ch] font-normal leading-relaxed">
-              {heroContent.subheadline}
+              Scan your face in 30 seconds for an instant diagnostic & personalized routine. Delivered to your doorstep in 15 minutes.
             </p>
 
             {/* Action Buttons Row - aligned height 52px, 2px focus ring, hover lift 2px */}
