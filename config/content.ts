@@ -74,7 +74,7 @@ export const heroContent = {
     { text: "Your skin has opinions. We listen, then deliver.", accentWord: "listen" },
   ],
   selectedHeadlineIndex: 0,
-  subheadline: "Scan your face in 30 seconds. We find what your skin is missing and bring it over before your tea gets cold.",
+  subheadline: "Your bestie says you’re glowing. Let’s see if your skin agrees. 👀 Scan your face in 30 seconds for an instant diagnostic & personalized routine.",
   primaryCTA: "Scan my face, it's free",
   secondaryCTA: "Shop now",
   ratingText: "4.95 / 5 star rating",
