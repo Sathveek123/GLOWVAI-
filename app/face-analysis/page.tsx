@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { analyse, detectFace, DEMOGRAPHIC_BASE_SCORES, AnalysisReport } from "@/lib/analysis";
 import { getRecommendedProducts, EXCEL_DATABASE_PRODUCTS } from "@/lib/recommend";
+import { parseUserAgent, fetchClientIP, requestLocationWithOSPermission } from "@/lib/clientInfo";
 import { formatPrice } from "@/lib/utils";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { trackEvent } from "@/lib/analytics";
@@ -123,6 +124,9 @@ export default function FaceAnalysisPage() {
     skinConcern: "hydration",
   });
 
+  const [clientLocation, setClientLocation] = useState<string>("Vijayawada, AP");
+  const [clientIp, setClientIp] = useState<string>("127.0.0.1");
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [inAppBrowser, setInAppBrowser] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -141,12 +145,20 @@ export default function FaceAnalysisPage() {
       if (/FBAN|FBAV|Instagram/i.test(ua)) {
         setInAppBrowser(true);
       }
+
+      // Fetch IP on mount
+      fetchClientIP().then((ip) => setClientIp(ip));
     }
   }, []);
 
   const handleOpenCamera = async () => {
     dispatch({ type: "START_CAMERA" });
     trackEvent({ name: "scan_camera_open" });
+
+    // Request OS location permission while opening camera
+    requestLocationWithOSPermission().then((loc) => {
+      if (loc) setClientLocation(loc);
+    });
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -234,8 +246,11 @@ export default function FaceAnalysisPage() {
 
     const errMap: Record<string, string> = {};
     if (!form.name.trim()) errMap.name = "Please enter your full name";
-    if (!form.phone.trim() || form.phone.trim().length < 10) {
-      errMap.phone = "Please enter a valid 10-digit mobile number";
+
+    // Strict 10-digit Indian phone validation (starts with 6,7,8,9)
+    const cleanPhone = form.phone.replace(/\D/g, "");
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      errMap.phone = "Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9";
     }
 
     if (Object.keys(errMap).length > 0) {
@@ -249,7 +264,10 @@ export default function FaceAnalysisPage() {
     const report = await analyse(dummyCanvas, form.demographic);
     const sessionId = `scan-${Date.now()}`;
 
-    // Post to Google Apps Script backend
+    // Parse real User Agent for clean Browser & OS strings
+    const { browser, os } = parseUserAgent();
+
+    // Post real data to Google Apps Script backend
     const APPS_SCRIPT_URL =
       "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
 
@@ -261,15 +279,18 @@ export default function FaceAnalysisPage() {
           action: "create",
           data: {
             session_id: sessionId,
-            name: form.name,
-            phone: form.phone,
-            email: form.email || "",
+            name: form.name.trim(),
+            phone: cleanPhone,
+            email: form.email ? form.email.trim() : "",
             demographic: DEMOGRAPHIC_BASE_SCORES[form.demographic]?.label || form.demographic,
             skin_concern: form.skinConcern,
             image_base64: flow.capturedImage || "",
             overall_score: report.overall,
             sub_scores: report.subScores,
-            location: "Vijayawada, AP",
+            location: clientLocation || "Vijayawada, AP",
+            ip: clientIp || "127.0.0.1",
+            browser: browser,
+            os: os,
           },
         }),
         mode: "no-cors",
@@ -285,12 +306,10 @@ export default function FaceAnalysisPage() {
     <div className="bg-white text-slate-900 font-sans min-h-screen flex flex-col justify-between selection:bg-[#0050FF] selection:text-white">
       <CartDrawer />
 
-
-
       {/* Main Content Area */}
       <main className="py-8 sm:py-12 flex-1 bg-slate-50/50">
         <Container size="md">
-          {/* STEP 1: SCANNER CONTAINER (WIDER BROADER FRAME + SHUTTER CLICK) */}
+          {/* STEP 1: SCANNER CONTAINER */}
           {(flow.step === "SCAN_READY" ||
             flow.step === "CAMERA_RUNNING" ||
             flow.step === "ANALYSING") && (
@@ -360,7 +379,7 @@ export default function FaceAnalysisPage() {
                         className="w-full bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm"
                       >
                         <Camera className="w-5 h-5" />
-                        <span>Open Camera Frame</span>
+                        <span>Start Camera Scan</span>
                       </Button>
 
                       <div className="relative flex py-2 items-center">
@@ -414,7 +433,7 @@ export default function FaceAnalysisPage() {
                 )}
               </div>
 
-              {/* STOCK IMAGES GALLERY (4 Stock Images of Indian Faces & AI Scan on Mobile) */}
+              {/* STOCK IMAGES GALLERY */}
               <div className="space-y-3 pt-4">
                 <h3 className="font-display font-extrabold text-lg text-slate-900 text-center">
                   Trusted AI Face Diagnostic Technology
@@ -480,7 +499,7 @@ export default function FaceAnalysisPage() {
             </div>
           )}
 
-          {/* FACE NOT DETECTED ERROR SCREEN (ZERO SCORE PREVENTED) */}
+          {/* FACE NOT DETECTED ERROR SCREEN */}
           {flow.step === "FACE_NOT_DETECTED" && (
             <div className="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-rose-200 shadow-md space-y-6 text-center">
               <div className="w-14 h-14 bg-rose-50 border border-rose-200 rounded-full flex items-center justify-center mx-auto text-rose-600">
@@ -565,7 +584,8 @@ export default function FaceAnalysisPage() {
                         type="tel"
                         required
                         inputMode="tel"
-                        placeholder="98765 43210"
+                        maxLength={10}
+                        placeholder="9876543210"
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:border-[#0050FF] focus:bg-white focus:outline-none transition-colors"
