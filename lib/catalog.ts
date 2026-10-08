@@ -18,6 +18,12 @@ export function getProductBySlug(slug: string): Product | undefined {
   return sampleProducts.find((p) => p.slug === slug && p.status === "published");
 }
 
+export function getProduct(idOrSku: string): Product | undefined {
+  return sampleProducts.find(
+    (p) => (p.id === idOrSku || p.slug === idOrSku || (p.sku && p.sku === idOrSku)) && p.status === "published"
+  );
+}
+
 export function filterProducts(options: FilterOptions = {}): Product[] {
   let list = getProducts();
 

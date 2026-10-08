@@ -16,6 +16,7 @@ import { BRAND_NAME, siteConfig } from "@/config/site";
 import { fastDeliveryClaim } from "@/config/claims";
 import { trackEvent } from "@/lib/analytics";
 import { useCartStore } from "@/lib/store/cart";
+import { pickPersona, levelFor } from "@/config/personas";
 import {
   Sparkles,
   Camera,
