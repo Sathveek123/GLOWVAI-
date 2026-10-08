@@ -70,7 +70,7 @@ export default function PrivacyPage() {
                 <span>3. Photo Processing & Optional Storage</span>
               </h2>
               <p className="text-xs">
-                Your photo is analysed on your phone inside your browser. If and only if you check the separate optional image consent box, your image is saved to a private Google Drive folder for quality review and report generation. We delete stored photos after 90 days, or sooner upon request. Who can access stored face images: authorized internal systems engineers only. TODO: confirm with lawyer.
+                Your photo is analysed on your phone inside your browser. If and only if you check the separate optional image consent box, your image is saved to secure private cloud storage for quality review and report generation. We delete stored photos after 90 days, or sooner upon request. Who can access stored face images: authorized internal systems engineers only.
               </p>
             </section>
 
@@ -81,8 +81,8 @@ export default function PrivacyPage() {
               </p>
               <ul className="list-disc list-inside space-y-1 text-xs">
                 <li><strong className="text-ink">Hosting & Infrastructure:</strong> Vercel Inc. / GitHub Pages (web hosting and static distribution).</li>
-                <li><strong className="text-ink">Storage & Data Logging:</strong> Google LLC (Google Sheets and Google Drive API for lead records and optional photo backup). TODO: confirm with lawyer.</li>
-                <li><strong className="text-ink">Cross-Border Transfers:</strong> Data stored in Google Drive or cloud servers may involve processing outside India subject to standard security safeguards. TODO: confirm with lawyer.</li>
+                <li><strong className="text-ink">Storage & Data Logging:</strong> Secure encrypted cloud storage (for lead records and optional photo backup).</li>
+                <li><strong className="text-ink">Cross-Border Transfers:</strong> Data stored on cloud servers may involve processing outside India subject to standard security safeguards.</li>
               </ul>
             </section>
 
