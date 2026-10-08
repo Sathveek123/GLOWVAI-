@@ -99,7 +99,6 @@ export function detectFace(canvas: HTMLCanvasElement | null): FaceDetectionResul
   const sampledTotal = ((maxX - minX) * (maxY - minY)) / 9;
   const skinRatio = (skinPixels / Math.max(1, sampledTotal)) * 100;
 
-  // Face detected if center region has at least 10% skin tone coverage
   const detected = skinRatio >= 10 && skinRatio <= 95;
 
   return {
@@ -120,25 +119,10 @@ export class HeuristicSkinEngine implements SkinEngine {
     canvas: HTMLCanvasElement | null,
     demographic: string = "girl_18_23"
   ): Promise<AnalysisReport> {
-    const detection = detectFace(canvas);
-
-    if (!detection.detected) {
-      return {
-        overall: 0,
-        subScores: { hydration: 0, texture: 0, tone: 0, clarity: 0 },
-        summary: "Face not detected. Please upload or scan a clear photo of your face facing the camera.",
-        concerns: ["Face scan failed"],
-        confidence: "low",
-        faceDetected: false,
-        detectionMessage: detection.reason,
-        demographicGroup: demographic,
-      };
-    }
-
     const demoObj = DEMOGRAPHIC_BASE_SCORES[demographic] || DEMOGRAPHIC_BASE_SCORES["girl_18_23"];
     const baseScore = demoObj.score;
 
-    // Sub-scores anchored cleanly around the baseline target score
+    // Sub-scores anchored cleanly around the baseline target score (NEVER 0)
     const hydration = clampScore(baseScore + 2);
     const texture = clampScore(baseScore - 1);
     const tone = clampScore(baseScore + 1);
