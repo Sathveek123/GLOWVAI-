@@ -6,6 +6,7 @@ import { ShopByConcern } from "@/components/sections/ShopByConcern";
 import { WhyWeStarted } from "@/components/sections/WhyWeStarted";
 import { BrandValues } from "@/components/sections/BrandValues";
 import { QuickDeliveryExplainer } from "@/components/sections/QuickDeliveryExplainer";
+import { ReferralAndVendorSection } from "@/components/sections/ReferralAndVendorSection";
 import { TestimonialsGrid } from "@/components/sections/TestimonialsGrid";
 import { JournalTeaser } from "@/components/sections/JournalTeaser";
 import { FAQSection } from "@/components/sections/FAQSection";
@@ -32,25 +33,28 @@ export default async function HomePage() {
       {/* Section 5: Shop By Concern */}
       <ShopByConcern />
 
-      {/* Section 6: Why We Started (Founder Story) */}
+      {/* Section 6: Referral Program & Vendor Network */}
+      <ReferralAndVendorSection />
+
+      {/* Section 7: Why We Started (Founder Story) */}
       <WhyWeStarted />
 
-      {/* Section 7: Brand Values */}
+      {/* Section 8: Brand Values */}
       <BrandValues />
 
-      {/* Section 8: Quick Delivery Explainer */}
+      {/* Section 9: Quick Delivery Explainer */}
       <QuickDeliveryExplainer />
 
-      {/* Section 9: Testimonials & UGC Grid */}
+      {/* Section 10: Testimonials & UGC Grid */}
       <TestimonialsGrid />
 
-      {/* Section 10: Journal Teaser */}
+      {/* Section 11: Journal Teaser */}
       <JournalTeaser />
 
-      {/* Section 11: FAQ */}
+      {/* Section 12: FAQ */}
       <FAQSection />
 
-      {/* Section 12: Final CTA Banner & Newsletter */}
+      {/* Section 13: Final CTA Banner & Newsletter */}
       <FinalCTABanner />
     </>
   );

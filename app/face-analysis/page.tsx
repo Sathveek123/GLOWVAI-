@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { analyse, detectFace, DEMOGRAPHIC_BASE_SCORES, AnalysisReport } from "@/lib/analysis";
-import { getRecommendedProducts, EXCEL_DATABASE_PRODUCTS, ExcelProduct } from "@/lib/recommend";
+import { getRecommendedProducts, EXCEL_DATABASE_PRODUCTS } from "@/lib/recommend";
 import { formatPrice } from "@/lib/utils";
-import { leadFormSchema } from "@/lib/schemas";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { trackEvent } from "@/lib/analytics";
 import { useCartStore } from "@/lib/store/cart";
@@ -27,10 +26,8 @@ import {
   ShieldCheck,
   Upload,
   ExternalLink,
-  Info,
   Check,
   MapPin,
-  FileText,
   User,
   Phone,
   Mail,
@@ -39,8 +36,7 @@ import {
 
 type FlowStep =
   | "SCAN_READY"
-  | "CAMERA_STARTING"
-  | "SCANNING"
+  | "CAMERA_RUNNING"
   | "ANALYSING"
   | "FACE_NOT_DETECTED"
   | "FORM_ENTRY"
@@ -52,7 +48,6 @@ interface FlowContext {
   sessionId: string;
   report: AnalysisReport | null;
   capturedImage: string | null;
-  feedbackMessage: string;
   errorMessage: string;
   isSubmittingForm: boolean;
 }
@@ -60,11 +55,9 @@ interface FlowContext {
 type FlowAction =
   | { type: "START_CAMERA" }
   | { type: "CAMERA_DENIED" }
-  | { type: "UPDATE_FEEDBACK"; message: string }
   | { type: "ANALYSIS_START" }
   | { type: "FACE_NOT_DETECTED"; message: string }
   | { type: "FACE_DETECTED"; capturedImage: string }
-  | { type: "ANALYSIS_SUCCESS"; report: AnalysisReport; sessionId: string }
   | { type: "FORM_SUBMIT_START" }
   | { type: "FORM_SUBMIT_SUCCESS"; report: AnalysisReport; sessionId: string }
   | { type: "RETAKE" };
@@ -72,28 +65,23 @@ type FlowAction =
 function flowReducer(state: FlowContext, action: FlowAction): FlowContext {
   switch (action.type) {
     case "START_CAMERA":
-      return { ...state, step: "CAMERA_STARTING", feedbackMessage: "Starting camera..." };
+      return { ...state, step: "CAMERA_RUNNING" };
     case "CAMERA_DENIED":
-      return { ...state, step: "CAMERA_DENIED", feedbackMessage: "" };
-    case "UPDATE_FEEDBACK":
-      return { ...state, step: "SCANNING", feedbackMessage: action.message };
+      return { ...state, step: "CAMERA_DENIED" };
     case "ANALYSIS_START":
-      return { ...state, step: "ANALYSING", feedbackMessage: "Detecting facial features..." };
+      return { ...state, step: "ANALYSING" };
     case "FACE_NOT_DETECTED":
       return {
         ...state,
         step: "FACE_NOT_DETECTED",
-        errorMessage: action.message || "Face not detected. Please upload or scan a clear photo facing the camera.",
+        errorMessage: action.message || "Face not detected. Please capture or upload a photo with your face clearly in view.",
       };
     case "FACE_DETECTED":
       return {
         ...state,
         step: "FORM_ENTRY",
         capturedImage: action.capturedImage,
-        feedbackMessage: "Face detected! Please enter your details to view report.",
       };
-    case "ANALYSIS_SUCCESS":
-      return { ...state, step: "RESULT", report: action.report, sessionId: action.sessionId };
     case "FORM_SUBMIT_START":
       return { ...state, isSubmittingForm: true };
     case "FORM_SUBMIT_SUCCESS":
@@ -110,7 +98,6 @@ function flowReducer(state: FlowContext, action: FlowAction): FlowContext {
         step: "SCAN_READY",
         report: null,
         capturedImage: null,
-        feedbackMessage: "",
         errorMessage: "",
       };
     default:
@@ -124,7 +111,6 @@ export default function FaceAnalysisPage() {
     sessionId: "",
     report: null,
     capturedImage: null,
-    feedbackMessage: "Position your face clearly inside the circle",
     errorMessage: "",
     isSubmittingForm: false,
   });
@@ -135,7 +121,6 @@ export default function FaceAnalysisPage() {
     email: "",
     demographic: "girl_18_23",
     skinConcern: "hydration",
-    website: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -165,45 +150,39 @@ export default function FaceAnalysisPage() {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 640 } },
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
       });
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
       }
-
-      dispatch({ type: "UPDATE_FEEDBACK", message: "Keep face steady in good natural lighting..." });
-
-      setTimeout(() => {
-        dispatch({ type: "UPDATE_FEEDBACK", message: "Analyzing facial frame..." });
-        setTimeout(processFrameCapture, 1500);
-      }, 2000);
     } catch {
       dispatch({ type: "CAMERA_DENIED" });
       trackEvent({ name: "scan_camera_denied" });
     }
   };
 
-  const processFrameCapture = async () => {
+  // Manual shutter click handler
+  const handleShutterClick = () => {
     dispatch({ type: "ANALYSIS_START" });
 
     const canvas = document.createElement("canvas");
-    canvas.width = 400;
-    canvas.height = 400;
+    canvas.width = 640;
+    canvas.height = 480;
     const ctx = canvas.getContext("2d");
 
     if (videoRef.current && ctx) {
-      ctx.drawImage(videoRef.current, 0, 0, 400, 400);
+      ctx.drawImage(videoRef.current, 0, 0, 640, 480);
     }
 
-    // Stop video stream
+    // Stop live stream
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach((track) => track.stop());
     }
 
-    // Face detection check
+    // Check face detection
     const detection = detectFace(canvas);
 
     if (!detection.detected) {
@@ -224,14 +203,14 @@ export default function FaceAnalysisPage() {
     const img = new window.Image();
     const url = URL.createObjectURL(file);
 
-    img.onload = async () => {
+    img.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = 400;
-      canvas.height = 400;
+      canvas.width = 640;
+      canvas.height = 480;
       const ctx = canvas.getContext("2d");
 
       if (ctx) {
-        ctx.drawImage(img, 0, 0, 400, 400);
+        ctx.drawImage(img, 0, 0, 640, 480);
       }
 
       const detection = detectFace(canvas);
@@ -254,7 +233,7 @@ export default function FaceAnalysisPage() {
     setErrors({});
 
     const errMap: Record<string, string> = {};
-    if (!form.name.trim()) errMap.name = "Please enter your name";
+    if (!form.name.trim()) errMap.name = "Please enter your full name";
     if (!form.phone.trim() || form.phone.trim().length < 10) {
       errMap.phone = "Please enter a valid 10-digit mobile number";
     }
@@ -265,14 +244,12 @@ export default function FaceAnalysisPage() {
     }
 
     dispatch({ type: "FORM_SUBMIT_START" });
-    trackEvent({ name: "scan_form_submit", demographic: form.demographic });
 
-    // Generate score strictly matching user's selected demographic group rule
     const dummyCanvas = document.createElement("canvas");
     const report = await analyse(dummyCanvas, form.demographic);
     const sessionId = `scan-${Date.now()}`;
 
-    // Submit lead data to Google Apps Script
+    // Post to Google Apps Script backend
     const APPS_SCRIPT_URL =
       "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
 
@@ -293,7 +270,6 @@ export default function FaceAnalysisPage() {
             overall_score: report.overall,
             sub_scores: report.subScores,
             location: "Vijayawada, AP",
-            browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
           },
         }),
         mode: "no-cors",
@@ -304,23 +280,22 @@ export default function FaceAnalysisPage() {
   };
 
   const recommendedProducts = EXCEL_DATABASE_PRODUCTS.slice(0, 5);
-  const currentCity = siteConfig.defaultCity; // "Vijayawada"
 
   return (
-    <div className="bg-white text-slate-900 min-h-screen flex flex-col justify-between selection:bg-[#0050FF] selection:text-white">
+    <div className="bg-white text-slate-900 font-sans min-h-screen flex flex-col justify-between selection:bg-[#0050FF] selection:text-white">
       <CartDrawer />
 
-      {/* Ticker Bar */}
-      <div className="bg-[#0050FF] text-white text-xs font-semibold py-2 px-4 text-center flex items-center justify-center gap-2">
+      {/* Top Vijayawada Announcement Bar */}
+      <div className="bg-[#0050FF] text-white text-xs font-bold py-2 px-4 text-center flex items-center justify-center gap-2">
         <MapPin className="w-3.5 h-3.5" />
-        <span>Delivering skincare routine orders directly to Vijayawada • Free Instant Face Analysis</span>
+        <span>Delivering GLOW VAI routine orders directly to Vijayawada • Free Instant AI Face Scan</span>
       </div>
 
       {/* Header */}
       <header className="border-b border-slate-200 py-3.5 bg-white sticky top-0 z-40">
         <Container>
           <div className="flex items-center justify-between">
-            <Link href="/" className="font-display font-extrabold text-xl text-slate-900 flex items-center gap-2.5">
+            <Link href="/" className="font-display font-black text-xl text-slate-900 flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-[#0050FF] text-white flex items-center justify-center font-black text-base shadow-sm">
                 G
               </div>
@@ -344,78 +319,53 @@ export default function FaceAnalysisPage() {
       {/* Main Content Area */}
       <main className="py-8 sm:py-12 flex-1 bg-slate-50/50">
         <Container size="md">
-          {/* STEP 1: CAMERA / SCAN SELECTION */}
+          {/* STEP 1: SCANNER CONTAINER (WIDER BROADER FRAME + SHUTTER CLICK) */}
           {(flow.step === "SCAN_READY" ||
-            flow.step === "CAMERA_STARTING" ||
-            flow.step === "SCANNING" ||
+            flow.step === "CAMERA_RUNNING" ||
             flow.step === "ANALYSING") && (
-            <div className="max-w-xl mx-auto space-y-6">
+            <div className="max-w-3xl mx-auto space-y-8">
               <div className="text-center space-y-3">
-                <Badge variant="brand" size="md" className="bg-[#0050FF]/10 text-[#0050FF] border-[#0050FF]/20 px-3 py-1 font-bold">
-                  Step 1 of 3: Facial Image Scan
+                <Badge variant="brand" size="md" className="bg-[#0050FF]/10 text-[#0050FF] border-[#0050FF]/20 px-3.5 py-1 font-bold">
+                  Step 1 of 3: AI Face Scan
                 </Badge>
                 <h1 className="font-display font-black text-3xl sm:text-4xl text-slate-900 leading-tight">
-                  Free AI <span className="text-[#0050FF]">Face Analysis</span>
+                  Instant <span className="font-accent italic text-[#0050FF]">Skin Diagnostic</span> Scan
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
-                  Take a 5-second photo scan to check skin health parameters & get routine recommendations.
+                <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
+                  Center your face in good natural light and click the shutter button below for a 5-second skin check.
                 </p>
               </div>
 
-              {/* Scan Steps Visual Graphic Banner */}
-              <div className="grid grid-cols-3 gap-2 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
-                <div className="space-y-1">
-                  <div className="w-6 h-6 rounded-full bg-[#0050FF] text-white font-bold text-xs flex items-center justify-center mx-auto">
-                    1
-                  </div>
-                  <p className="text-[11px] font-bold text-slate-800">Scan Face</p>
-                  <p className="text-[10px] text-slate-500">Live or photo</p>
-                </div>
-                <div className="space-y-1">
-                  <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center mx-auto">
-                    2
-                  </div>
-                  <p className="text-[11px] font-bold text-slate-800">Enter Details</p>
-                  <p className="text-[10px] text-slate-500">Select group</p>
-                </div>
-                <div className="space-y-1">
-                  <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center mx-auto">
-                    3
-                  </div>
-                  <p className="text-[11px] font-bold text-slate-800">Get Report</p>
-                  <p className="text-[10px] text-slate-500">View routine</p>
-                </div>
-              </div>
-
+              {/* Wider Broader Camera Frame */}
               <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6 text-center">
                 {flow.step === "SCAN_READY" ? (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-3 text-left">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
                       <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
                         <Sun className="w-4 h-4 text-amber-500" />
-                        <h4 className="font-bold text-xs text-slate-900">Good Lighting</h4>
-                        <p className="text-[11px] text-slate-600">Face a natural light source for clear detection.</p>
+                        <h4 className="font-display font-bold text-xs text-slate-900">Natural Light</h4>
+                        <p className="text-[11px] text-slate-600">Face window for clear illumination.</p>
                       </div>
                       <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        <h4 className="font-bold text-xs text-slate-900">Centered Face</h4>
-                        <p className="text-[11px] text-slate-600">Keep face inside frame without obstruction.</p>
+                        <h4 className="font-display font-bold text-xs text-slate-900">Centered Face</h4>
+                        <p className="text-[11px] text-slate-600">Keep face inside scanner oval.</p>
                       </div>
                       <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
                         <Lock className="w-4 h-4 text-[#0050FF]" />
-                        <h4 className="font-bold text-xs text-slate-900">100% Private</h4>
-                        <p className="text-[11px] text-slate-600">Processed securely inside browser.</p>
+                        <h4 className="font-display font-bold text-xs text-slate-900">100% Private</h4>
+                        <p className="text-[11px] text-slate-600">Analysed strictly in browser.</p>
                       </div>
                       <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
                         <ShieldCheck className="w-4 h-4 text-purple-600" />
-                        <h4 className="font-bold text-xs text-slate-900">Instant Diagnostic</h4>
-                        <p className="text-[11px] text-slate-600">Matches Minimalist & Derma Co items.</p>
+                        <h4 className="font-display font-bold text-xs text-slate-900">Instant Match</h4>
+                        <p className="text-[11px] text-slate-600">Matches Minimalist & Derma Co.</p>
                       </div>
                     </div>
 
                     {inAppBrowser && (
                       <div className="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-xs text-amber-900 space-y-2">
-                        <p>In-app browser detected. For best camera performance, open in Chrome or Safari:</p>
+                        <p>In-app browser detected. Open in Chrome or Safari for best camera quality:</p>
                         <button
                           type="button"
                           onClick={() => {
@@ -439,7 +389,7 @@ export default function FaceAnalysisPage() {
                         className="w-full bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm"
                       >
                         <Camera className="w-5 h-5" />
-                        <span>Start Camera Scan</span>
+                        <span>Open Camera Frame</span>
                       </Button>
 
                       <div className="relative flex py-2 items-center">
@@ -456,8 +406,9 @@ export default function FaceAnalysisPage() {
                     </div>
                   </div>
                 ) : (
+                  /* Broader Wider Camera Frame + Manual Shutter Button */
                   <div className="space-y-4">
-                    <div className="relative w-full aspect-square max-w-[320px] mx-auto rounded-3xl overflow-hidden bg-slate-900 border-4 border-[#0050FF] flex items-center justify-center shadow-md">
+                    <div className="relative w-full h-80 sm:h-96 rounded-3xl overflow-hidden bg-slate-900 border-4 border-[#0050FF] shadow-lg flex items-center justify-center">
                       <video
                         ref={videoRef}
                         autoPlay
@@ -465,31 +416,100 @@ export default function FaceAnalysisPage() {
                         muted
                         className="w-full h-full object-cover scale-x-[-1]"
                       />
-                      <div className="absolute inset-8 border-2 border-dashed border-white/80 rounded-full pointer-events-none animate-pulse" />
+                      {/* Vertical Portrait Head/Face Alignment Oval Guide */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 h-60 sm:h-72 rounded-[50%] border-2 border-dashed border-white/95 pointer-events-none flex flex-col items-center justify-center gap-1 shadow-2xl">
+                        <span className="text-[10px] text-white/90 font-bold bg-slate-900/80 px-2.5 py-0.5 rounded-full border border-white/30 backdrop-blur-sm">
+                          Align Face Vertical
+                        </span>
+                      </div>
+
+                      {/* Manual Shutter Button Bar Overlay */}
+                      <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+                        <button
+                          type="button"
+                          onClick={handleShutterClick}
+                          className="bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold text-xs px-6 py-3 rounded-full border-2 border-white shadow-xl flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
+                        >
+                          <Camera className="w-4 h-4 text-white" />
+                          <span>📷 Click Shutter / Take Photo</span>
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="bg-[#0050FF]/10 px-4 py-2 rounded-full text-xs font-bold text-[#0050FF] inline-flex items-center gap-2 border border-[#0050FF]/20">
-                      <Sparkles className="w-3.5 h-3.5 animate-spin" />
-                      <span>{flow.feedbackMessage}</span>
-                    </div>
-
-                    <div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={processFrameCapture}
-                        className="border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold"
-                      >
-                        Capture & Detect Frame
-                      </Button>
+                    <div className="text-xs font-semibold text-slate-500">
+                      Center your face in the oval frame and press the blue shutter button to capture photo.
                     </div>
                   </div>
                 )}
               </div>
+
+              {/* STOCK IMAGES GALLERY (4 Stock Images of Indian Faces & AI Scan on Mobile) */}
+              <div className="space-y-3 pt-4">
+                <h3 className="font-display font-extrabold text-lg text-slate-900 text-center">
+                  Trusted AI Face Diagnostic Technology
+                </h3>
+                <p className="text-xs text-slate-500 text-center max-w-md mx-auto">
+                  Over 18,000+ Indian men and women analyze their skin parameters using mobile scan tech.
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                      <Image
+                        src="/images/face-scan/indian_female.png"
+                        alt="Indian woman AI face scan on mobile"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="font-display font-bold text-[11px] text-slate-900">Female AI Scan</p>
+                    <p className="text-[10px] text-slate-500">Live skin check</p>
+                  </div>
+
+                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                      <Image
+                        src="/images/face-scan/indian_male.png"
+                        alt="Indian man AI face scan on mobile"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="font-display font-bold text-[11px] text-slate-900">Male AI Scan</p>
+                    <p className="text-[10px] text-slate-500">Texture reading</p>
+                  </div>
+
+                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                      <Image
+                        src="/images/face-scan/skin_grid.png"
+                        alt="AI skin diagnostic moisture grid"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="font-display font-bold text-[11px] text-slate-900">Diagnostic Grid</p>
+                    <p className="text-[10px] text-slate-500">Pixel sampling</p>
+                  </div>
+
+                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                      <Image
+                        src="/images/hero/product.png"
+                        alt="Skincare routine match"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="font-display font-bold text-[11px] text-slate-900">Routine Match</p>
+                    <p className="text-[10px] text-slate-500">Vijayawada delivery</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* FACE NOT DETECTED ERROR SCREEN */}
+          {/* FACE NOT DETECTED ERROR SCREEN (ZERO SCORE PREVENTED) */}
           {flow.step === "FACE_NOT_DETECTED" && (
             <div className="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-rose-200 shadow-md space-y-6 text-center">
               <div className="w-14 h-14 bg-rose-50 border border-rose-200 rounded-full flex items-center justify-center mx-auto text-rose-600">
@@ -498,37 +518,39 @@ export default function FaceAnalysisPage() {
 
               <div className="space-y-2">
                 <Badge variant="brand" className="bg-rose-100 text-rose-700 border-rose-200 font-bold px-3 py-0.5">
-                  Face Not Detected
+                  Face Not Found Error
                 </Badge>
-                <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-extrabold text-slate-900">
-                  No Face Found in Photo
+                <h2 ref={headingRef} tabIndex={-1} className="font-display font-black text-2xl text-slate-900">
+                  Face Not Detected
                 </h2>
-                <p className="text-xs text-slate-600 leading-relaxed">{flow.errorMessage}</p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {flow.errorMessage || "We could not detect a human face in the image frame. No score will be generated."}
+                </p>
               </div>
 
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-2 text-xs">
-                <p className="font-bold text-slate-800">For accurate face detection:</p>
+                <p className="font-display font-bold text-slate-900">To fix this error:</p>
                 <ul className="list-disc pl-4 text-slate-600 space-y-1">
-                  <li>Ensure your face is centered and fully visible</li>
-                  <li>Avoid dark rooms or extreme backlighting</li>
-                  <li>Do not cover face with hand, hair, or objects</li>
+                  <li>Ensure your face is centered inside the camera frame</li>
+                  <li>Stand facing natural window light</li>
+                  <li>Click the blue shutter button when your face is clearly visible</li>
                 </ul>
               </div>
 
-              <div className="space-y-2">
+              <div>
                 <Button
                   variant="primary"
                   size="md"
                   onClick={() => dispatch({ type: "RETAKE" })}
                   className="w-full bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold text-xs py-3.5 rounded-xl"
                 >
-                  Retake / Scan Photo Again
+                  Try Scan Again
                 </Button>
               </div>
             </div>
           )}
 
-          {/* STEP 2: USER DETAILS FORM (MANDATORY BEFORE REPORT) */}
+          {/* STEP 2: USER DETAILS FORM */}
           {flow.step === "FORM_ENTRY" && (
             <div className="max-w-xl mx-auto space-y-6">
               <div className="text-center space-y-2">
@@ -539,7 +561,7 @@ export default function FaceAnalysisPage() {
                   Enter Details to Unlock Report
                 </h2>
                 <p className="text-xs text-slate-600 max-w-md mx-auto">
-                  Face detected successfully! Please provide your information to view your skin diagnostic score & custom recommendations.
+                  Face detected! Select your demographic category to calculate your target skin score and routine.
                 </p>
               </div>
 
@@ -562,7 +584,7 @@ export default function FaceAnalysisPage() {
 
                   <div className="space-y-1">
                     <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5 text-[#0050FF]" /> Phone / WhatsApp Number *
+                      <Phone className="w-3.5 h-3.5 text-[#0050FF]" /> Mobile Number (+91) *
                     </label>
                     <div className="flex gap-2">
                       <span className="px-3.5 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 flex items-center justify-center">
@@ -619,10 +641,10 @@ export default function FaceAnalysisPage() {
                       className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 font-semibold focus:border-[#0050FF] focus:bg-white focus:outline-none transition-colors"
                     >
                       <option value="hydration">Dehydration & Dryness</option>
-                      <option value="acne">Active Acne & Oiliness</option>
+                      <option value="acne">Active Acne & Excess Oil</option>
                       <option value="pigmentation">Dark Spots & Sun Pigmentation</option>
-                      <option value="aging">Fine Lines & Elasticity</option>
-                      <option value="sensitive">Redness & Sensitive Barrier</option>
+                      <option value="aging">Fine Lines & Barrier Loss</option>
+                      <option value="sensitive">Redness & Sensitive Skin</option>
                     </select>
                   </div>
 
@@ -643,18 +665,17 @@ export default function FaceAnalysisPage() {
             </div>
           )}
 
-          {/* STEP 3: RESULTS & PRODUCT RECOMMENDATIONS */}
+          {/* STEP 3: RESULTS REPORT */}
           {flow.step === "RESULT" && flow.report && (
             <div className="max-w-3xl mx-auto space-y-8">
-              {/* Score Card */}
               <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-6">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                   <div>
                     <span className="text-[11px] font-bold text-[#0050FF] uppercase tracking-wider block">
                       Skin Diagnostic Summary
                     </span>
-                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-black text-slate-900">
-                      Overall Skin Health Report
+                    <h2 ref={headingRef} tabIndex={-1} className="font-display font-black text-2xl text-slate-900">
+                      Skin Diagnostic Report
                     </h2>
                   </div>
                   <button
@@ -669,7 +690,7 @@ export default function FaceAnalysisPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
                   <div className="sm:col-span-5 bg-slate-50 p-6 rounded-3xl text-center space-y-2 border border-slate-200">
                     <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                      Skin Score
+                      Overall Score
                     </span>
                     <div className="font-display font-black text-6xl text-[#0050FF]">
                       {flow.report.overall}
@@ -707,9 +728,8 @@ export default function FaceAnalysisPage() {
                   <p className="font-medium">{flow.report.summary}</p>
                 </div>
 
-                {/* WhatsApp Share Button */}
                 <div className="flex items-center justify-between bg-slate-100 p-3.5 rounded-2xl border border-slate-200">
-                  <span className="text-xs font-bold text-slate-700">Share your skin score:</span>
+                  <span className="text-xs font-bold text-slate-700">Share your skin report:</span>
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
                       `I scored ${flow.report.overall}/100 on GLOW VAI Skin Analyzer! Check yours now: https://glowvai.in/face-analysis`
@@ -729,7 +749,7 @@ export default function FaceAnalysisPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-display font-black text-xl text-slate-900">Recommended Skincare Routine</h3>
-                    <p className="text-xs text-slate-500">Authorized items from Minimalist & The Derma Co</p>
+                    <p className="text-xs text-slate-500">Minimalist & The Derma Co Authorized Routine</p>
                   </div>
                   <span className="text-[11px] font-bold text-[#0050FF] bg-[#0050FF]/10 px-2.5 py-1 rounded-full border border-[#0050FF]/20">
                     5 Products Matched
@@ -749,7 +769,7 @@ export default function FaceAnalysisPage() {
                           </span>
                           <span className="text-[10px] font-semibold text-slate-500">{prod.category}</span>
                         </div>
-                        <h4 className="font-bold text-xs text-slate-900 leading-snug">{prod.name}</h4>
+                        <h4 className="font-display font-bold text-xs text-slate-900 leading-snug">{prod.name}</h4>
                         <p className="text-[11px] text-slate-600 leading-relaxed">{prod.benefit}</p>
                         <div className="text-[10px] text-slate-700 font-semibold bg-slate-50 p-2 rounded-xl border border-slate-200">
                           Active: {prod.keyActives}
