@@ -1,12 +1,12 @@
-# Checkout plan (not built yet)
+# Ordering: WhatsApp Now, Payments Later
 
-- Gateway: Razorpay (or similar). Amounts in paise.
-- The browser sends product ids and quantities only. The server recomputes price, MRP, stock,
-  and pincode serviceability.
-- The server creates the order with an idempotency key. The client pays. The server verifies
-  the HMAC signature. A webhook confirms asynchronously with a raw-body signature check.
-- Orders live in a real database, not Sheets. Reserve inventory at order creation, release on failure.
-- GST invoice: HSN code, CGST/SGST or IGST split, GSTIN.
-- COD: separate rules (limits, confirmation call or OTP).
-- Refunds: through the gateway API, logged with a reason.
-- Until built, checkoutEnabled is false and the cart offers waitlist or WhatsApp ordering.
+Orders go through WhatsApp with reference `GV-YYMMDD-XXXX`.
+`/api/order-intent` logs the basket (prices taken strictly from the catalogue layer, never the browser).
+
+## Current Active Flow: WhatsApp Checkout
+1. Product page / Cart drawer CTA: **"Order on WhatsApp"**
+2. Order builder (`lib/whatsapp.ts`) constructs `wa.me` URL with reference number and line items.
+3. Server receives non-blocking POST to `/api/order-intent` to store the order intent in the `OrderIntents` tab.
+
+## Future Roadmap: Razorpay Online Payment Integration
+Razorpay integration is preserved as a future phase roadmap for when online checkout opens across India.
