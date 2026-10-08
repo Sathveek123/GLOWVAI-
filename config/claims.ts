@@ -44,23 +44,23 @@ export const trustStripClaimsList = Object.values(claims).map((c) => ({
 
 export const brandValuesClaims = {
   honestClaims: {
-    title: "Honest Formulas",
-    text: "No misleading claims or invented ratings. Every ingredient has a clear purpose.",
+    title: "Honest Picks",
+    text: "We only stock brands we would use ourselves, and we show the label ingredients plainly.",
     verified: true,
   },
   privacyFirst: {
     title: "Privacy First",
-    text: "On-device frame processing. Photos stored in private Drive only with explicit consent.",
+    text: "Your photo is analysed on your phone. Storing it is optional.",
     verified: true,
   },
   pricedForRealLife: {
     title: "Priced for Real Life",
-    text: "Premium ingredients formulated for everyday budgets, not luxury markups.",
+    text: "Prices match the brand MRP or lower.",
     verified: true,
   },
   madeForIndianSkin: {
-    title: "Made for Indian Climate",
-    text: "Lightweight gel-creams designed specifically for humidity and local barrier needs.",
+    title: "Authorized Stock",
+    text: "Fresh, genuine products directly from Minimalist & The Derma Co.",
     verified: true,
   },
 };

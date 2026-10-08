@@ -108,8 +108,8 @@ export default function OurStoryPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent flex items-end p-6 sm:p-8 text-white">
             <div>
-              <span className="text-xs font-bold text-yellow uppercase tracking-widest block mb-1">Formulated in Andhra Pradesh</span>
-              <p className="font-display text-xl sm:text-2xl font-bold">Smart skincare technology meets honest ingredients.</p>
+              <span className="text-xs font-bold text-yellow uppercase tracking-widest block mb-1">Authorized Minimalist & The Derma Co Retailer</span>
+              <p className="font-display text-xl sm:text-2xl font-bold">Smart AI face checks meet trusted, science-backed skincare.</p>
             </div>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default function OurStoryPage() {
           <div className="lg:col-span-5 bg-skymist/40 p-8 rounded-3xl border-l-4 border-coral space-y-3">
             <div className="w-12 h-[2px] bg-coral rounded-full mb-2" />
             <blockquote className="font-display text-xl font-bold text-ink leading-snug italic">
-              &ldquo;The skincare aisle shouldn&apos;t feel like a guessing game.&rdquo;
+              &ldquo;Getting clear skin shouldn&apos;t require a chemistry degree or luxury prices.&rdquo;
             </blockquote>
           </div>
           <div className="lg:col-span-7 space-y-4">
@@ -187,7 +187,7 @@ export default function OurStoryPage() {
           <div className="bg-skymist/40 p-4 rounded-2xl border border-ink/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-muted">
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-brand shrink-0" />
-              <span className="font-semibold text-ink">Privacy guarantee: Your photo stays on your phone and is not stored.</span>
+              <span className="font-semibold text-ink">Privacy guarantee: Your photo is analysed on your phone. Storing it is optional.</span>
             </div>
             <span className="italic text-[11px] text-ink-muted">{storyData.cosmeticNote}</span>
           </div>
