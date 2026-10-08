@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /journal
 
-Sitemap: http://localhost:3000/sitemap.xml
+Sitemap: https://glowvai.in/sitemap.xml
