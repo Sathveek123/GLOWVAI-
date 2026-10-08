@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Product } from "@/config/products";
 import { useCartStore } from "@/lib/store/cart";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getAssetPath } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import { computeDiscountPercent } from "@/lib/catalog";
 import { Button } from "@/components/ui/Button";
@@ -34,7 +34,7 @@ export function ProductBuyBox({ product }: ProductBuyBoxProps) {
       size: selectedSize,
       price: activePrice,
       mrp: activeMrp,
-      image: product.images[0] || "/images/hero/product.png",
+      image: getAssetPath(product.images[0] || "/images/hero/product.png"),
       quantity,
     });
     setIsAdded(true);

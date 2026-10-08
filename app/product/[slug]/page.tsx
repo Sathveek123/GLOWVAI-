@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ProductBuyBox } from "@/components/product/ProductBuyBox";
 import { getProducts, getProductBySlug, getRelatedProducts, computeDiscountPercent } from "@/lib/catalog";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getAssetPath } from "@/lib/utils";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { testimonials } from "@/config/testimonials";
 import { Camera, Lock, ShieldCheck, MapPin, CheckCircle2, ChevronRight } from "lucide-react";
@@ -107,7 +107,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           <div className="lg:col-span-7 space-y-4">
             <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden bg-skymist border border-ink/10 shadow-lg">
               <Image
-                src={product.images[0] || "/images/hero/product.png"}
+                src={getAssetPath(product.images[0] || "/images/hero/product.png")}
                 alt={product.name}
                 fill
                 priority
@@ -129,7 +129,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                     key={idx}
                     className="relative w-20 h-20 rounded-2xl overflow-hidden bg-skymist border-2 border-brand shrink-0 cursor-pointer"
                   >
-                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill className="object-cover" />
+                    <Image src={getAssetPath(img)} alt={`${product.name} view ${idx + 1}`} fill className="object-cover" />
                   </div>
                 ))}
               </div>
@@ -231,7 +231,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               {related.map((rel) => (
                 <div key={rel.id} className="p-4 rounded-3xl border border-ink/10 bg-white space-y-3 flex flex-col justify-between">
                   <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-skymist border border-ink/10">
-                    <Image src={rel.images[0] || "/images/hero/product.png"} alt={rel.name} fill className="object-cover" />
+                    <Image src={getAssetPath(rel.images[0] || "/images/hero/product.png")} alt={rel.name} fill className="object-cover" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-ink line-clamp-1">{rel.name}</h3>

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Rating } from "@/components/ui/Rating";
 import { Accent } from "@/components/ui/Accent";
 import { bestsellerProducts } from "@/config/content";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getAssetPath } from "@/lib/utils";
 import { useCartStore } from "@/lib/store";
 import { ShoppingBag, ArrowRight, Check, Zap } from "lucide-react";
 
@@ -67,7 +67,7 @@ export function Bestsellers() {
 
               <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-white border border-brand/10">
                 <Image
-                  src={featuredProduct.image}
+                  src={getAssetPath(featuredProduct.image)}
                   alt={featuredProduct.altText}
                   fill
                   sizes="(max-width: 768px) 100vw, 500px"
@@ -148,7 +148,7 @@ export function Bestsellers() {
                   <div>
                     <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-skymist/30 border border-ink/5">
                       <Image
-                        src={product.image}
+                        src={getAssetPath(product.image)}
                         alt={product.altText}
                         fill
                         sizes="(max-width: 768px) 100vw, 300px"

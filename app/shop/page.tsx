@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ShopUnlockGate } from "@/components/shop/ShopUnlockGate";
 import { filterProducts, computeDiscountPercent } from "@/lib/catalog";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getAssetPath } from "@/lib/utils";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { Camera, Sparkles, Filter, X, ShoppingBag } from "lucide-react";
 
@@ -264,7 +264,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                           <Link href={`/product/${prod.slug}`} className="space-y-3 block">
                             <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-skymist border border-ink/10">
                               <Image
-                                src={prod.images[0] || "/images/hero/product.png"}
+                                src={getAssetPath(prod.images[0] || "/images/hero/product.png")}
                                 alt={prod.name}
                                 fill
                                 sizes="(max-width: 768px) 50vw, 33vw"
