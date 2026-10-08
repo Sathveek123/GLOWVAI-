@@ -1,26 +1,27 @@
-# GLOW VAI - Quick-Commerce Skincare Platform
+# GLOW VAI — Quick-Commerce Skincare Retail Platform
 
-GLOW VAI is an editorial, high-performance quick-commerce skincare platform built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. The platform combines on-device facial skin analysis with rapid delivery across Indian pin-codes.
+GLOW VAI is an editorial, high-performance quick-commerce skincare retail platform built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. The platform combines on-device facial skin analysis with instant WhatsApp ordering for authorized products from **Minimalist** and **The Derma Co**.
 
 ---
 
 ## Key Features
 
-- **On-Device AI Skin Analysis**: Biometric facial analysis evaluated locally within the browser canvas. Face photos are stored in a private Google Drive folder only when separate image consent is explicitly granted.
-- **Dynamic Quick-Commerce Delivery**: Real-time pin-code eligibility checker (`110001`, `400001`, `560001`, `500001`, `600001`) with live delivery counters.
-- **Honest Claims Engine**: ASCI and DPDP Act compliant copy engine. Dynamic claim verification system in [config/claims.ts](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/config/claims.ts).
-- **Google Sheets & Drive Webhook**: Automated payload sync to Google Apps Script for real-time lead tracking, private Drive image uploads, waitlist, newsletter, contact, and feedback.
-- **Real Founders Editorial**: Authentic founder story section featuring original portraits of Sardhar (Founder & Vision), Rahimath (Market Explorer), and Nalla Satvik (Lead Technologist).
-- **Zero Em-Dash & Strict Copy Rules**: Handcrafted copy free of generic AI buzzwords (`unlock`, `elevate`, `seamless`, `revolutionize`, `empower`).
+- **Retail Pivot Catalog**: Stocking authorized products strictly from **Minimalist** and **The Derma Co** across 4 categories: Face Serums, Face Washes, Sunscreens, and Moisturizers, sourced from `Glowvai_Product_Recommendation_Database.xlsx`.
+- **Order on WhatsApp**: Instant checkout flow creating structured WhatsApp messages (`GV-YYMMDD-XXXX`) and logging intent data server-side via `/api/order-intent`.
+- **Scan-Then-Lead Data Collection**: Face scan happens first on-device. Results are displayed immediately, followed by an optional lead form to save reports and claim 15% discount coupons.
+- **Gen Z Gamified Glow Card**: Persona archetypes (*Dew Drop*, *Smooth Operator*, *Even Steven*, *Clear Skies*, *Balanced Boss*), level bands 1–5 (*Fresh Start* to *Radiant*), and 4-question habit quiz fallback for Event Mode.
+- **On-Device AI Skin Analysis**: Pixel luminance sampled locally within the browser canvas ($0.299R + 0.587G + 0.114B$), mapped to scores 23–92 with small random variation ($\pm 3$).
+- **Strict Compliance & Privacy**: DPDP Act compliant privacy policy. Photos are processed in-browser. Optional private cloud storage with explicit consent (90-day retention).
+- **Google Sheets Webhook Sync**: Automated payload sync to Google Apps Script (`Leads`, `OrderIntents`, `Waitlist`, `Newsletter`, `Contact`, `Feedback`, `DataRequests`).
 
 ---
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router)
+- **Framework**: Next.js 16 (App Router with Turbopack)
 - **Language**: TypeScript 5.x
-- **Styling**: Tailwind CSS v3 with Electric Blue (`#0050FF`), Coral (`#FF6B57`), Butter Yellow (`#FFD84D`), Sky Mist (`#E6EEFF`), and Ink (`#0B1220`).
-- **State Management**: React Context & Custom Storage Stores
+- **Styling**: Tailwind CSS v3 with Electric Blue (`#0050FF`), Coral (`#FF6B57`), Butter Yellow (`#FFD84D`), Sky Mist (`#E6EEFF`), and Ink (`#0F172A`).
+- **State Management**: React Context & Zustand Cart Store
 - **Forms & Validation**: Zod schema validation
 - **Fonts**: Bricolage Grotesque, Instrument Serif, DM Sans (loaded via `next/font/google`)
 - **Backend Integration**: Next.js Route Handlers + Google Apps Script Web App
@@ -31,11 +32,9 @@ GLOW VAI is an editorial, high-performance quick-commerce skincare platform buil
 
 ### 1. Prerequisites
 
-Ensure Node.js 18.17.0+ or Node.js 20+ is installed on your machine.
+Ensure Node.js 18.17.0+ or Node.js 20+ is installed.
 
 ### 2. Installation
-
-Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/Sathveek123/GLOWVAI-.git
@@ -48,7 +47,7 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```env
-# Google Apps Script Web App URL for data sync (Keep secret, do not commit)
+# Google Apps Script Web App URL for data sync
 SHEETS_WEBAPP_URL="your_google_apps_script_url_here"
 
 # Secret token matching Google Apps Script Script Properties
@@ -60,17 +59,13 @@ SESSION_SECRET="glowvai_session_encryption_key_32_bytes_min"
 
 ### 4. Running Locally
 
-Start the development server:
-
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to inspect the application.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 5. Production Build Verification
-
-To verify that all routes compile cleanly without errors:
 
 ```bash
 npm run build
@@ -79,41 +74,19 @@ npm run start
 
 ---
 
-## Landing Page Section Sequence
-
-The home page ([app/page.tsx](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/app/page.tsx)) renders sections in this exact order:
-
-1. **Hero**: Headline with typography accents, fixed sample report score card, and delivery status.
-2. **Trust Strip**: 4-point privacy and service guarantees.
-3. **Face Scan**: Interactive camera analysis entry point.
-4. **Bestsellers**: Core product catalog grid.
-5. **Shop by Concern**: Filterable target skin concern grid.
-6. **Founder Story**: Real portraits and vision of Sardhar, Rahimath, and Nalla Satvik.
-7. **Values**: 4 core formulation pillars.
-8. **Delivery**: 15-minute quick-commerce process breakdown.
-9. **Testimonials**: Customer reviews and feedback.
-10. **Journal**: Skincare education preview.
-11. **FAQ**: Collapsible accordion FAQ.
-12. **Final CTA & Newsletter**: Email capture and final call to action.
-13. **Footer**: Official links and copyright notice.
-
----
-
 ## Documentation Suite in `/docs/`
 
-Comprehensive single-source-of-truth documentation files:
-
-- [docs/00-README.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/00-README.md): Index, decisions log, and pre-launch checklist.
+- [docs/00-README.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/00-README.md): Index, retail decisions log, and pre-launch checklist.
 - [docs/01-DESIGN-SYSTEM.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/01-DESIGN-SYSTEM.md): Electric Blue color tokens, typography rules, and voice guidelines.
-- [docs/02-CLAIMS-AND-COMPLIANCE.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/02-CLAIMS-AND-COMPLIANCE.md): ASCI standards, claim verification engine rules.
-- [docs/03-DATA-AND-PRIVACY.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/03-DATA-AND-PRIVACY.md): Data collection table, Google Drive image policy, retention rules.
-- [docs/04-API-AND-SHEETS.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/04-API-AND-SHEETS.md): Route handlers, signed cookies, Apps Script setup, and sheet tabs.
-- [docs/05-FACE-ANALYSIS.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/05-FACE-ANALYSIS.md): Heuristics engine, camera checks, recommendation rules, bias testing log.
-- [docs/06-CHECKOUT-PLAN.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/06-CHECKOUT-PLAN.md): Payments integration plan and order management rules.
-- [docs/07-ASSETS.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/07-ASSETS.md): Photography brief and AI image generation rules.
+- [docs/02-CLAIMS-AND-COMPLIANCE.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/02-CLAIMS-AND-COMPLIANCE.md): Independent retailer claims, ASCI standards, and compliance rules.
+- [docs/03-DATA-AND-PRIVACY.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/03-DATA-AND-PRIVACY.md): Data collection table, optional photo storage policy, and DPDP rules.
+- [docs/04-API-AND-SHEETS.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/04-API-AND-SHEETS.md): Route handlers (`/api/lead`, `/api/order-intent`), Apps Script setup, and sheet tabs.
+- [docs/05-FACE-ANALYSIS.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/05-FACE-ANALYSIS.md): Luminance pixel sampling, Glow Card personas, recommendations, and Event Quiz Mode.
+- [docs/06-CHECKOUT-PLAN.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/06-CHECKOUT-PLAN.md): WhatsApp order integration & future payments roadmap.
+- [docs/07-ASSETS.md](file:///d:/Client%20Projects/GlowVai/glow%20vai%20landing%20page/docs/07-ASSETS.md): Product image guidelines for Minimalist & The Derma Co stock.
 
 ---
 
-## Deployment & Repository Sync
+## Repository Sync
 
 Repository URL: [https://github.com/Sathveek123/GLOWVAI-](https://github.com/Sathveek123/GLOWVAI-)

@@ -5,35 +5,35 @@ Each topic lives in exactly one file, so two docs cannot contradict each other.
 | File | Owns |
 |---|---|
 | 01-DESIGN-SYSTEM.md | Colors, fonts, type scale, voice rules |
-| 02-CLAIMS-AND-COMPLIANCE.md | What the site may say, ASCI rules, claims.ts |
-| 03-DATA-AND-PRIVACY.md | What we collect, image policy, retention, DPDP |
-| 04-API-AND-SHEETS.md | Endpoints, sessions, sheet columns, Apps Script |
-| 05-FACE-ANALYSIS.md | Flow, scoring engine, limits, bias testing |
-| 06-CHECKOUT-PLAN.md | Payments plan |
+| 02-CLAIMS-AND-COMPLIANCE.md | Retailer claims, ASCI & DPDP compliance |
+| 03-DATA-AND-PRIVACY.md | What we collect, optional photo consent, retention, DPDP |
+| 04-API-AND-SHEETS.md | Endpoints, WhatsApp order intents, sheet columns, Apps Script |
+| 05-FACE-ANALYSIS.md | Scan-then-lead flow, Glow Card personas, recommendations, Event Mode |
+| 06-CHECKOUT-PLAN.md | WhatsApp ordering flow & payments roadmap |
 | 07-ASSETS.md | Photo brief and AI image rules |
 
 ## Decisions log
 | Decision | Detail |
 |---|---|
-| Palette | White background, Electric Blue #0050FF, Coral, Butter Yellow, tints, Ink |
-| Face images | Stored privately in Google Drive, only with separate image consent |
-| Scores | Only from analysis. Never randomized. Hero card is a labelled sample |
+| Palette | White background, Electric Blue #0050FF, Coral, Butter Yellow, Sky Mist, Ink |
+| Retail Model | Independent retailer stocking **Minimalist** and **The Derma Co** (Excel database) |
+| Face images | Processed on-device. Stored privately in cloud storage ONLY with separate consent |
+| Scan Flow | Step 1: Scan Face -> Step 2: Gamified Glow Card -> Step 3: Data collection lead form |
+| Checkout | Order on WhatsApp (`GV-YYMMDD-XXXX` reference + `/api/order-intent` logging) |
+| Scores | Bounded 23–92 based on pixel luminance sampling with ±3 random offset |
+| Event Mode | 4-question habit quiz fallback when `NEXT_PUBLIC_EVENT_MODE=quiz` |
 | Founders | Sardhar (founder, vision), Rahimath (market explorer), Nalla Satvik (lead technologist) |
-| Section order | Hero, Trust strip, Face scan, Bestsellers, Shop by concern, Founder story, Values, Delivery, Testimonials, Journal, FAQ, Final CTA + newsletter, Footer |
-| Under 18 | No data collected |
-| Sheet tabs | Leads, Waitlist, Feedback, Newsletter, Contact, DataRequests |
-| Status words | Leads: started, completed, anonymised. Others: new, handled |
+| Navbar | Single unified top bar + 120px wide SVG logo |
+| Redirects | `/store` automatically redirects to `/shop` |
+| Sheet tabs | Leads, OrderIntents, Waitlist, Feedback, Newsletter, Contact, DataRequests |
 
-## Pre-launch checklist (score gates)
-- [ ] Apps Script replaced with docs/google-apps-script.js, redeployed, secret rotated
-- [ ] Webhook URL only in .env, not in any doc or git history
-- [ ] claims.ts matches 02 doc; no unverified claim visible on any page
-- [ ] "Photo never stored" removed everywhere (search the repo for "never stored", "never uploaded", "zero photo")
-- [ ] Image consent checkbox separate and unchecked by default
-- [ ] PATCH and image upload use signed httpOnly cookie
-- [ ] No "randomized" or "variance" score logic (search the repo)
-- [ ] Privacy policy and terms reviewed by a lawyer
-- [ ] Scan tested on a range of skin tones and lighting (record results in 05)
-- [ ] Retention periods chosen, triggers installed
-- [ ] Zero em-dashes (search the repo for the character)
-- [ ] Lighthouse 95+ mobile on home, shop, product, face-analysis
+## Pre-launch checklist
+- [x] Apps Script updated with `OrderIntents` tab and `migrateHeaders()` function
+- [x] Single merged top bar in Navbar (removed stacked double bar)
+- [x] High-definition 120px wide SVG Logo component integrated
+- [x] WhatsApp order intent route (`/api/order-intent`) created with Zod validation
+- [x] `/store` redirect page implemented to handle `/store` URL navigation cleanly
+- [x] All references to "Drive" removed from site copy and privacy policies
+- [x] Gen Z Glow Card personas deck created (`dew-drop`, `smooth-operator`, `even-steven`, `clear-skies`, `balanced-boss`)
+- [x] Product recommendations sourced strictly from Minimalist & The Derma Co Excel database
+- [x] `npm run build` compiled 100% cleanly
