@@ -69,24 +69,46 @@ export function MobileMenu({
 
       {/* Main Links */}
       <nav className="flex flex-col space-y-5 my-auto py-6">
-        {navLinks.map((link) => (
-          <Link
-            key={link.title}
-            href={link.href}
-            onClick={onClose}
-            className="group flex items-center justify-between font-display text-2xl font-bold text-ink hover:text-brand transition-colors py-1"
-          >
-            <span>{link.title}</span>
-            <div className="flex items-center gap-2">
-              {link.badge && (
-                <span className="text-xs bg-blush text-ink font-semibold px-2.5 py-0.5 rounded-full border border-coral/20">
-                  {link.badge}
-                </span>
-              )}
-              <ArrowRight className="w-5 h-5 text-ink/30 group-hover:text-brand group-hover:translate-x-1 transition-all" />
-            </div>
-          </Link>
-        ))}
+        {navLinks.map((link) => {
+          const isExternal = link.href.startsWith("http");
+          return isExternal ? (
+            <a
+              key={link.title}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onClose}
+              className="group flex items-center justify-between font-display text-2xl font-bold text-ink hover:text-brand transition-colors py-1"
+            >
+              <span>{link.title}</span>
+              <div className="flex items-center gap-2">
+                {link.badge && (
+                  <span className="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full border border-emerald-300">
+                    {link.badge}
+                  </span>
+                )}
+                <ArrowRight className="w-5 h-5 text-ink/30 group-hover:text-brand group-hover:translate-x-1 transition-all" />
+              </div>
+            </a>
+          ) : (
+            <Link
+              key={link.title}
+              href={link.href}
+              onClick={onClose}
+              className="group flex items-center justify-between font-display text-2xl font-bold text-ink hover:text-brand transition-colors py-1"
+            >
+              <span>{link.title}</span>
+              <div className="flex items-center gap-2">
+                {link.badge && (
+                  <span className="text-xs bg-blush text-ink font-semibold px-2.5 py-0.5 rounded-full border border-coral/20">
+                    {link.badge}
+                  </span>
+                )}
+                <ArrowRight className="w-5 h-5 text-ink/30 group-hover:text-brand group-hover:translate-x-1 transition-all" />
+              </div>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Bottom Action Area & Contact Info */}

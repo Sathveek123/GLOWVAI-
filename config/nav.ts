@@ -24,6 +24,7 @@ export const navLinks: NavItem[] = [
   { title: "Shop", href: "/shop" },
   { title: "Our Story", href: "/our-story" },
   { title: "Face Analysis", href: "/face-analysis", badge: "Free" },
+  { title: "Referral Program", href: "https://earn.glowvai.in/portal.html", badge: "Earn" },
 ];
 
 export const footerLinks = {
@@ -36,6 +37,7 @@ export const footerLinks = {
   ],
   company: [
     { title: "Our Story", href: "/our-story" },
+    { title: "Referral Program (Earn)", href: "https://earn.glowvai.in/portal.html" },
     { title: "Journal", href: "/journal" },
     { title: "Face Scan AI", href: "/face-analysis" },
     { title: "Contact Us", href: "/contact" },
