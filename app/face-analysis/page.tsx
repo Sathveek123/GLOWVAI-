@@ -433,7 +433,7 @@ export default function FaceAnalysisPage() {
                 )}
               </div>
 
-              {/* STOCK IMAGES GALLERY */}
+              {/* 5-IMAGE GALLERY SHOWCASE ON FACE ANALYSIS */}
               <div className="space-y-3 pt-4">
                 <h3 className="font-display font-extrabold text-lg text-slate-900 text-center">
                   Trusted AI Face Diagnostic Technology
@@ -442,7 +442,7 @@ export default function FaceAnalysisPage() {
                   Over 18,000+ Indian men and women analyze their skin parameters using mobile scan tech.
                 </p>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
                   <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
                     <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
                       <Image
@@ -485,6 +485,19 @@ export default function FaceAnalysisPage() {
                   <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
                     <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
                       <Image
+                        src="/images/home-ai/express_delivery.png"
+                        alt="15-minute express delivery in Vijayawada"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="font-display font-bold text-[11px] text-slate-900">15-Min Delivery</p>
+                    <p className="text-[10px] text-slate-500">Vijayawada hub</p>
+                  </div>
+
+                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center col-span-2 sm:col-span-1">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                      <Image
                         src="/images/hero/product.png"
                         alt="Skincare routine match"
                         fill
@@ -492,7 +505,7 @@ export default function FaceAnalysisPage() {
                       />
                     </div>
                     <p className="font-display font-bold text-[11px] text-slate-900">Routine Match</p>
-                    <p className="text-[10px] text-slate-500">Vijayawada delivery</p>
+                    <p className="text-[10px] text-slate-500">Minimalist & Derma Co</p>
                   </div>
                 </div>
               </div>
