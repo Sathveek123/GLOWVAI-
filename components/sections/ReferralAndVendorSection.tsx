@@ -25,20 +25,20 @@ export function ReferralAndVendorSection() {
           </p>
         </div>
 
-        {/* 5-Feature Image Grid Showcase */}
+        {/* 5 AI Images Showcase Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {/* Card 1: AI Skin Scan */}
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between group hover:border-[#0050FF]/40 transition-all">
             <div className="space-y-3">
               <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
                 <Image
-                  src="/images/face-scan/skin_grid.png"
-                  alt="AI skin diagnostic moisture grid"
+                  src="/images/home-ai/ai_scan.png"
+                  alt="AI skin diagnostic scan on smartphone"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-3 left-3 bg-[#0050FF] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                  AI Tech
+                <div className="absolute top-3 left-3 bg-[#0050FF] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  1. AI Camera Scan
                 </div>
               </div>
               <h3 className="font-display font-bold text-lg text-slate-900">1. Instant AI Diagnostics</h3>
@@ -54,60 +54,23 @@ export function ReferralAndVendorSection() {
             </Link>
           </div>
 
-          {/* Card 2: Live Face Scans (Male & Female) */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between group hover:border-[#0050FF]/40 transition-all">
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-2 relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 p-1 border border-slate-200">
-                <div className="relative w-full h-full rounded-xl overflow-hidden">
-                  <Image
-                    src="/images/face-scan/indian_female.png"
-                    alt="Indian female face scan"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative w-full h-full rounded-xl overflow-hidden">
-                  <Image
-                    src="/images/face-scan/indian_male.png"
-                    alt="Indian male face scan"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="absolute bottom-3 left-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                  18,000+ Indian Scans
-                </div>
-              </div>
-              <h3 className="font-display font-bold text-lg text-slate-900">2. Indian Skin Tones</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Calibrated specifically for humid Indian weather, active sun exposure, and local barrier needs.
-              </p>
-            </div>
-            <Link href="/our-story" className="pt-2">
-              <Button variant="outline" size="sm" className="w-full text-xs font-bold border-slate-300">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Read Our Story</span>
-              </Button>
-            </Link>
-          </div>
-
-          {/* Card 3: Authorized Products */}
+          {/* Card 2: Skincare Products Shelf */}
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between group hover:border-[#0050FF]/40 transition-all">
             <div className="space-y-3">
               <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
                 <Image
-                  src="/images/hero/product.png"
-                  alt="Authorized skincare routine products"
+                  src="/images/home-ai/products_shelf.png"
+                  alt="Authorized skincare routine products shelf"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-3 left-3 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                  Minimalist & Derma Co
+                <div className="absolute top-3 left-3 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  2. Authorized Actives
                 </div>
               </div>
-              <h3 className="font-display font-bold text-lg text-slate-900">3. Curated Actives</h3>
+              <h3 className="font-display font-bold text-lg text-slate-900">2. Minimalist & Derma Co</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Matched routines from Minimalist & The Derma Co database featuring Niacinamide, Salicylic Acid & Ceramides.
+                Matched routines featuring Niacinamide, Salicylic Acid, Hyaluronic Acid, and Ceramides.
               </p>
             </div>
             <Link href="/shop" className="pt-2">
@@ -117,27 +80,68 @@ export function ReferralAndVendorSection() {
               </Button>
             </Link>
           </div>
+
+          {/* Card 3: 15-Minute Express Delivery */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between group hover:border-[#0050FF]/40 transition-all">
+            <div className="space-y-3">
+              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
+                <Image
+                  src="/images/home-ai/express_delivery.png"
+                  alt="15-minute express doorstep delivery in Vijayawada"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-3 left-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  3. 15-Min Delivery
+                </div>
+              </div>
+              <h3 className="font-display font-bold text-lg text-slate-900">3. Express Doorstep Dispatch</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Dispatched from nearest neighborhood pharmacy hub directly to your door in Vijayawada.
+              </p>
+            </div>
+            <Link href="/store" className="pt-2">
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold border-slate-300">
+                <Truck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Check Delivery Hubs</span>
+              </Button>
+            </Link>
+          </div>
         </div>
 
-        {/* 2-Column Promo Cards: Referral & Vendor Express Delivery */}
+        {/* 2-Column Promo Cards: Referral & Vendor Partner Stores */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-          {/* Referral Card */}
+          {/* Card 4: Referral Rewards Program */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 bg-[#0050FF]/10 text-[#0050FF] px-3 py-1 rounded-full text-xs font-bold border border-[#0050FF]/20">
-                <Gift className="w-3.5 h-3.5" />
-                <span>Referral Rewards Program</span>
+              <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
+                <Image
+                  src="/images/home-ai/referral_rewards.png"
+                  alt="GLOW VAI referral program rewards app"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute top-3 left-3 bg-[#0050FF] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  4. Referral Program
+                </div>
               </div>
 
-              <h3 className="font-display font-black text-2xl sm:text-3xl text-slate-900 leading-tight">
-                Invite Friends & <span className="text-[#0050FF]">Earn ₹100 Wallet Cash</span>
-              </h3>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 bg-[#0050FF]/10 text-[#0050FF] px-3 py-1 rounded-full text-xs font-bold border border-[#0050FF]/20">
+                  <Gift className="w-3.5 h-3.5" />
+                  <span>Referral Rewards Program</span>
+                </div>
 
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Share your personal skin scan code with friends. When they complete their first AI scan and routine order, both of you earn instant ₹100 wallet credit!
-              </p>
+                <h3 className="font-display font-black text-2xl sm:text-3xl text-slate-900 leading-tight">
+                  Invite Friends & <span className="text-[#0050FF]">Earn ₹100 Wallet Cash</span>
+                </h3>
 
-              <div className="grid grid-cols-2 gap-3 pt-2">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Share your personal skin scan link with friends. When they complete their first AI scan and routine order, both of you earn instant ₹100 wallet credit!
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200">
                   <span className="font-display font-extrabold text-xl text-[#0050FF] block">₹100</span>
                   <span className="text-[11px] font-semibold text-slate-600">Per Friend Referral</span>
@@ -169,23 +173,37 @@ export function ReferralAndVendorSection() {
             </div>
           </div>
 
-          {/* Vendor Hubs & 15-Min Delivery Card */}
+          {/* Card 5: Vendor Partner Network Store */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200">
-                <Store className="w-3.5 h-3.5" />
-                <span>Authorized Pharmacy Hub Network</span>
+              <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
+                <Image
+                  src="/images/home-ai/vendor_store.png"
+                  alt="Authorized vendor pharmacy partner store"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute top-3 left-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  5. Vendor Partner Stores
+                </div>
               </div>
 
-              <h3 className="font-display font-black text-2xl sm:text-3xl text-slate-900 leading-tight">
-                15-Min Delivery in <span className="text-emerald-600">Vijayawada</span>
-              </h3>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200">
+                  <Store className="w-3.5 h-3.5" />
+                  <span>Authorized Vendor Hub Network</span>
+                </div>
 
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Powered by local authorized pharmacy & cosmetic hubs in Vijayawada. Fresh batch products dispatched straight to your doorstep in 15 minutes.
-              </p>
+                <h3 className="font-display font-black text-2xl sm:text-3xl text-slate-900 leading-tight">
+                  Authorized Stores in <span className="text-emerald-600">Vijayawada</span>
+                </h3>
 
-              <div className="grid grid-cols-2 gap-3 pt-2">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Powered by local authorized pharmacy & cosmetic hubs in Vijayawada. Fresh batch products dispatched straight to your doorstep in 15 minutes.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-2.5">
                   <Truck className="w-5 h-5 text-emerald-600 shrink-0" />
                   <div>
