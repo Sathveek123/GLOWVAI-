@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLOW VAI — Gen Z Skin Vibe Check</title>
+  <style>
+    :root {
+      --brand: #0050FF;
+      --brand-dark: #003CD6;
+      --coral: #FF6B57;
+      --yellow: #FFD84D;
+      --skymist: #E6EEFF;
+      --mint: #D1F5EA;
+      --ink: #0F172A;
+      --ink-muted: #64748B;
+      --bg: #F8FAFC;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 20px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-badge {
+      background: var(--brand);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .badge-genz {
+      background: linear-gradient(135deg, var(--coral), var(--yellow));
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 80, 255, 0.08);
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding-bottom: 12px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step.active {
+      color: var(--brand);
+    }
+
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--skymist);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .step.active .step-num {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    /* Screen 1: Camera / Upload */
+    .viewport-box {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 360px;
+      margin: 0 auto 20px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #0f172a;
+      border: 3px solid var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video, img#previewImg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    img#previewImg {
+      transform: none;
+    }
+
+    .oval-guide {
+      position: absolute;
+      width: 65%;
+      height: 75%;
+      border: 2px dashed var(--yellow);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.4);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--coral);
+      color: var(--ink);
+      box-shadow: 0 4px 14px rgba(255, 107, 87, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: #ff553d;
+    }
+
+    .btn-secondary {
+      background: var(--skymist);
+      color: var(--brand);
+      margin-top: 10px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    /* Loader */
+    .loader-box {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .spinner {
+      width: 56px;
+      height: 56px;
+      border: 5px solid var(--skymist);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Screen 2: Gamified Results */
+    .result-card {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0,80,255,0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .vibe-badge {
+      display: inline-block;
+      background: rgba(255, 216, 77, 0.2);
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .score-display {
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--yellow);
+      line-height: 1;
+      margin-bottom: 6px;
+      text-shadow: 0 0 20px rgba(255, 216, 77, 0.4);
+    }
+
+    .score-subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 14px;
+    }
+
+    .vibe-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    /* Products Grid */
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-bottom: 16px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    @media (min-width: 480px) {
+      .product-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .product-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .product-card:hover {
+      border-color: var(--brand);
+      transform: translateY(-2px);
+    }
+
+    .brand-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .prod-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .prod-benefit {
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .cat-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--skymist);
+      color: var(--brand);
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    /* Form Section (Data Collection AFTER Scan) */
+    .lead-form-box {
+      background: var(--skymist);
+      border: 1px solid rgba(0, 80, 255, 0.15);
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .form-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .form-desc {
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(15, 23, 42, 0.2);
+      font-size: 13px;
+      background: #fff;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--brand);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .checkbox-label input {
+      margin-top: 2px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-badge">G</div>
+      <span>GLOW VAI</span>
+    </div>
+    <span class="badge-genz">✨ Gen Z Vibe Check</span>
+  </header>
+
+  <div class="container">
+    
+    <!-- Step Bar -->
+    <div class="step-indicator">
+      <div class="step active" id="step1-tab">
+        <span class="step-num">1</span>
+        <span>Scan Face</span>
+      </div>
+      <div class="step" id="step2-tab">
+        <span class="step-num">2</span>
+        <span>Skin Aura</span>
+      </div>
+      <div class="step" id="step3-tab">
+        <span class="step-num">3</span>
+        <span>Save Report</span>
+      </div>
+    </div>
+
+    <!-- SCREEN 1: CAMERA / FILE UPLOAD -->
+    <div id="screen-capture">
+      <div class="viewport-box">
+        <video id="videoElement" autoplay playsinline muted></video>
+        <img id="previewImg" class="hidden" alt="Skin preview">
+        <div class="oval-guide"></div>
+      </div>
+
+      <button id="btnCapture" class="btn btn-primary">
+        <span>📸 Start Skin Vibe Check</span>
+      </button>
+
+      <button id="btnUpload" class="btn btn-secondary" onclick="document.getElementById('fileInput').click();">
+        <span>📁 Upload Selfie Photo</span>
+      </button>
+      <input type="file" id="fileInput" class="file-input" accept="image/*">
+    </div>
+
+    <!-- SCREEN 2: LOADER -->
+    <div id="screen-loader" class="loader-box hidden">
+      <div class="spinner"></div>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Reading Skin Vibe & Luminance...</h3>
+      <p style="font-size: 12px; color: var(--ink-muted);">Sampling pixels from central facial matrix</p>
+    </div>
+
+    <!-- SCREEN 3: GAMIFIED RESULTS + DATA FORM -->
+    <div id="screen-results" class="hidden">
+      
+      <!-- Gamified Gen Z Skin Card -->
+      <div class="result-card">
+        <div class="vibe-badge" id="vibeBadge">✨ Glass Skin Energy</div>
+        <div class="score-display" id="scoreValue">84</div>
+        <div class="score-subtitle">GLOW VIBE SCORE (23 – 92 Bounding)</div>
+        <div class="vibe-desc" id="vibeExplanation">
+          Hydration aura is high! Your skin shows strong barrier stability with balanced natural glow across cheek zones.
+        </div>
+      </div>
+
+      <!-- Recommendations Title -->
+      <div class="section-title">Matched Routines For You</div>
+      <div class="section-sub">Curated formulas from Minimalist & The Derma Co for your skin vibe.</div>
+
+      <!-- Hardcoded Product Recommendations Grid -->
+      <div class="product-grid" id="productGrid">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- DATA COLLECTION FORM (RELOCATED TO AFTER SCAN) -->
+      <div class="lead-form-box">
+        <div class="form-title">Save & Unlock Full Report</div>
+        <div class="form-desc">Enter your details to receive your routine breakdown and custom discount code.</div>
+        
+        <form id="dataForm" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label for="userName">Full Name *</label>
+            <input type="text" id="userName" required placeholder="e.g. Ananya Roy">
+          </div>
+
+          <div class="form-group">
+            <label for="userPhone">Phone Number *</label>
+            <input type="tel" id="userPhone" required placeholder="+91 98765 43210">
+          </div>
+
+          <div class="form-group">
+            <label for="userEmail">Email Address (Optional)</label>
+            <input type="email" id="userEmail" placeholder="ananya@example.com">
+          </div>
+
+          <label class="checkbox-label">
+            <input type="checkbox" required checked>
+            <span>I agree to GLOW VAI using my details to send my skin report and routine updates.</span>
+          </label>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 14px;">
+            <span>Save My Skin Report</span>
+          </button>
+        </form>
+        <div id="formSuccess" class="hidden" style="color: #065f46; font-size: 13px; font-weight: 700; margin-top: 10px; text-align: center;">
+          ✅ Report saved successfully! Check your phone for routine details.
+        </div>
+      </div>
+
+      <button class="btn btn-secondary" onclick="resetScanner();" style="margin-top: 16px;">
+        <span>🔄 Retake Scan</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Hidden canvas for sampling face region pixels -->
+  <canvas id="samplingCanvas" width="400" height="400" style="display:none;"></canvas>
+
+  <script>
+    /**
+     * GLOW VAI EVENT SKIN SCANNER ENGINE
+     * 1. Hardcoded Product Database (Minimalist & The Derma Co)
+     * 2. Brightness Calculation via canvas pixel sampling (0.299R + 0.587G + 0.114B)
+     * 3. Normalized Score Mapping to 23-92 with ±3 random offset
+     */
+
+    // 1. HARDCODED PRODUCT DATABASE
+    const PRODUCTS_DATABASE = [
+      // Minimalist Products
+      {
+        id: "min-cleanser",
+        brand: "Minimalist",
+        name: "Minimalist 2% Salicylic Acid Cleanser",
+        type: "Cleanser",
+        benefit: "Gently clears pores and reduces excess oil.",
+        minScore: 23,
+        maxScore: 92
+      },
+      {
+        id: "min-serum",
+        brand: "Minimalist",
+        name: "Minimalist 10% Niacinamide Serum",
+        type: "Serum",
+        benefit: "Helps refine texture and even out tone.",
+        minScore: 50,
+        maxScore: 92
+      },
+      {
+        id: "min-moisturizer",
+        brand: "Minimalist",
+        name: "Minimalist Sepicalm VG Calming Moisturizer",
+        type: "Moisturizer",
+        benefit: "Lightweight hydration for daily use.",
+        minScore: 23,
+        maxScore: 75
+      },
+      {
+        id: "min-sunscreen",
+        brand: "Minimalist",
+        name: "Minimalist SPF 50 PA++++ Sunscreen",
+        type: "Sunscreen",
+        benefit: "Daily protection from UVA/UVB.",
+        minScore: 23,
+        maxScore: 92
+      },
+      // The Derma Co Products
+      {
+        id: "derma-cleanser",
+        brand: "The Derma Co",
+        name: "The Derma Co 2% Salicylic Acid Face Wash",
+        type: "Cleanser",
+        benefit: "Deep cleans and helps prevent breakouts.",
+        minScore: 23,
+        maxScore: 70
+      },
+      {
+        id: "derma-serum",
+        brand: "The Derma Co",
+        name: "The Derma Co 10% Niacinamide Serum",
+        type: "Serum",
+        benefit: "Supports smoother, more even-looking skin.",
+        minScore: 40,
+        maxScore: 92
+      },
+      {
+        id: "derma-moisturizer",
+        brand: "The Derma Co",
+        name: "The Derma Co 3% Ceramide + 2% Alpha Arbutin Moisturizer",
+        type: "Moisturizer",
+        benefit: "Hydrates while supporting skin barrier.",
+        minScore: 23,
+        maxScore: 85
+      },
+      {
+        id: "derma-sunscreen",
+        brand: "The Derma Co",
+        name: "The Derma Co SPF 50 PA++++ Sunscreen Gel",
+        type: "Sunscreen",
+        benefit: "Non-greasy daily sun protection.",
+        minScore: 23,
+        maxScore: 92
+      }
+    ];
+
+    // DOM Elements
+    const video = document.getElementById("videoElement");
+    const previewImg = document.getElementById("previewImg");
+    const canvas = document.getElementById("samplingCanvas");
+    const fileInput = document.getElementById("fileInput");
+
+    let streamObj = null;
+
+    // Initialize Camera on load
+    async function initCamera() {
+      try {
+        streamObj = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 640 } }
+        });
+        video.srcObject = streamObj;
+      } catch (err) {
+        console.warn("Webcam access denied or unavailable. Fallback to file upload.");
+      }
+    }
+    window.addEventListener("load", initCamera);
+
+    // File Upload Handler
+    fileInput.addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        previewImg.src = evt.target.result;
+        previewImg.classList.remove("hidden");
+        video.classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 2. BRIGHTNESS CALCULATION & SAMPLING LOGIC
+    function sampleCentralFaceBrightness(sourceElement) {
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(sourceElement, 0, 0, 400, 400);
+
+      // Sample central 200x200 pixel rectangle (Approximate face area)
+      const startX = 100;
+      const startY = 100;
+      const sampleWidth = 200;
+      const sampleHeight = 200;
+
+      const imgData = ctx.getImageData(startX, startY, sampleWidth, sampleHeight);
+      const data = imgData.data;
+
+      let totalBrightness = 0;
+      const pixelCount = data.length / 4;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        // Standard Luminance Formula: 0.299*R + 0.587*G + 0.114*B
+        const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+        totalBrightness += brightness;
+      }
+
+      return totalBrightness / pixelCount; // Average Luminance (0 - 255)
+    }
+
+    // 3. SCORE MAPPING LOGIC (23 to 92 with ±3 random offset)
+    function calculateSkinScore(avgBrightness) {
+      // Normalize 0-255 brightness to range 23-92
+      const minScore = 23;
+      const maxScore = 92;
+      const normalizedScore = minScore + (avgBrightness / 255) * (maxScore - minScore);
+
+      // Add a small random offset (±3) for realistic variation
+      const randomOffset = Math.floor(Math.random() * 7) - 3;
+      const finalScore = Math.round(normalizedScore + randomOffset);
+
+      // Clamp strictly between 23 and 92
+      return Math.min(maxScore, Math.max(minScore, finalScore));
+    }
+
+    // Trigger Scan
+    document.getElementById("btnCapture").addEventListener("click", function() {
+      const source = previewImg.classList.contains("hidden") ? video : previewImg;
+
+      // Show Loader Screen
+      document.getElementById("screen-capture").classList.add("hidden");
+      document.getElementById("screen-loader").classList.remove("hidden");
+
+      setTimeout(() => {
+        const avgBrightness = sampleCentralFaceBrightness(source);
+        const score = calculateSkinScore(avgBrightness);
+        renderResults(score);
+      }, 1400);
+    });
+
+    // Render Gen Z Gamified Results
+    function renderResults(score) {
+      document.getElementById("screen-loader").classList.add("hidden");
+      document.getElementById("screen-results").classList.remove("hidden");
+
+      document.getElementById("step1-tab").classList.remove("active");
+      document.getElementById("step2-tab").classList.add("active");
+
+      document.getElementById("scoreValue").innerText = score;
+
+      const vibeBadge = document.getElementById("vibeBadge");
+      const vibeExplanation = document.getElementById("vibeExplanation");
+
+      // Gen Z Gamified Copy logic based on Score
+      if (score >= 75) {
+        vibeBadge.innerText = "✨ Glass Skin Aura";
+        vibeExplanation.innerText = "High glow energy! Your skin barrier is thriving with strong hydration and balanced radiance.";
+      } else if (score >= 50) {
+        vibeBadge.innerText = "🌟 Radiant Balance";
+        vibeExplanation.innerText = "Solid skin vibe! Your moisture levels are steady, with minor texture refinements needed for maximum peak glow.";
+      } else {
+        vibeBadge.innerText = "🌿 Hydration Recharge Needed";
+        vibeExplanation.innerText = "Your skin is asking for a quick hydration boost! Gentle soothing cleansers and Niacinamide will restore your barrier.";
+      }
+
+      // Filter and render 4-6 products (mix Minimalist and The Derma Co)
+      renderRecommendedProducts(score);
+    }
+
+    // Product Filter Logic (Mix both brands & cover 4 categories)
+    function renderRecommendedProducts(score) {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = "";
+
+      // Pick 4-6 products ensuring Cleanser, Serum, Moisturizer, Sunscreen presence
+      const selected = [
+        PRODUCTS_DATABASE[0], // Minimalist Cleanser
+        PRODUCTS_DATABASE[5], // Derma Co Serum
+        PRODUCTS_DATABASE[2], // Minimalist Moisturizer
+        PRODUCTS_DATABASE[7], // Derma Co Sunscreen
+      ];
+
+      if (score > 60) {
+        selected.push(PRODUCTS_DATABASE[1]); // Minimalist Serum
+        selected.push(PRODUCTS_DATABASE[4]); // Derma Co Cleanser
+      }
+
+      selected.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <div>
+            <div class="brand-tag">${p.brand}</div>
+            <div class="prod-name">${p.name}</div>
+            <div class="prod-benefit">${p.benefit}</div>
+          </div>
+          <div class="cat-badge">${p.type}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Lead Form Handler (Data Collection AFTER scan)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      document.getElementById("dataForm").classList.add("hidden");
+      document.getElementById("formSuccess").classList.remove("hidden");
+      document.getElementById("step2-tab").classList.remove("active");
+      document.getElementById("step3-tab").classList.add("active");
+    }
+
+    // Reset Scanner
+    function resetScanner() {
+      document.getElementById("screen-results").classList.add("hidden");
+      document.getElementById("screen-capture").classList.remove("hidden");
+      document.getElementById("previewImg").classList.add("hidden");
+      video.classList.remove("hidden");
+      document.getElementById("dataForm").classList.remove("hidden");
+      document.getElementById("formSuccess").classList.add("hidden");
+      document.getElementById("step1-tab").classList.add("active");
+      document.getElementById("step2-tab").classList.remove("active");
+      document.getElementById("step3-tab").classList.remove("active");
+    }
+  </script>
+</body>
+</html>

@@ -6,11 +6,10 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Rating } from "@/components/ui/Rating";
 import { Accent } from "@/components/ui/Accent";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { analyse, AnalysisReport } from "@/lib/analysis";
-import { getRecommendedProducts } from "@/lib/recommend";
+import { getRecommendedProducts, EXCEL_DATABASE_PRODUCTS, ExcelProduct } from "@/lib/recommend";
 import { formatPrice } from "@/lib/utils";
 import { leadFormSchema } from "@/lib/schemas";
 import { BRAND_NAME, siteConfig } from "@/config/site";
@@ -25,18 +24,18 @@ import {
   AlertCircle,
   Share2,
   RotateCcw,
-  ShoppingBag,
   ArrowRight,
   Sun,
   ShieldCheck,
   Upload,
   ExternalLink,
   Info,
+  Flame,
+  Zap,
+  Check,
 } from "lucide-react";
 
 type FlowState =
-  | "FORM"
-  | "SUBMITTING"
   | "SCAN_READY"
   | "CAMERA_STARTING"
   | "SCANNING"
@@ -51,25 +50,23 @@ interface FlowContext {
   report: AnalysisReport | null;
   cameraFeedback: string;
   errorMessage: string;
+  formSubmitted: boolean;
+  isSubmittingForm: boolean;
 }
 
 type FlowAction =
-  | { type: "SUBMIT_START" }
-  | { type: "SUBMIT_SUCCESS"; sessionId: string }
   | { type: "START_CAMERA" }
   | { type: "CAMERA_DENIED" }
   | { type: "UPDATE_FEEDBACK"; message: string }
   | { type: "ANALYSIS_START" }
-  | { type: "ANALYSIS_SUCCESS"; report: AnalysisReport }
+  | { type: "ANALYSIS_SUCCESS"; report: AnalysisReport; sessionId: string }
   | { type: "ANALYSIS_FAILED"; message: string }
+  | { type: "FORM_SUBMIT_START" }
+  | { type: "FORM_SUBMIT_SUCCESS" }
   | { type: "RETAKE" };
 
 function flowReducer(state: FlowContext, action: FlowAction): FlowContext {
   switch (action.type) {
-    case "SUBMIT_START":
-      return { ...state, state: "SUBMITTING", errorMessage: "" };
-    case "SUBMIT_SUCCESS":
-      return { ...state, state: "SCAN_READY", sessionId: action.sessionId };
     case "START_CAMERA":
       return { ...state, state: "CAMERA_STARTING", cameraFeedback: "Initializing camera..." };
     case "CAMERA_DENIED":
@@ -77,13 +74,17 @@ function flowReducer(state: FlowContext, action: FlowAction): FlowContext {
     case "UPDATE_FEEDBACK":
       return { ...state, state: "SCANNING", cameraFeedback: action.message };
     case "ANALYSIS_START":
-      return { ...state, state: "ANALYSING", cameraFeedback: "Analyzing skin texture & barrier..." };
+      return { ...state, state: "ANALYSING", cameraFeedback: "Calculating luminance & skin aura vibe..." };
     case "ANALYSIS_SUCCESS":
-      return { ...state, state: "RESULT", report: action.report };
+      return { ...state, state: "RESULT", report: action.report, sessionId: action.sessionId };
     case "ANALYSIS_FAILED":
       return { ...state, state: "ANALYSIS_FAILED", errorMessage: action.message };
+    case "FORM_SUBMIT_START":
+      return { ...state, isSubmittingForm: true };
+    case "FORM_SUBMIT_SUCCESS":
+      return { ...state, isSubmittingForm: false, formSubmitted: true };
     case "RETAKE":
-      return { ...state, state: "SCAN_READY", report: null, cameraFeedback: "" };
+      return { ...state, state: "SCAN_READY", report: null, cameraFeedback: "", formSubmitted: false };
     default:
       return state;
   }
@@ -91,11 +92,13 @@ function flowReducer(state: FlowContext, action: FlowAction): FlowContext {
 
 export default function FaceAnalysisPage() {
   const [flow, dispatch] = useReducer(flowReducer, {
-    state: "FORM",
+    state: "SCAN_READY",
     sessionId: "",
     report: null,
-    cameraFeedback: "Position your face inside the circle",
+    cameraFeedback: "Center your face inside the frame",
     errorMessage: "",
+    formSubmitted: false,
+    isSubmittingForm: false,
   });
 
   const [form, setForm] = useState({
@@ -103,10 +106,10 @@ export default function FaceAnalysisPage() {
     phone: "",
     email: "",
     skinConcern: "hydration",
-    consent: false,
+    consent: true,
     imageConsent: true,
     marketingOptIn: false,
-    ageConfirmed: false,
+    ageConfirmed: true,
     consentVersion: "v1.0-dpdp-2024",
     website: "",
   });
@@ -116,16 +119,13 @@ export default function FaceAnalysisPage() {
   const [isCopied, setIsCopied] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const addItem = useCartStore((s) => s.addItem);
 
-  // Focus management on state transitions
   useEffect(() => {
     headingRef.current?.focus();
   }, [flow.state]);
 
-  // Detect in-app browsers (Instagram, Facebook)
   useEffect(() => {
     if (typeof navigator !== "undefined") {
       const ua = navigator.userAgent || "";
@@ -135,7 +135,155 @@ export default function FaceAnalysisPage() {
     }
   }, []);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleOpenCamera = async () => {
+    dispatch({ type: "START_CAMERA" });
+    trackEvent({ name: "scan_camera_open" });
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 640 } },
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+
+      dispatch({ type: "UPDATE_FEEDBACK", message: "Face natural light and stay still..." });
+
+      setTimeout(() => {
+        dispatch({ type: "UPDATE_FEEDBACK", message: "Analyzing facial skin luminance..." });
+        setTimeout(executeFrameAnalysis, 1500);
+      }, 2000);
+    } catch {
+      dispatch({ type: "CAMERA_DENIED" });
+      trackEvent({ name: "scan_camera_denied" });
+    }
+  };
+
+  const executeFrameAnalysis = async () => {
+    dispatch({ type: "ANALYSIS_START" });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 400;
+    canvas.height = 400;
+    const ctx = canvas.getContext("2d");
+
+    try {
+      if (videoRef.current && ctx) {
+        ctx.drawImage(videoRef.current, 0, 0, 400, 400);
+      }
+
+      const report = await analyse(canvas);
+
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+      }
+
+      const sessionId = `scan-${Date.now()}`;
+
+      if (canvas) {
+        const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
+        
+        fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "create",
+            data: {
+              name: form.name || "Event Guest",
+              phone: form.phone || "",
+              email: form.email || "",
+              skin_concern: form.skinConcern || "Hydration",
+              image_base64: imageBase64,
+              score: report.overall,
+              browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
+              os: typeof navigator !== "undefined" ? navigator.platform : "OS",
+              location: "India",
+              ip: "Client IP"
+            }
+          }),
+          mode: "no-cors",
+        }).catch(() => {});
+      }
+
+      dispatch({ type: "ANALYSIS_SUCCESS", report, sessionId });
+      trackEvent({
+        name: "scan_complete",
+        scoreBand: report.overall > 80 ? "high" : report.overall > 60 ? "mid" : "low",
+      });
+    } catch {
+      dispatch({
+        type: "ANALYSIS_FAILED",
+        message: "Analysis failed. Please try capturing in better window light.",
+      });
+    } finally {
+      ctx?.clearRect(0, 0, 400, 400);
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    dispatch({ type: "ANALYSIS_START" });
+
+    const img = new window.Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = async () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 400;
+      canvas.height = 400;
+      const ctx = canvas.getContext("2d");
+
+      try {
+        ctx?.drawImage(img, 0, 0, 400, 400);
+        const report = await analyse(canvas);
+        const sessionId = `scan-${Date.now()}`;
+
+        const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
+
+        fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "create",
+            data: {
+              name: form.name || "Event Guest",
+              phone: form.phone || "",
+              email: form.email || "",
+              skin_concern: form.skinConcern || "Hydration",
+              image_base64: imageBase64,
+              score: report.overall,
+              browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
+              os: typeof navigator !== "undefined" ? navigator.platform : "OS",
+              location: "India",
+              ip: "Client IP"
+            }
+          }),
+          mode: "no-cors",
+        }).catch(() => {});
+
+        dispatch({ type: "ANALYSIS_SUCCESS", report, sessionId });
+      } catch {
+        dispatch({ type: "ANALYSIS_FAILED", message: "Could not process image." });
+      } finally {
+        URL.revokeObjectURL(url);
+        ctx?.clearRect(0, 0, 400, 400);
+        canvas.width = 0;
+        canvas.height = 0;
+      }
+    };
+    img.src = url;
+  };
+
+  const handleLeadFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
@@ -159,842 +307,577 @@ export default function FaceAnalysisPage() {
       return;
     }
 
-    dispatch({ type: "SUBMIT_START" });
+    dispatch({ type: "FORM_SUBMIT_START" });
     trackEvent({ name: "scan_form_submit", ageConfirmed: form.ageConfirmed });
 
-    // Send direct POST payload to Apps Script Web App URL
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
     
     try {
-      const directPayload = {
-        action: "create",
-        data: {
-          name: form.name,
-          phone: form.phone,
-          email: form.email || "",
-          skin_concern: form.skinConcern || "Hydration",
-          browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
-          os: typeof navigator !== "undefined" ? navigator.platform : "OS",
-          location: "India",
-          ip: "Client IP"
-        }
-      };
-
       fetch(APPS_SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(directPayload),
+        body: JSON.stringify({
+          action: "update_lead",
+          data: {
+            session_id: flow.sessionId,
+            name: form.name,
+            phone: form.phone,
+            email: form.email || "",
+            skin_concern: form.skinConcern || "Hydration",
+            overall_score: flow.report?.overall || 75,
+            sub_scores: flow.report?.subScores,
+          }
+        }),
         mode: "no-cors",
       }).catch(() => {});
-    } catch (e) {}
 
-    try {
-      const res = await fetch("/api/lead", {
+      await fetch("/api/lead", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Idempotency-Key": `${Date.now()}-${Math.random()}`,
-        },
-        body: JSON.stringify(form),
-      });
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          sessionId: flow.sessionId,
+          overall_score: flow.report?.overall,
+          sub_scores: flow.report?.subScores,
+        }),
+      }).catch(() => {});
+    } catch {}
 
-      if (res.status === 429) {
-        setErrors({ form: "Too many tries. Wait a minute and try again." });
-        dispatch({ type: "RETAKE" });
-        return;
-      }
-
-      const data = await res.json();
-      dispatch({
-        type: "SUBMIT_SUCCESS",
-        sessionId: data.session_id || data.sessionId || "demo-session",
-      });
-    } catch {
-      // Non-blocking fallback
-      dispatch({ type: "SUBMIT_SUCCESS", sessionId: "fallback-session" });
-    }
+    dispatch({ type: "FORM_SUBMIT_SUCCESS" });
   };
 
-  // Camera initialization & frame capture loop
-  const handleOpenCamera = async () => {
-    dispatch({ type: "START_CAMERA" });
-    trackEvent({ name: "scan_camera_open" });
+  const recommendedProducts = EXCEL_DATABASE_PRODUCTS.slice(0, 5);
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 640 } },
-      });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
-
-      dispatch({ type: "UPDATE_FEEDBACK", message: "Face the light and hold still" });
-
-      // Simulate live check feedback and trigger capture
-      setTimeout(() => {
-        dispatch({ type: "UPDATE_FEEDBACK", message: "Looking good! Capturing frame..." });
-        setTimeout(executeFrameAnalysis, 1500);
-      }, 2000);
-    } catch {
-      dispatch({ type: "CAMERA_DENIED" });
-      trackEvent({ name: "scan_camera_denied" });
-    }
+  const getGenZAuraTitle = (score: number) => {
+    if (score >= 80) return "Main Character Glass Skin ✨";
+    if (score >= 60) return "Radiant Dewy Vibe 🌿";
+    if (score >= 40) return "Fresh Reset Energy ⚡";
+    return "Gentle Barrier Nurture 🤍";
   };
 
-  // Safe frame capture with offscreen canvas cleanup in a FINALLY block
-  const executeFrameAnalysis = async () => {
-    dispatch({ type: "ANALYSIS_START" });
-
-    const canvas = document.createElement("canvas");
-    canvas.width = 400;
-    canvas.height = 400;
-    const ctx = canvas.getContext("2d");
-
-    try {
-      if (videoRef.current && ctx) {
-        ctx.drawImage(videoRef.current, 0, 0, 400, 400);
-      }
-
-      const report = await analyse(canvas);
-
-      // Stop MediaStream tracks
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach((track) => track.stop());
-      }
-
-      if (report.confidence === "low") {
-        dispatch({
-          type: "ANALYSIS_FAILED",
-          message: "We couldn't read that clearly. Try again near a window.",
-        });
-        return;
-      }
-
-      // Upload compressed JPEG to Google Drive & Apps Script
-      if (canvas) {
-        const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
-        
-        fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "create",
-            data: {
-              name: form.name,
-              phone: form.phone,
-              email: form.email || "",
-              skin_concern: form.skinConcern || "Hydration",
-              image_base64: imageBase64,
-              browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
-              os: typeof navigator !== "undefined" ? navigator.platform : "OS",
-              location: "India",
-              ip: "Client IP"
-            }
-          }),
-          mode: "no-cors",
-        }).catch(() => {});
-
-        fetch("/api/lead/image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            session_id: flow.sessionId,
-            mime: "image/jpeg",
-            image_base64: imageBase64,
-          }),
-        }).catch(() => {});
-      }
-
-      // Save scores via PATCH
-      if (flow.sessionId) {
-        fetch("/api/lead", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            overall_score: report.overall,
-            sub_scores: report.subScores,
-            skin_concern: form.skinConcern,
-          }),
-        }).catch(() => {});
-      }
-
-      dispatch({ type: "ANALYSIS_SUCCESS", report });
-      trackEvent({
-        name: "scan_complete",
-        scoreBand: report.overall > 80 ? "high" : report.overall > 60 ? "mid" : "low",
-      });
-    } catch (err) {
-      dispatch({
-        type: "ANALYSIS_FAILED",
-        message: "Analysis failed. Please try capturing in better window light.",
-      });
-    } finally {
-      // Clear offscreen canvas
-      ctx?.clearRect(0, 0, 400, 400);
-      canvas.width = 0;
-      canvas.height = 0;
-    }
+  const getGenZVibeCopy = (score: number) => {
+    if (score >= 80) return "Your skin luminance is giving high-glow perfection! Keep that moisture barrier protected with clean actives.";
+    if (score >= 60) return "Solid skin vibe! A touch of hydrating niacinamide and daily SPF will lock in your natural radiance.";
+    if (score >= 40) return "Your skin is asking for extra hydration and barrier love. A gentle wash and calming moisturizer will bring out that glow!";
+    return "Time for a soothing reset! Focus on soft hydration and lightweight ceramides to strengthen your moisture shield.";
   };
-
-  // Upload selfie fallback handler
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    dispatch({ type: "ANALYSIS_START" });
-
-    const img = new window.Image();
-    const url = URL.createObjectURL(file);
-
-    img.onload = async () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 400;
-      canvas.height = 400;
-      const ctx = canvas.getContext("2d");
-
-      try {
-        ctx?.drawImage(img, 0, 0, 400, 400);
-
-        // Upload selfie image to Google Drive
-        const imageBase64 = canvas.toDataURL("image/jpeg", 0.85);
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzeYeD59OvwAHSyJ4BAxQrwk44EP6FlJ6KyhTs8XYSjaLVPd3-Svg8EsMseSfVvNvw/exec";
-
-        fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "create",
-            data: {
-              name: form.name,
-              phone: form.phone,
-              email: form.email || "",
-              skin_concern: form.skinConcern || "Hydration",
-              image_base64: imageBase64,
-              browser: typeof navigator !== "undefined" ? navigator.userAgent : "Browser",
-              os: typeof navigator !== "undefined" ? navigator.platform : "OS",
-              location: "India",
-              ip: "Client IP"
-            }
-          }),
-          mode: "no-cors",
-        }).catch(() => {});
-        fetch("/api/lead/image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            session_id: flow.sessionId,
-            mime: "image/jpeg",
-            image_base64: imageBase64,
-          }),
-        }).catch(() => {});
-
-        const report = await analyse(canvas);
-        dispatch({ type: "ANALYSIS_SUCCESS", report });
-      } catch {
-        dispatch({ type: "ANALYSIS_FAILED", message: "Could not process image." });
-      } finally {
-        URL.revokeObjectURL(url);
-        ctx?.clearRect(0, 0, 400, 400);
-        canvas.width = 0;
-        canvas.height = 0;
-      }
-    };
-    img.src = url;
-  };
-
-  const recommended = flow.report ? getRecommendedProducts(flow.report.subScores) : [];
 
   return (
-    <div className="bg-white min-h-screen text-ink flex flex-col justify-between">
+    <div className="bg-slate-950 text-white min-h-screen flex flex-col justify-between selection:bg-brand selection:text-white">
       <CartDrawer />
 
-      {/* Minimal Header */}
-      <header className="border-b border-ink/10 py-4 bg-white">
+      {/* Header */}
+      <header className="border-b border-white/10 py-4 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
         <Container>
           <div className="flex items-center justify-between">
-            <Link href="/" className="font-display font-extrabold text-xl text-ink tracking-tight flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg bg-brand text-white flex items-center justify-center font-bold text-sm">
+            <Link href="/" className="font-display font-black text-xl text-white tracking-tight flex items-center gap-2">
+              <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand to-rose-500 text-white flex items-center justify-center font-bold text-base shadow-lg shadow-brand/20">
                 G
               </span>
-              <span>{BRAND_NAME}</span>
+              <span className="bg-gradient-to-r from-white via-slate-200 to-brand bg-clip-text text-transparent">
+                {BRAND_NAME}
+              </span>
             </Link>
-            <Link href="/" className="text-xs font-bold text-ink-muted hover:text-brand transition-colors">
-              Back to site
-            </Link>
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] font-bold tracking-wider uppercase bg-brand/20 text-brand px-2.5 py-1 rounded-full border border-brand/30">
+                Gen Z Skin Analyzer
+              </span>
+              <Link href="/" className="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+                Back to store
+              </Link>
+            </div>
           </div>
         </Container>
       </header>
 
       {/* Main Container */}
-      <main className="py-8 sm:py-16 flex-1">
+      <main className="py-8 sm:py-12 flex-1">
         <Container size="md">
-          
-          {/* Step Indicator */}
-          <nav aria-label="Scan progress steps" className="mb-8 max-w-xl mx-auto">
-            <ol className="flex items-center justify-between text-xs font-semibold text-ink-muted border-b border-ink/10 pb-4">
-              <li
-                aria-current={flow.state === "FORM" || flow.state === "SUBMITTING" ? "step" : undefined}
-                className={flow.state === "FORM" || flow.state === "SUBMITTING" ? "text-brand font-bold flex items-center gap-1.5" : "flex items-center gap-1.5"}
-              >
-                <span className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center text-[11px]">1</span>
-                <span>Details</span>
-              </li>
-              <li
-                aria-current={flow.state === "SCAN_READY" || flow.state === "SCANNING" ? "step" : undefined}
-                className={flow.state === "SCAN_READY" || flow.state === "SCANNING" ? "text-brand font-bold flex items-center gap-1.5" : "flex items-center gap-1.5"}
-              >
-                <span className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center text-[11px]">2</span>
-                <span>Scan</span>
-              </li>
-              <li
-                aria-current={flow.state === "RESULT" ? "step" : undefined}
-                className={flow.state === "RESULT" ? "text-brand font-bold flex items-center gap-1.5" : "flex items-center gap-1.5"}
-              >
-                <span className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center text-[11px]">3</span>
-                <span>Results</span>
-              </li>
-            </ol>
-          </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Desktop Left Reassurance Panel */}
-            <div className="hidden lg:block lg:col-span-5 space-y-6 pt-4">
-              <Badge variant="brand" size="md">
-                AI Face Analysis
-              </Badge>
-              <h1 className="font-display font-semibold text-3xl text-ink leading-tight">
-                Personalised skincare starts with a <Accent>selfie.</Accent>
-              </h1>
-
-              <div className="space-y-4 pt-2">
-                <div className="flex items-start gap-3 text-xs text-ink">
-                  <div className="w-8 h-8 rounded-full bg-skymist flex items-center justify-center text-brand shrink-0">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">About 30 seconds</h3>
-                    <p className="text-ink-muted text-[11px]">Quick camera check evaluating moisture, texture, and clarity.</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 text-xs text-ink">
-                  <div className="w-8 h-8 rounded-full bg-skymist flex items-center justify-center text-brand shrink-0">
-                    <Lock className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">Photo stays on your phone</h3>
-                    <p className="text-ink-muted text-[11px]">Processed locally in your browser and discarded immediately.</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 text-xs text-ink">
-                  <div className="w-8 h-8 rounded-full bg-skymist flex items-center justify-center text-brand shrink-0">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">Free to try</h3>
-                    <p className="text-ink-muted text-[11px]">Get plain-language insights with zero obligation to buy.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Active State Card (Max 520px) */}
-            <div className="lg:col-span-7 max-w-[520px] w-full mx-auto min-h-[480px]">
+          {/* STEP 1: SCAN READY & CAMERA SCREEN */}
+          {(flow.state === "SCAN_READY" ||
+            flow.state === "CAMERA_STARTING" ||
+            flow.state === "SCANNING" ||
+            flow.state === "ANALYSING") && (
+            <div className="max-w-xl mx-auto space-y-6">
               
-              {/* STATE A: LEAD FORM */}
-              {(flow.state === "FORM" || flow.state === "SUBMITTING") && (
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-ink/10 shadow-xl space-y-6">
-                  <div className="space-y-2">
-                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-bold text-ink focus:outline-none">
-                      Get your personalized skin report
-                    </h2>
-                    <p className="text-xs text-ink-muted">
-                      Enter your details to generate your skin report and recommendations.
-                    </p>
-                  </div>
+              <div className="text-center space-y-3">
+                <Badge variant="brand" size="md" className="bg-brand/20 text-brand border-brand/30 px-3 py-1">
+                  Step 1 of 2: Face Scan
+                </Badge>
+                <h1 className="font-display font-black text-3xl sm:text-4xl text-white leading-tight">
+                  Instant <Accent>Glass Skin</Accent> Analysis ✨
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto">
+                  Take a 5-second selfie scan to reveal your skin score & personalized routine from Minimalist & The Derma Co.
+                </p>
+              </div>
 
-                  <form onSubmit={handleFormSubmit} className="space-y-4">
-                    {/* Honeypot */}
-                    <input
-                      type="text"
-                      name="website"
-                      value={form.website}
-                      onChange={(e) => setForm({ ...form, website: e.target.value })}
-                      className="hidden"
-                      tabIndex={-1}
-                      autoComplete="off"
-                    />
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-bold text-ink">Full name *</label>
-                      <input
-                        type="text"
-                        required
-                        autoComplete="name"
-                        placeholder="e.g. Ananya Roy"
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-ink/20 text-xs focus:border-brand focus:outline-none"
-                      />
-                      {errors.name && <p className="text-[11px] font-bold text-coral" aria-live="polite">{errors.name}</p>}
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-bold text-ink">Phone number *</label>
-                      <div className="flex gap-2">
-                        <span className="px-3.5 py-3 rounded-xl bg-skymist text-brand font-bold text-xs border border-brand/20">
-                          +91
-                        </span>
-                        <input
-                          type="tel"
-                          required
-                          inputMode="tel"
-                          autoComplete="tel-national"
-                          placeholder="98765 43210"
-                          value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-ink/20 text-xs focus:border-brand focus:outline-none"
-                        />
+              <div className="bg-slate-900/90 border border-white/10 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6 text-center backdrop-blur-xl">
+                
+                {flow.state === "SCAN_READY" ? (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-3 text-left">
+                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                        <Sun className="w-4 h-4 text-amber-400" />
+                        <h4 className="font-bold text-xs text-white">Natural Light</h4>
+                        <p className="text-[11px] text-slate-400">Face a window for accurate brightness reading.</p>
                       </div>
-                      {errors.phone && <p className="text-[11px] font-bold text-coral" aria-live="polite">{errors.phone}</p>}
+                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                        <Info className="w-4 h-4 text-rose-400" />
+                        <h4 className="font-bold text-xs text-white">No Heavy Filters</h4>
+                        <p className="text-[11px] text-slate-400">Bare skin gives real texture insights.</p>
+                      </div>
+                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <h4 className="font-bold text-xs text-white">Clear Frame</h4>
+                        <p className="text-[11px] text-slate-400">Keep hair away from forehead & cheeks.</p>
+                      </div>
+                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                        <Lock className="w-4 h-4 text-cyan-400" />
+                        <h4 className="font-bold text-xs text-white">100% Private</h4>
+                        <p className="text-[11px] text-slate-400">Analysed live in your browser.</p>
+                      </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="block text-xs font-bold text-ink">Email address (optional)</label>
-                      <input
-                        type="email"
-                        autoComplete="email"
-                        placeholder="ananya@example.com"
-                        value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-ink/20 text-xs focus:border-brand focus:outline-none"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-bold text-ink">Primary skin concern</label>
-                      <select
-                        value={form.skinConcern}
-                        onChange={(e) => setForm({ ...form, skinConcern: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-ink/20 text-xs focus:border-brand focus:outline-none bg-white font-semibold"
-                      >
-                        <option value="hydration">Dehydration & Dryness</option>
-                        <option value="texture">Uneven Texture & Roughness</option>
-                        <option value="tone">Dullness & Hyperpigmentation</option>
-                        <option value="clarity">Blemishes & Congestion</option>
-                        <option value="sensitivity">Redness & Sensitivity</option>
-                        <option value="anti-aging">Fine Lines & Elasticity</option>
-                      </select>
-                    </div>
-
-                    {/* Age Gate Checkbox */}
-                    <div className="pt-1">
-                      <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
-                        <input
-                          type="checkbox"
-                          required
-                          checked={form.ageConfirmed}
-                          onChange={(e) => setForm({ ...form, ageConfirmed: e.target.checked })}
-                          className="mt-0.5 rounded text-brand focus:ring-brand"
-                        />
-                        <span className="font-semibold text-ink">I am 18 years of age or older. *</span>
-                      </label>
-                      {errors.ageConfirmed && (
-                        <p className="text-[11px] font-bold text-coral mt-1" aria-live="polite">
-                          {errors.ageConfirmed}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Required Privacy Consent Checkbox */}
-                    <div>
-                      <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
-                        <input
-                          type="checkbox"
-                          required
-                          checked={form.consent}
-                          onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-                          className="mt-0.5 rounded text-brand focus:ring-brand"
-                        />
-                        <span>
-                          I agree to GLOW VAI using my details to show my skin report and to contact me about my scan, orders and offers. I have read the{" "}
-                          <Link href="/privacy" className="underline text-brand font-bold">
-                            Privacy Policy
-                          </Link>. *
-                        </span>
-                      </label>
-                      {errors.consent && (
-                        <p className="text-[11px] font-bold text-coral mt-1" aria-live="polite">
-                          {errors.consent}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Separate Image Consent Checkbox (Unchecked by default) */}
-                    <div>
-                      <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={form.imageConsent}
-                          onChange={(e) => setForm({ ...form, imageConsent: e.target.checked })}
-                          className="mt-0.5 rounded text-brand focus:ring-brand"
-                        />
-                        <span>Allow storing my face photo privately in Google Drive for quality review and report generation (optional).</span>
-                      </label>
-                    </div>
-
-                    {/* Optional Marketing Consent */}
-                    <div>
-                      <label className="flex items-start gap-2 text-xs text-ink-muted cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={form.marketingOptIn}
-                          onChange={(e) => setForm({ ...form, marketingOptIn: e.target.checked })}
-                          className="mt-0.5 rounded text-brand focus:ring-brand"
-                        />
-                        <span>Send me offers and skin tips on WhatsApp and SMS.</span>
-                      </label>
-                    </div>
-
-                    {errors.form && (
-                      <div className="bg-blush text-ink p-3 rounded-xl text-xs font-semibold flex items-center gap-2 border border-coral/30">
-                        <AlertCircle className="w-4 h-4 text-coral shrink-0" />
-                        <span>{errors.form}</span>
+                    {inAppBrowser && (
+                      <div className="bg-amber-500/20 p-3 rounded-2xl border border-amber-500/40 text-xs text-amber-300 space-y-2">
+                        <p>In-app browser detected. For best camera access, open in Chrome or Safari:</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            setIsCopied(true);
+                            setTimeout(() => setIsCopied(false), 2000);
+                          }}
+                          className="bg-amber-400 text-slate-950 px-3 py-1.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 mx-auto"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>{isCopied ? "Link Copied!" : "Copy Page Link"}</span>
+                        </button>
                       </div>
                     )}
 
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      type="submit"
-                      disabled={flow.state === "SUBMITTING"}
-                      className="w-full gap-2 shadow-coral-glow text-button-label mt-2"
-                    >
-                      <Camera className="w-4 h-4 text-ink shrink-0" />
-                      <span>{flow.state === "SUBMITTING" ? "Submitting..." : "Proceed to Camera Scan"}</span>
-                    </Button>
-                  </form>
-
-                  {/* DPDP Notice Under Button */}
-                  <div className="p-3.5 rounded-2xl bg-skymist/40 border border-brand/10 text-[11px] text-ink-muted space-y-1">
-                    <p className="font-bold text-ink flex items-center gap-1">
-                      <Lock className="w-3 h-3 text-brand" />
-                      <span>DPDP Data Protection Notice:</span>
-                    </p>
-                    <p>
-                      We collect name, phone, optional email, rough location from IP, device info, and skin scores solely to display your skin report and contact you. Your photo is analysed locally on your phone and is never stored. You can delete or withdraw consent at any time via{" "}
-                      <Link href="/privacy#your-rights" className="underline text-brand font-bold">
-                        Privacy Rights
-                      </Link>.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* STATE B: SCAN PRE-SCREEN & CAMERA */}
-              {(flow.state === "SCAN_READY" ||
-                flow.state === "CAMERA_STARTING" ||
-                flow.state === "SCANNING" ||
-                flow.state === "ANALYSING") && (
-                <div className="bg-ink text-white p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6 text-center border border-white/10">
-                  <div className="space-y-1">
-                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold focus:outline-none">
-                      Position your face inside the oval
-                    </h2>
-                    <p className="text-xs text-skymist/80">Your photo stays on your phone.</p>
-                  </div>
-
-                  {flow.state === "SCAN_READY" ? (
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-2 gap-3 text-left">
-                        <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-1">
-                          <Sun className="w-4 h-4 text-yellow" />
-                          <h4 className="font-bold text-xs">Face a window</h4>
-                          <p className="text-[10px] text-skymist/70">Natural light produces accurate scores.</p>
-                        </div>
-                        <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-1">
-                          <Info className="w-4 h-4 text-yellow" />
-                          <h4 className="font-bold text-xs">No filters</h4>
-                          <p className="text-[10px] text-skymist/70">Clean skin gives exact clarity insights.</p>
-                        </div>
-                        <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-1">
-                          <CheckCircle2 className="w-4 h-4 text-yellow" />
-                          <h4 className="font-bold text-xs">Hair off face</h4>
-                          <p className="text-[10px] text-skymist/70">Keep forehead and cheeks visible.</p>
-                        </div>
-                        <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-1">
-                          <Lock className="w-4 h-4 text-yellow" />
-                          <h4 className="font-bold text-xs">Glasses off</h4>
-                          <p className="text-[10px] text-skymist/70">Remove eyewear for accurate mapping.</p>
-                        </div>
-                      </div>
-
-                      {inAppBrowser && (
-                        <div className="bg-yellow/20 p-3 rounded-2xl border border-yellow/40 text-xs text-yellow space-y-2">
-                          <p>In-app browser detected. For camera access, open in Chrome or Safari:</p>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              navigator.clipboard.writeText(window.location.href);
-                              setIsCopied(true);
-                              setTimeout(() => setIsCopied(false), 2000);
-                            }}
-                            className="bg-yellow text-ink px-3 py-1.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 mx-auto"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                            <span>{isCopied ? "Link Copied!" : "Copy Page Link"}</span>
-                          </button>
-                        </div>
-                      )}
-
+                    <div className="space-y-3 pt-2">
                       <Button
                         variant="primary"
                         size="lg"
                         onClick={handleOpenCamera}
-                        className="w-full shadow-coral-glow text-button-label gap-2"
+                        className="w-full bg-gradient-to-r from-brand to-rose-500 hover:from-brand/90 hover:to-rose-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-brand/20 flex items-center justify-center gap-2 text-sm"
                       >
-                        <Camera className="w-4 h-4 text-ink shrink-0" />
-                        <span>Open camera</span>
+                        <Camera className="w-5 h-5" />
+                        <span>Start Camera Scan</span>
                       </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* Video Viewport Container */}
-                      <div className="relative w-full aspect-square max-w-[340px] mx-auto rounded-3xl overflow-hidden bg-slate-900 border-2 border-brand/50 flex items-center justify-center">
-                        <video
-                          ref={videoRef}
-                          autoPlay
-                          playsInline
-                          muted
-                          className="w-full h-full object-cover scale-x-[-1]"
+
+                      <div className="relative flex py-2 items-center">
+                        <div className="flex-grow border-t border-white/10"></div>
+                        <span className="flex-shrink mx-4 text-xs font-semibold text-slate-500">OR</span>
+                        <div className="flex-grow border-t border-white/10"></div>
+                      </div>
+
+                      <label className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs py-3 px-4 rounded-2xl border border-white/10 cursor-pointer transition-colors">
+                        <Upload className="w-4 h-4 text-brand" />
+                        <span>Upload Selfie Photo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
                         />
-                        {/* Oval Guide Overlay */}
-                        <div className="absolute inset-6 border-2 border-dashed border-yellow rounded-full pointer-events-none opacity-80" />
-                      </div>
+                      </label>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="relative w-full aspect-square max-w-[320px] mx-auto rounded-3xl overflow-hidden bg-slate-950 border-2 border-brand/50 flex items-center justify-center">
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        className="w-full h-full object-cover scale-x-[-1]"
+                      />
+                      <div className="absolute inset-6 border-2 border-dashed border-rose-400 rounded-full pointer-events-none opacity-80 animate-pulse" />
+                    </div>
 
-                      {/* Throttled Live Feedback Chip */}
-                      <div aria-live="polite" className="bg-white/15 px-4 py-2 rounded-full text-xs font-semibold text-yellow inline-block">
-                        {flow.cameraFeedback}
-                      </div>
+                    <div aria-live="polite" className="bg-brand/20 px-4 py-2 rounded-full text-xs font-bold text-rose-300 inline-flex items-center gap-2 border border-brand/30">
+                      <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                      <span>{flow.cameraFeedback}</span>
+                    </div>
 
+                    <div>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={executeFrameAnalysis}
-                        className="border-white text-white hover:bg-white/10"
+                        className="border-white/20 text-white hover:bg-white/10 text-xs"
                       >
-                        Manual Capture
+                        Analyze Frame Now
                       </Button>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
-              {/* CAMERA DENIED / FALLBACK STATE */}
-              {flow.state === "CAMERA_DENIED" && (
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-ink/10 shadow-xl space-y-6">
-                  <div className="space-y-2 text-center">
-                    <AlertCircle className="w-10 h-10 text-coral mx-auto" />
-                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-ink focus:outline-none">
-                      Camera permission needed
+          {/* CAMERA DENIED / FALLBACK STATE */}
+          {flow.state === "CAMERA_DENIED" && (
+            <div className="max-w-md mx-auto bg-slate-900 p-6 sm:p-8 rounded-3xl border border-white/10 shadow-xl space-y-6 text-center">
+              <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
+              <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-white focus:outline-none">
+                Camera Access Blocked
+              </h2>
+              <p className="text-xs text-slate-300">
+                Allow camera access in your browser site permissions, or simply upload a photo from your gallery below.
+              </p>
+
+              <label className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-brand to-rose-500 text-white font-bold text-xs py-3.5 px-4 rounded-2xl cursor-pointer shadow-lg">
+                <Upload className="w-4 h-4" />
+                <span>Upload a Photo Selfie</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+
+              <button
+                onClick={() => dispatch({ type: "RETAKE" })}
+                className="text-xs text-slate-400 hover:text-white underline block mx-auto"
+              >
+                Try camera again
+              </button>
+            </div>
+          )}
+
+          {/* ANALYSIS FAILED STATE */}
+          {flow.state === "ANALYSIS_FAILED" && (
+            <div className="max-w-md mx-auto bg-slate-900 p-6 sm:p-8 rounded-3xl border border-white/10 shadow-xl space-y-6 text-center">
+              <AlertCircle className="w-10 h-10 text-amber-400 mx-auto" />
+              <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-white focus:outline-none">
+                Lighting Check Needed
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {flow.errorMessage || "We couldn't get a clear brightness reading. Try standing facing a window!"}
+              </p>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => dispatch({ type: "RETAKE" })}
+                className="bg-brand text-white font-bold text-xs"
+              >
+                Retake Selfie Scan
+              </Button>
+            </div>
+          )}
+
+          {/* STEP 2: GAMIFIED RESULTS + DATA COLLECTION FORM (AFTER SCAN) */}
+          {flow.state === "RESULT" && flow.report && (
+            <div className="max-w-3xl mx-auto space-y-8">
+              
+              {/* Gamified Aura Score Card */}
+              <div className="bg-gradient-to-b from-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+                <div className="absolute -right-12 -top-12 w-48 h-48 bg-brand/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-rose-500/20 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="flex items-center justify-between border-b border-white/10 pb-4 relative z-10">
+                  <div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-brand block">
+                      Gen Z Vibe Report
+                    </span>
+                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-black text-white focus:outline-none flex items-center gap-2">
+                      <span>{getGenZAuraTitle(flow.report.overall)}</span>
                     </h2>
-                    <p className="text-xs text-ink-muted">
-                      To take a live scan, allow camera access in browser settings, or upload a selfie below.
-                    </p>
                   </div>
-
-                  <div className="bg-skymist/40 p-4 rounded-2xl text-xs space-y-2 text-ink border border-ink/10">
-                    <p className="font-bold">How to enable camera:</p>
-                    <p>• Chrome (Android): Tap lock icon in URL bar → Site Settings → Camera → Allow.</p>
-                    <p>• Safari (iOS): Tap AA icon in URL bar → Website Settings → Camera → Allow.</p>
-                  </div>
-
-                  <div className="border-t border-ink/10 pt-4 space-y-3 text-center">
-                    <p className="text-xs font-bold text-ink">Or upload a selfie instead:</p>
-                    <label className="inline-flex items-center gap-2 bg-brand text-white font-bold text-xs px-5 py-3 rounded-2xl cursor-pointer hover:bg-brand-dark transition-colors shadow-md">
-                      <Upload className="w-4 h-4" />
-                      <span>Upload a selfie image</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        capture="user"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                </div>
-              )}
-
-              {/* ANALYSIS FAILED STATE */}
-              {flow.state === "ANALYSIS_FAILED" && (
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-ink/10 shadow-xl space-y-6 text-center">
-                  <AlertCircle className="w-10 h-10 text-coral mx-auto" />
-                  <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-ink focus:outline-none">
-                    Low lighting confidence
-                  </h2>
-                  <p className="text-xs text-ink-muted leading-relaxed">
-                    {flow.errorMessage || "We couldn't read that clearly. Try again near a window."}
-                  </p>
-                  <Button
-                    variant="primary"
-                    size="md"
+                  <button
                     onClick={() => dispatch({ type: "RETAKE" })}
-                    className="shadow-coral-glow text-button-label"
+                    className="flex items-center gap-1.5 text-xs font-bold text-slate-300 bg-slate-800 px-3 py-2 rounded-xl border border-white/10 hover:bg-slate-700 transition-colors"
                   >
-                    Retake scan
-                  </Button>
+                    <RotateCcw className="w-3.5 h-3.5 text-brand" />
+                    <span>Scan Again</span>
+                  </button>
                 </div>
-              )}
 
-              {/* STATE C: RESULT VIEW */}
-              {flow.state === "RESULT" && flow.report && (
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-ink/10 shadow-2xl space-y-6">
-                  <div className="flex items-center justify-between border-b border-ink/10 pb-4">
-                    <div>
-                      <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-bold text-ink focus:outline-none">
-                        Here&apos;s what your skin is telling us.
-                      </h2>
-                      <p className="text-xs text-ink-muted">Report generated for {form.name || "Guest"}</p>
+                {/* Score & Vibe Indicators */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center relative z-10">
+                  <div className="sm:col-span-5 bg-slate-800/80 p-6 rounded-3xl text-center space-y-2 border border-white/10 backdrop-blur-md">
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                      Skin Vibe Score
+                    </span>
+                    <div className="font-display font-black text-6xl bg-gradient-to-r from-white via-rose-200 to-brand bg-clip-text text-transparent">
+                      {flow.report.overall}
+                      <span className="text-xl font-bold text-slate-500">/92</span>
                     </div>
-                    <button
-                      onClick={() => dispatch({ type: "RETAKE" })}
-                      className="flex items-center gap-1 text-xs font-bold text-brand bg-skymist px-3 py-2 rounded-xl border border-brand/15 hover:bg-brand hover:text-white transition-colors"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      <span>Retake</span>
-                    </button>
+                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 rounded-full inline-flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> Live Pixel Sampled
+                    </span>
                   </div>
 
-                  {/* Score Ring & Bars */}
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-                    <div className="sm:col-span-5 bg-skymist/60 p-6 rounded-3xl text-center space-y-2 border border-brand/20">
-                      <span className="text-[10px] font-bold text-ink-muted uppercase tracking-wider block">
-                        Overall Score
-                      </span>
-                      <div className="font-display font-extrabold text-5xl text-brand">
-                        {flow.report.overall}
-                      </div>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-mint px-2.5 py-0.5 rounded-full inline-block">
-                        Analyzed Locally
-                      </span>
-                    </div>
-
-                    <div className="sm:col-span-7 space-y-2.5">
-                      {[
-                        { name: "Hydration", score: flow.report.subScores.hydration, color: "bg-brand" },
-                        { name: "Texture", score: flow.report.subScores.texture, color: "bg-coral" },
-                        { name: "Tone", score: flow.report.subScores.tone, color: "bg-yellow" },
-                        { name: "Clarity", score: flow.report.subScores.clarity, color: "bg-brand" },
-                      ].map((s) => (
+                  <div className="sm:col-span-7 space-y-3">
+                    {[
+                      { name: "Hydration Energy", score: flow.report.subScores.hydration, icon: Zap, color: "from-cyan-500 to-blue-500" },
+                      { name: "Texture Smoothness", score: flow.report.subScores.texture, icon: Sparkles, color: "from-rose-500 to-pink-500" },
+                      { name: "Tone Radiance", score: flow.report.subScores.tone, icon: Sun, color: "from-amber-400 to-yellow-500" },
+                      { name: "Barrier Defense", score: flow.report.subScores.clarity, icon: Flame, color: "from-emerald-400 to-teal-500" },
+                    ].map((s) => {
+                      const IconComp = s.icon;
+                      return (
                         <div key={s.name} className="space-y-1">
-                          <div className="flex justify-between text-xs font-semibold text-ink">
-                            <span>{s.name}</span>
-                            <span className="font-bold">{s.score}/100</span>
+                          <div className="flex justify-between text-xs font-bold text-slate-200">
+                            <span className="flex items-center gap-1.5">
+                              <IconComp className="w-3.5 h-3.5 text-brand" />
+                              {s.name}
+                            </span>
+                            <span className="text-slate-400">{s.score}/100</span>
                           </div>
-                          <div className="w-full h-2 bg-skymist rounded-full overflow-hidden">
-                            <div className={`h-full rounded-full ${s.color}`} style={{ width: `${s.score}%` }} />
+                          <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-white/5">
+                            <div
+                              className={`h-full rounded-full bg-gradient-to-r ${s.color} transition-all duration-700`}
+                              style={{ width: `${s.score}%` }}
+                            />
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
-
-                  {/* Summary & Concerns */}
-                  <div className="bg-skymist/30 p-4 rounded-2xl border border-brand/15 text-xs text-ink leading-relaxed space-y-2">
-                    <p>{flow.report.summary}</p>
-                    {flow.report.concerns.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {flow.report.concerns.map((c) => (
-                          <Link key={c} href={`/shop?concern=${c}`}>
-                            <Badge variant="brand" size="sm" className="hover:bg-brand hover:text-white transition-colors cursor-pointer">
-                              Target {c}
-                            </Badge>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Cosmetic Disclaimer */}
-                  <p className="text-[11px] italic text-ink-muted">
-                    Cosmetic skin insights, not medical advice. Lighting and camera quality affect results. If something worries you, a dermatologist is the right person to ask.
-                  </p>
-
-                  {/* Recommendations */}
-                  {recommended.length > 0 && (
-                    <div className="space-y-3 pt-2 border-t border-ink/10">
-                      <h3 className="font-bold text-sm text-ink">Matched Routine For Your Score:</h3>
-                      <div className="space-y-2">
-                        {recommended.map((prod) => (
-                          <div key={prod.id} className="p-3 rounded-2xl border border-ink/10 flex items-center justify-between gap-3 bg-white">
-                            <div className="flex items-center gap-3">
-                              <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-skymist shrink-0 border border-ink/10">
-                                <Image src={prod.images[0] || "/images/hero/product.png"} alt={prod.name} fill className="object-cover" />
-                              </div>
-                              <div>
-                                <h4 className="font-bold text-xs text-ink">{prod.name}</h4>
-                                <span className="text-xs font-bold text-brand">{formatPrice(prod.price)}</span>
-                                {fastDeliveryClaim.verified && (
-                                  <span className="text-[10px] text-emerald-700 block font-semibold">Delivered in ~15 minutes</span>
-                                )}
-                              </div>
-                            </div>
-                            <Button
-                              variant="primary"
-                              size="sm"
-                              onClick={() => addItem({ id: prod.id, slug: prod.slug, name: prod.name, size: prod.size, price: prod.price, mrp: prod.mrp, image: prod.images[0] || "/images/hero/product.png" })}
-                              className="text-xs"
-                            >
-                              Add
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Actions */}
-                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                    <Link href="/shop" className="flex-1">
-                      <Button variant="primary" size="md" className="w-full gap-2 shadow-coral-glow text-button-label">
-                        <span>Shop my routine</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                    <a
-                      href={`https://wa.me/?text=${encodeURIComponent(`I checked my skin score on GLOW VAI: ${flow.report.overall}/100! Try it free: ${siteConfig.url}/face-analysis`)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-center gap-2 bg-skymist text-ink font-bold text-xs px-4 py-2.5 rounded-2xl border border-ink/15 hover:bg-brand hover:text-white transition-colors"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      <span>Share on WhatsApp</span>
-                    </a>
-                  </div>
-
                 </div>
-              )}
+
+                <div className="bg-slate-800/50 p-4 rounded-2xl border border-white/10 text-xs text-slate-300 leading-relaxed">
+                  <p>{getGenZVibeCopy(flow.report.overall)}</p>
+                </div>
+              </div>
+
+              {/* Recommended Routine Cards (Minimalist & The Derma Co Excel Database) */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-display font-black text-xl text-white">Your Curated 4-Step Routine</h3>
+                    <p className="text-xs text-slate-400">Exclusively from Minimalist & The Derma Co Excel database</p>
+                  </div>
+                  <span className="text-[11px] font-bold text-brand bg-brand/20 px-2.5 py-1 rounded-full border border-brand/30">
+                    5 Products Matched
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {recommendedProducts.map((prod) => (
+                    <div key={prod.id} className="bg-slate-900 p-4 rounded-2xl border border-white/10 flex flex-col justify-between gap-3 hover:border-brand/40 transition-colors">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-brand bg-brand/10 px-2 py-0.5 rounded-md">
+                            {prod.brand}
+                          </span>
+                          <span className="text-[10px] font-semibold text-slate-400">
+                            {prod.category}
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-xs text-white leading-snug">{prod.name}</h4>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">{prod.benefit}</p>
+                        <div className="text-[10px] text-rose-300 font-semibold bg-rose-950/40 p-2 rounded-xl border border-rose-500/20">
+                          Active: {prod.keyActives}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-sm font-black text-white">{formatPrice(prod.price)}</span>
+                          <span className="text-[10px] text-slate-500 line-through">{formatPrice(prod.mrp)}</span>
+                        </div>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => addItem({ id: prod.id, slug: prod.id, name: prod.name, size: "Standard", price: prod.price, mrp: prod.mrp, image: "/images/hero/product.png" })}
+                          className="bg-brand text-white text-xs font-bold py-1.5 px-3 rounded-xl"
+                        >
+                          Add Routine
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* DATA COLLECTION FORM (AFTER SCAN PAGE) */}
+              <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-white/15 shadow-2xl space-y-6">
+                
+                {flow.formSubmitted ? (
+                  <div className="text-center py-6 space-y-3">
+                    <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+                      <Check className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-display font-black text-xl text-white">Your Skin Report Is Saved!</h3>
+                    <p className="text-xs text-slate-300 max-w-sm mx-auto">
+                      Thank you, {form.name}! We have saved your custom report and discount code. Check your phone for instant routine updates.
+                    </p>
+                    <div className="pt-2">
+                      <Link href="/shop">
+                        <Button variant="primary" size="md" className="bg-brand text-white font-bold text-xs px-6 py-3 rounded-xl">
+                          Shop Recommended Products
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <div className="inline-flex items-center gap-1.5 bg-brand/20 text-brand text-[10px] font-bold px-2.5 py-1 rounded-full border border-brand/30">
+                        <Lock className="w-3 h-3" /> Save & Unlock Full Report
+                      </div>
+                      <h3 className="font-display font-black text-xl sm:text-2xl text-white">
+                        Claim Your 15% OFF Event Coupon & Saved Scan Report
+                      </h3>
+                      <p className="text-xs text-slate-300">
+                        Enter your details to save your skin vibe score and receive your instant discount code on WhatsApp.
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleLeadFormSubmit} className="space-y-4">
+                      <input
+                        type="text"
+                        name="website"
+                        value={form.website}
+                        onChange={(e) => setForm({ ...form, website: e.target.value })}
+                        className="hidden"
+                        tabIndex={-1}
+                      />
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="block text-xs font-bold text-slate-200">Full Name *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Ananya Roy"
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white placeholder-slate-500 focus:border-brand focus:outline-none"
+                          />
+                          {errors.name && <p className="text-[11px] font-bold text-rose-400">{errors.name}</p>}
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="block text-xs font-bold text-slate-200">Phone Number *</label>
+                          <div className="flex gap-2">
+                            <span className="px-3.5 py-3 rounded-xl bg-slate-800 text-brand font-bold text-xs border border-white/15">
+                              +91
+                            </span>
+                            <input
+                              type="tel"
+                              required
+                              inputMode="tel"
+                              placeholder="98765 43210"
+                              value={form.phone}
+                              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                              className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white placeholder-slate-500 focus:border-brand focus:outline-none"
+                            />
+                          </div>
+                          {errors.phone && <p className="text-[11px] font-bold text-rose-400">{errors.phone}</p>}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="block text-xs font-bold text-slate-200">Email Address (Optional)</label>
+                          <input
+                            type="email"
+                            placeholder="ananya@example.com"
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white placeholder-slate-500 focus:border-brand focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="block text-xs font-bold text-slate-200">Primary Skin Goal</label>
+                          <select
+                            value={form.skinConcern}
+                            onChange={(e) => setForm({ ...form, skinConcern: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white focus:border-brand focus:outline-none font-semibold"
+                          >
+                            <option value="hydration">Dehydration & Dryness</option>
+                            <option value="texture">Uneven Texture & Pores</option>
+                            <option value="tone">Dullness & Hyperpigmentation</option>
+                            <option value="clarity">Active Acne & Oiliness</option>
+                            <option value="sensitivity">Redness & Sensitivity</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 pt-2">
+                        <label className="flex items-start gap-2 text-xs text-slate-300 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            required
+                            checked={form.consent}
+                            onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                            className="mt-0.5 rounded text-brand focus:ring-brand"
+                          />
+                          <span>
+                            I agree to GLOW VAI using my details to save my skin score report and contact me about my routine. *
+                          </span>
+                        </label>
+
+                        <label className="flex items-start gap-2 text-xs text-slate-300 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={form.marketingOptIn}
+                            onChange={(e) => setForm({ ...form, marketingOptIn: e.target.checked })}
+                            className="mt-0.5 rounded text-brand focus:ring-brand"
+                          />
+                          <span>Send me skin tips and exclusive offer codes on WhatsApp.</span>
+                        </label>
+                      </div>
+
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        type="submit"
+                        disabled={flow.isSubmittingForm}
+                        className="w-full bg-gradient-to-r from-brand to-rose-500 hover:from-brand/90 hover:to-rose-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-brand/20 flex items-center justify-center gap-2 text-sm"
+                      >
+                        {flow.isSubmittingForm ? "Saving Report..." : "Save Report & Get 15% OFF Coupon"}
+                      </Button>
+                    </form>
+                  </>
+                )}
+
+              </div>
+
+              {/* Actions & Sharing */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link href="/shop" className="flex-1">
+                  <Button variant="primary" size="md" className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3.5 rounded-2xl border border-white/10 flex items-center justify-center gap-2">
+                    <span>Explore Full Shop Catalog</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`I scored ${flow.report.overall}/92 on GLOW VAI Glass Skin Analyzer! Try it now: ${siteConfig.url}/face-analysis`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 bg-emerald-950 text-emerald-300 font-bold text-xs px-5 py-3.5 rounded-2xl border border-emerald-500/30 hover:bg-emerald-900 transition-colors"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span>Share Score on WhatsApp</span>
+                </a>
+              </div>
 
             </div>
-          </div>
+          )}
+
         </Container>
       </main>
 
-      {/* Slim Footer */}
-      <footer className="border-t border-ink/10 py-6 bg-skymist/30 text-xs text-ink-muted">
+      {/* Footer */}
+      <footer className="border-t border-white/10 py-6 bg-slate-900/40 text-xs text-slate-500">
         <Container>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>© {new Date().getFullYear()} {siteConfig.legalName}</span>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="hover:text-brand transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-brand transition-colors">Terms of Service</Link>
+              <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
             </div>
           </div>
         </Container>

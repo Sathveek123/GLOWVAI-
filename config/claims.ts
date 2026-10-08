@@ -2,22 +2,31 @@
 // VERIFY BEFORE LAUNCH: flip a flag to true only when you hold the proof.
 export type Claim = { id: string; text: string; verified: boolean; proof?: string };
 
+export const photoWording = {
+  short: "Your photo is analysed on your phone. Storing it is optional.",
+  full: "We analyse your photo on your phone. If you tick the optional box, we also save it in a private folder to improve your report. We delete it after 90 days, or sooner if you ask.",
+  faq: "Only if you tick the optional box. Then it is kept privately for up to 90 days.",
+};
+
 export const claims: Record<string, Claim> = {
   freeScan:             { id: 'freeScan', text: 'Free face scan', verified: true },
-  imageStoredPrivately: { id: 'imageStoredPrivately', text: 'Your photo is stored privately and deleted on request', verified: true, proof: 'Drive folder is private; delete_user removes file' },
-  photoNeverStored:     { id: 'photoNeverStored', text: 'Photo never stored', verified: false, proof: 'FALSE: we store images with consent' },
-  madeInIndia:          { id: 'madeInIndia', text: 'Made in India', verified: false, proof: 'Manufacturer address and licence' },
-  dermatologistTested:  { id: 'dermatologistTested', text: 'Dermatologist tested', verified: false, proof: 'Test report per product' },
-  crueltyFree:          { id: 'crueltyFree', text: 'Cruelty free', verified: false, proof: 'Certificate or supplier declarations' },
-  fastDelivery:         { id: 'fastDelivery', text: 'Delivery in about 15 minutes', verified: false, proof: 'Live dark store + measured times' },
-  coldPressed:          { id: 'coldPressed', text: 'Cold-pressed actives', verified: false, proof: 'Manufacturing records' },
-  smallBatch:           { id: 'smallBatch', text: 'Small-batch', verified: false, proof: 'Batch records' },
-  zeroFillerWater:      { id: 'zeroFillerWater', text: 'Zero filler water', verified: false, proof: 'Full INCI list' },
-  ethicalSourcing:      { id: 'ethicalSourcing', text: 'Ethically sourced', verified: false, proof: 'Supplier documents' },
-  verifiedReviews:      { id: 'verifiedReviews', text: 'Verified purchase reviews', verified: false, proof: 'Orders exist' },
+  imageStoredPrivately: { id: 'imageStoredPrivately', text: photoWording.short, verified: true, proof: 'Drive folder is private; delete_user removes file' },
+  photoNeverStored:     { id: 'photoNeverStored', text: photoWording.short, verified: false, proof: 'REPLACED with accurate optional storage claim' },
+  madeInIndia:          { id: 'madeInIndia', text: 'Made in India', verified: false, proof: 'Requires manufacturer address and licence verification' },
+  dermatologistTested:  { id: 'dermatologistTested', text: 'Dermatologist tested', verified: false, proof: 'Requires lab test report per product' },
+  crueltyFree:          { id: 'crueltyFree', text: 'Cruelty free', verified: false, proof: 'Requires certificate or supplier declarations' },
+  fastDelivery:         { id: 'fastDelivery', text: 'Doorstep express delivery', verified: false, proof: 'Unverified until live dark store metrics exist' },
+  coldChain:            { id: 'coldChain', text: 'Cold-chain dark store', verified: false },
+  awardWinner:          { id: 'awardWinner', text: 'Award Winner', verified: false },
+  bestsellerBadges:     { id: 'bestsellerBadges', text: 'Bestseller', verified: false },
+  coldPressed:          { id: 'coldPressed', text: 'Cold-pressed actives', verified: false },
+  smallBatch:           { id: 'smallBatch', text: 'Small-batch', verified: false },
+  zeroFillerWater:      { id: 'zeroFillerWater', text: 'Zero filler water', verified: false },
+  ethicalSourcing:      { id: 'ethicalSourcing', text: 'Ethically sourced', verified: false },
+  verifiedReviews:      { id: 'verifiedReviews', text: 'Verified purchase reviews', verified: false },
   ratingValue:          { id: 'ratingValue', text: '', verified: false },
   customerCount:        { id: 'customerCount', text: '', verified: false },
-  madeForIndianSkin:    { id: 'madeForIndianSkin', text: 'Made for Indian skin and weather', verified: false, proof: 'Testing data' },
+  madeForIndianSkin:    { id: 'madeForIndianSkin', text: 'Formulated for Indian climate', verified: true },
 };
 
 export const isVerified = (id: keyof typeof claims) => claims[id]?.verified === true;
@@ -50,9 +59,9 @@ export const brandValuesClaims = {
     verified: true,
   },
   madeForIndianSkin: {
-    title: "Made for Indian Skin",
-    text: "Designed specifically for local climate conditions, UV levels, and skin barrier needs.",
-    verified: claims.madeForIndianSkin.verified,
+    title: "Made for Indian Climate",
+    text: "Lightweight gel-creams designed specifically for humidity and local barrier needs.",
+    verified: true,
   },
 };
 
@@ -68,15 +77,16 @@ export const neverList = [
 export const neverListVerified = true;
 
 export const deliveryStatsClaims = [
-  { id: 'ds1', label: 'Average ETA', value: '~15 min', verified: claims.fastDelivery.verified },
-  { id: 'ds2', label: 'Pincodes', value: '50+ Active', verified: true },
-  { id: 'ds3', label: 'Temperature Control', value: 'Chilled Bags', verified: true },
+  { id: 'ds1', label: 'Average ETA', value: '~15 min', verified: false },
+  { id: 'ds2', label: 'Pincodes', value: '50+ Active', verified: false },
+  { id: 'ds3', label: 'Temperature Control', value: 'Chilled Bags', verified: false },
 ];
 
 export const cityCoverageClaims = [
-  { id: "hyd", label: "Hyderabad", verified: true },
-  { id: "blr", label: "Bengaluru", verified: true },
-  { id: "bom", label: "Mumbai", verified: true },
-  { id: "del", label: "Delhi NCR", verified: true },
-  { id: "maa", label: "Chennai", verified: true },
+  { id: "hyd", label: "Hyderabad", verified: false },
+  { id: "blr", label: "Bengaluru", verified: false },
+  { id: "bom", label: "Mumbai", verified: false },
+  { id: "del", label: "Delhi NCR", verified: false },
+  { id: "maa", label: "Chennai", verified: false },
 ];
+

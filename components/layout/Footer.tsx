@@ -98,7 +98,7 @@ export function Footer() {
             </Link>
 
             <p className="text-xs sm:text-sm text-white/70 leading-relaxed max-w-sm">
-              Skincare that starts with a selfie. Cold-chain micro stores in Andhra Pradesh, 15-minute doorstep express delivery, on-device privacy.
+              Skincare that starts with a selfie. Formulated for Indian weather, doorstep express delivery, on-device privacy.
             </p>
 
             {/* Direct Contact Links */}
@@ -127,7 +127,7 @@ export function Footer() {
                 <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-coral">
                   <MapPin className="w-3.5 h-3.5" />
                 </div>
-                <span>Andhra Pradesh, India</span>
+                <span>Hyderabad, Telangana, India</span>
               </div>
             </div>
 

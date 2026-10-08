@@ -2,9 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Instrument_Serif, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { siteConfig, BRAND_NAME } from "@/config/site";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { HeaderAndFooterWrapper } from "@/components/layout/HeaderAndFooterWrapper";
 import { getLocationFromIP } from "@/lib/location";
 
 const displayFont = Bricolage_Grotesque({
@@ -39,44 +37,41 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glowvai.in";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteConfig.name} | Skincare That Understands Your Face, Delivered in Minutes`,
-    template: `%s | ${siteConfig.name}`,
+    default: "GLOW VAI | Skincare that starts with a face scan",
+    template: "%s | GLOW VAI",
   },
-  description: siteConfig.description,
-  keywords: [
-    "cosmetic quick commerce",
-    "GLOW VAI skincare",
-    "skincare delivered in 15 minutes",
-    "AI face scan skincare",
-    "Hyderabad skincare delivery",
-    "clean Indian cosmetics",
-    "dermatologist tested skincare",
-  ],
-  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  description: "Scan your face for free, get a plain-language skin report, and shop a routine that fits.",
+  alternates: {
+    canonical: "/",
+  },
+  authors: [{ name: siteConfig.name, url: siteUrl }],
   creator: siteConfig.name,
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: siteConfig.url,
-    title: `${siteConfig.name} - Fresh Cosmetics in ~15 Mins`,
-    description: siteConfig.description,
+    url: "/",
+    title: "GLOW VAI | Skincare that starts with a face scan",
+    description: "Scan your face for free, get a plain-language skin report, and shop a routine that fits.",
     siteName: siteConfig.name,
     images: [
       {
-        url: siteConfig.ogImage,
+        url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} Fresh Skincare Quick Commerce`,
+        alt: "GLOW VAI skincare",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
+    title: "GLOW VAI | Skincare that starts with a face scan",
+    description: "Scan your face for free, get a plain-language skin report, and shop a routine that fits.",
+    images: ["/og.jpg"],
     creator: "@glowvai",
   },
   robots: {
@@ -95,11 +90,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${displayFont.variable} ${accentFont.variable} ${bodyFont.variable}`}>
       <body className="min-h-screen bg-white text-ink flex flex-col font-sans selection:bg-brand selection:text-white">
-        <AnnouncementBar city={locationData.city} />
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <HeaderAndFooterWrapper city={locationData.city}>
+          {children}
+        </HeaderAndFooterWrapper>
       </body>
     </html>
   );
 }
+

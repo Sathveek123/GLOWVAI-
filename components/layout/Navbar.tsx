@@ -11,11 +11,15 @@ import { MobileMenu } from "./MobileMenu";
 import { CartDrawer } from "./CartDrawer";
 import { getAssetPath, cn } from "@/lib/utils";
 
+import { useCartStore } from "@/lib/store/cart";
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const cartItemCount = 1;
+  
+  const cartItems = useCartStore((s) => s.items);
+  const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,13 +56,13 @@ export function Navbar() {
           {/* Center Announcement badge */}
           <div className="hidden lg:flex items-center gap-2 bg-white/10 px-3 py-0.5 rounded-full border border-white/10">
             <Sparkles className="w-3.5 h-3.5 text-yellow animate-spin-slow" />
-            <span className="font-semibold text-white/90">Instant AI Face Scan & Express 15-Min Delivery</span>
+            <span className="font-semibold text-white/90">Instant AI Face Scan & Clean Skincare Routines</span>
           </div>
 
           {/* Right: Social Links */}
           <div className="flex items-center gap-3">
             <a
-              href="https://www.instagram.com/glowvai?stkn=MTV6Znk1ZHd2OGd5eg=="
+              href="https://www.instagram.com/glowvai"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"

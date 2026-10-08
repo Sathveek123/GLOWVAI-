@@ -13,6 +13,7 @@ export const routesReady: Record<string, boolean> = {
   "/contact": true,
   "/privacy": true,
   "/terms": true,
+  "/returns": true,
   "/#faq": true,
   "/#delivery": true,
   "/#journal": true,
@@ -23,7 +24,6 @@ export const navLinks: NavItem[] = [
   { title: "Shop", href: "/shop" },
   { title: "Our Story", href: "/our-story" },
   { title: "Face Analysis", href: "/face-analysis", badge: "Free" },
-  { title: "Journal", href: "/journal" },
 ];
 
 export const footerLinks = {
@@ -43,10 +43,11 @@ export const footerLinks = {
   help: [
     { title: "FAQ", href: "/#faq" },
     { title: "Delivery", href: "/#delivery" },
-    { title: "Returns Policy", href: "/terms" },
+    { title: "Returns Policy", href: "/returns" },
   ],
   legal: [
     { title: "Privacy Policy", href: "/privacy" },
     { title: "Terms & Conditions", href: "/terms" },
   ],
 };
+

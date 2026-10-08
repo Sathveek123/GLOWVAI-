@@ -57,7 +57,7 @@ export const sampleProducts: Product[] = [
       { size: "100ml", price: 849, mrp: 999 },
     ],
     images: ["/images/products/moisturiser-1.png", "/images/products/moisturiser-2.png"],
-    ingredients: "Aqua, Glycerin, Niacinamide, Sodium Hyaluronate, Ceramide NP, Carbomer, Phenoxyethanol, Ethylhexylglycerin, Sodium Hydroxide.",
+    ingredients: "Aqua, Glycerin, Niacinamide, Sodium Hyaluronate, Ceramide NP, Centella Asiatica Extract, Carbomer, Phenoxyethanol, Ethylhexylglycerin, Sodium Hydroxide.",
     keyIngredients: ["Sodium Hyaluronate (2%)", "Ceramide NP", "Centella Asiatica Extract"],
     howToUse: [
       "Apply 2 pumps to clean, damp face and neck morning and evening.",
@@ -70,7 +70,7 @@ export const sampleProducts: Product[] = [
     marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
     status: "published",
     seo: {
-      title: "Dew Barrier Daily Hydrator | GLOW VAI",
+      title: "Dew Barrier Daily Hydrator",
       description: "Lightweight gel-cream moisturiser with Hyaluronic Acid & Ceramides built for Indian weather.",
     },
   },
@@ -100,7 +100,7 @@ export const sampleProducts: Product[] = [
     marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
     status: "published",
     seo: {
-      title: "Clarity Pop Niacinamide Serum | GLOW VAI",
+      title: "Clarity Pop Niacinamide Serum",
       description: "10% Niacinamide & 1% Zinc PCA clarifying serum for pore refinement and oil balance.",
     },
   },
@@ -130,7 +130,7 @@ export const sampleProducts: Product[] = [
     marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
     status: "published",
     seo: {
-      title: "Sun Shield Invisible Fluid SPF 50 PA++++ | GLOW VAI",
+      title: "Sun Shield Invisible Fluid SPF 50 PA++++",
       description: "Zero white-cast SPF 50 fluid sunscreen formulated for Indian sun & sweat.",
     },
   },
@@ -160,7 +160,7 @@ export const sampleProducts: Product[] = [
     marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
     status: "published",
     seo: {
-      title: "Velvet Cloud Cica Cleanser | GLOW VAI",
+      title: "Velvet Cloud Cica Cleanser",
       description: "pH 5.5 gentle hydrating facial cleanser with Centella and Oat extract.",
     },
   },
@@ -190,7 +190,7 @@ export const sampleProducts: Product[] = [
     marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
     status: "published",
     seo: {
-      title: "Petal Plump Peptide Lip Butter | GLOW VAI",
+      title: "Petal Plump Peptide Lip Butter",
       description: "Peptide-infused nourishing lip butter treatment for long-lasting hydration.",
     },
   },
@@ -220,7 +220,7 @@ export const sampleProducts: Product[] = [
     marketerAddress: "Studio 4B, Design District, Hyderabad, Telangana 500081",
     status: "published",
     seo: {
-      title: "Velvet Smooth Exfoliating Body Lotion | GLOW VAI",
+      title: "Velvet Smooth Exfoliating Body Lotion",
       description: "5% Lactic Acid & Squalane body lotion for smooth, bump-free skin.",
     },
   },

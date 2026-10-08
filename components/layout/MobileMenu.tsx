@@ -123,7 +123,7 @@ export function MobileMenu({
 
           <div className="flex justify-center items-center gap-3 pt-1">
             <a
-              href="https://www.instagram.com/glowvai?stkn=MTV6Znk1ZHd2OGd5eg=="
+              href="https://www.instagram.com/glowvai"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-full bg-skymist flex items-center justify-center text-ink hover:bg-brand hover:text-white transition-colors"
