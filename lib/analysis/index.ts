@@ -2,8 +2,11 @@ import { HeuristicSkinEngine, SkinEngine, AnalysisReport } from "./engine";
 
 const currentEngine: SkinEngine = new HeuristicSkinEngine();
 
-export async function analyse(canvas: HTMLCanvasElement | null): Promise<AnalysisReport> {
-  return currentEngine.analyseFrame(canvas);
+export async function analyse(
+  canvas: HTMLCanvasElement | null,
+  demographic?: string
+): Promise<AnalysisReport> {
+  return currentEngine.analyseFrame(canvas, demographic);
 }
 
 export * from "./engine";

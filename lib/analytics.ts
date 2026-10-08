@@ -5,7 +5,7 @@
 
 export type AnalyticsEvent =
   | { name: "scan_form_view" }
-  | { name: "scan_form_submit"; ageConfirmed: boolean }
+  | { name: "scan_form_submit"; ageConfirmed?: boolean; demographic?: string }
   | { name: "scan_camera_open" }
   | { name: "scan_camera_denied" }
   | { name: "scan_complete"; scoreBand: "low" | "mid" | "high" }
@@ -18,7 +18,6 @@ export function trackEvent(event: AnalyticsEvent) {
     console.log(`[Analytics Event]: ${event.name}`, event);
   }
 
-  // Hook for Plausible/Fathom/Google Analytics without PII transmission
   if (typeof window !== "undefined" && (window as unknown as { gtag?: Function }).gtag) {
     (window as unknown as { gtag: Function }).gtag("event", event.name, event);
   }

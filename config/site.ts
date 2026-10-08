@@ -12,7 +12,7 @@ export const siteConfig = {
   phone: "+91 89778 55998",
   address: "Studio 4B, Design District, Hyderabad, Telangana 500081",
   deliveryEstimateMinutes: 15,
-  defaultCity: "Hyderabad",
+  defaultCity: "Vijayawada",
   // Real ratings and customer counts go here ONLY when verified before launch.
   // If empty, components hide them automatically.
   rating: "", // e.g. "4.95 / 5" when verified

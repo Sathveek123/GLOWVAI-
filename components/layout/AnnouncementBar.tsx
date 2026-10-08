@@ -14,7 +14,7 @@ const provableMessages = [
   "Authorized products • Minimalist & The Derma Co",
 ];
 
-export function AnnouncementBar({ city = "Hyderabad" }: AnnouncementBarProps) {
+export function AnnouncementBar({ city = "Vijayawada" }: AnnouncementBarProps) {
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 

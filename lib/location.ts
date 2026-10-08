@@ -11,7 +11,7 @@ export async function getLocationFromIP(): Promise<LocationData> {
     // resolves real-time city location.
     return {
       city: siteConfig.defaultCity,
-      region: "Telangana",
+      region: "Andhra Pradesh",
       country: "India",
       ip: "127.0.0.1",
     };
