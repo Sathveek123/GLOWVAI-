@@ -364,26 +364,26 @@ export default function FaceAnalysisPage() {
   };
 
   return (
-    <div className="bg-slate-950 text-white min-h-screen flex flex-col justify-between selection:bg-brand selection:text-white">
+    <div className="bg-white text-ink min-h-screen flex flex-col justify-between selection:bg-brand selection:text-white">
       <CartDrawer />
 
       {/* Header */}
-      <header className="border-b border-white/10 py-4 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-slate-200/80 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-40">
         <Container>
           <div className="flex items-center justify-between">
-            <Link href="/" className="font-display font-black text-xl text-white tracking-tight flex items-center gap-2">
-              <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand to-rose-500 text-white flex items-center justify-center font-bold text-base shadow-lg shadow-brand/20">
+            <Link href="/" className="font-display font-black text-xl text-ink tracking-tight flex items-center gap-2">
+              <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand to-rose-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-brand/20">
                 G
               </span>
-              <span className="bg-gradient-to-r from-white via-slate-200 to-brand bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-ink via-slate-800 to-brand bg-clip-text text-transparent">
                 {BRAND_NAME}
               </span>
             </Link>
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-bold tracking-wider uppercase bg-brand/20 text-brand px-2.5 py-1 rounded-full border border-brand/30">
+              <span className="text-[10px] font-bold tracking-wider uppercase bg-brand/10 text-brand px-2.5 py-1 rounded-full border border-brand/20">
                 Gen Z Skin Analyzer
               </span>
-              <Link href="/" className="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+              <Link href="/" className="text-xs font-semibold text-slate-600 hover:text-ink transition-colors">
                 Back to store
               </Link>
             </div>
@@ -392,7 +392,7 @@ export default function FaceAnalysisPage() {
       </header>
 
       {/* Main Container */}
-      <main className="py-8 sm:py-12 flex-1">
+      <main className="py-8 sm:py-12 flex-1 bg-slate-50/50">
         <Container size="md">
 
           {/* STEP 1: SCAN READY & CAMERA SCREEN */}
@@ -403,46 +403,46 @@ export default function FaceAnalysisPage() {
             <div className="max-w-xl mx-auto space-y-6">
               
               <div className="text-center space-y-3">
-                <Badge variant="brand" size="md" className="bg-brand/20 text-brand border-brand/30 px-3 py-1">
+                <Badge variant="brand" size="md" className="bg-brand/10 text-brand border-brand/20 px-3 py-1">
                   Step 1 of 2: Face Scan
                 </Badge>
-                <h1 className="font-display font-black text-3xl sm:text-4xl text-white leading-tight">
+                <h1 className="font-display font-black text-3xl sm:text-4xl text-ink leading-tight">
                   Instant <Accent>Glass Skin</Accent> Analysis ✨
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto">
+                <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
                   Take a 5-second selfie scan to reveal your skin score & personalized routine from Minimalist & The Derma Co.
                 </p>
               </div>
 
-              <div className="bg-slate-900/90 border border-white/10 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6 text-center backdrop-blur-xl">
+              <div className="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-3xl shadow-xl space-y-6 text-center">
                 
                 {flow.state === "SCAN_READY" ? (
                   <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-3 text-left">
-                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                        <Sun className="w-4 h-4 text-amber-400" />
-                        <h4 className="font-bold text-xs text-white">Natural Light</h4>
-                        <p className="text-[11px] text-slate-400">Face a window for accurate brightness reading.</p>
+                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 space-y-1">
+                        <Sun className="w-4 h-4 text-amber-500" />
+                        <h4 className="font-bold text-xs text-ink">Natural Light</h4>
+                        <p className="text-[11px] text-slate-600">Face a window for accurate brightness reading.</p>
                       </div>
-                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                        <Info className="w-4 h-4 text-rose-400" />
-                        <h4 className="font-bold text-xs text-white">No Heavy Filters</h4>
-                        <p className="text-[11px] text-slate-400">Bare skin gives real texture insights.</p>
+                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 space-y-1">
+                        <Info className="w-4 h-4 text-rose-500" />
+                        <h4 className="font-bold text-xs text-ink">No Heavy Filters</h4>
+                        <p className="text-[11px] text-slate-600">Bare skin gives real texture insights.</p>
                       </div>
-                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <h4 className="font-bold text-xs text-white">Clear Frame</h4>
-                        <p className="text-[11px] text-slate-400">Keep hair away from forehead & cheeks.</p>
+                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 space-y-1">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                        <h4 className="font-bold text-xs text-ink">Clear Frame</h4>
+                        <p className="text-[11px] text-slate-600">Keep hair away from forehead & cheeks.</p>
                       </div>
-                      <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                        <Lock className="w-4 h-4 text-cyan-400" />
-                        <h4 className="font-bold text-xs text-white">100% Private</h4>
-                        <p className="text-[11px] text-slate-400">Analysed live in your browser.</p>
+                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 space-y-1">
+                        <Lock className="w-4 h-4 text-cyan-600" />
+                        <h4 className="font-bold text-xs text-ink">100% Private</h4>
+                        <p className="text-[11px] text-slate-600">Analysed live in your browser.</p>
                       </div>
                     </div>
 
                     {inAppBrowser && (
-                      <div className="bg-amber-500/20 p-3 rounded-2xl border border-amber-500/40 text-xs text-amber-300 space-y-2">
+                      <div className="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-xs text-amber-900 space-y-2">
                         <p>In-app browser detected. For best camera access, open in Chrome or Safari:</p>
                         <button
                           type="button"
@@ -451,7 +451,7 @@ export default function FaceAnalysisPage() {
                             setIsCopied(true);
                             setTimeout(() => setIsCopied(false), 2000);
                           }}
-                          className="bg-amber-400 text-slate-950 px-3 py-1.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 mx-auto"
+                          className="bg-amber-500 text-white px-3 py-1.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 mx-auto"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           <span>{isCopied ? "Link Copied!" : "Copy Page Link"}</span>
@@ -471,12 +471,12 @@ export default function FaceAnalysisPage() {
                       </Button>
 
                       <div className="relative flex py-2 items-center">
-                        <div className="flex-grow border-t border-white/10"></div>
-                        <span className="flex-shrink mx-4 text-xs font-semibold text-slate-500">OR</span>
-                        <div className="flex-grow border-t border-white/10"></div>
+                        <div className="flex-grow border-t border-slate-200"></div>
+                        <span className="flex-shrink mx-4 text-xs font-semibold text-slate-400">OR</span>
+                        <div className="flex-grow border-t border-slate-200"></div>
                       </div>
 
-                      <label className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs py-3 px-4 rounded-2xl border border-white/10 cursor-pointer transition-colors">
+                      <label className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs py-3 px-4 rounded-2xl border border-slate-200 cursor-pointer transition-colors">
                         <Upload className="w-4 h-4 text-brand" />
                         <span>Upload Selfie Photo</span>
                         <input
@@ -490,7 +490,7 @@ export default function FaceAnalysisPage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="relative w-full aspect-square max-w-[320px] mx-auto rounded-3xl overflow-hidden bg-slate-950 border-2 border-brand/50 flex items-center justify-center">
+                    <div className="relative w-full aspect-square max-w-[320px] mx-auto rounded-3xl overflow-hidden bg-slate-900 border-2 border-brand/40 flex items-center justify-center shadow-lg">
                       <video
                         ref={videoRef}
                         autoPlay
@@ -501,7 +501,7 @@ export default function FaceAnalysisPage() {
                       <div className="absolute inset-6 border-2 border-dashed border-rose-400 rounded-full pointer-events-none opacity-80 animate-pulse" />
                     </div>
 
-                    <div aria-live="polite" className="bg-brand/20 px-4 py-2 rounded-full text-xs font-bold text-rose-300 inline-flex items-center gap-2 border border-brand/30">
+                    <div aria-live="polite" className="bg-brand/10 px-4 py-2 rounded-full text-xs font-bold text-brand inline-flex items-center gap-2 border border-brand/20">
                       <Sparkles className="w-3.5 h-3.5 animate-spin" />
                       <span>{flow.cameraFeedback}</span>
                     </div>
@@ -511,7 +511,7 @@ export default function FaceAnalysisPage() {
                         variant="outline"
                         size="sm"
                         onClick={executeFrameAnalysis}
-                        className="border-white/20 text-white hover:bg-white/10 text-xs"
+                        className="border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold"
                       >
                         Analyze Frame Now
                       </Button>
@@ -524,12 +524,12 @@ export default function FaceAnalysisPage() {
 
           {/* CAMERA DENIED / FALLBACK STATE */}
           {flow.state === "CAMERA_DENIED" && (
-            <div className="max-w-md mx-auto bg-slate-900 p-6 sm:p-8 rounded-3xl border border-white/10 shadow-xl space-y-6 text-center">
-              <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
-              <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-white focus:outline-none">
+            <div className="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xl space-y-6 text-center">
+              <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
+              <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-ink focus:outline-none">
                 Camera Access Blocked
               </h2>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-slate-600">
                 Allow camera access in your browser site permissions, or simply upload a photo from your gallery below.
               </p>
 
@@ -546,7 +546,7 @@ export default function FaceAnalysisPage() {
 
               <button
                 onClick={() => dispatch({ type: "RETAKE" })}
-                className="text-xs text-slate-400 hover:text-white underline block mx-auto"
+                className="text-xs text-slate-500 hover:text-ink underline block mx-auto font-medium"
               >
                 Try camera again
               </button>
@@ -555,12 +555,12 @@ export default function FaceAnalysisPage() {
 
           {/* ANALYSIS FAILED STATE */}
           {flow.state === "ANALYSIS_FAILED" && (
-            <div className="max-w-md mx-auto bg-slate-900 p-6 sm:p-8 rounded-3xl border border-white/10 shadow-xl space-y-6 text-center">
-              <AlertCircle className="w-10 h-10 text-amber-400 mx-auto" />
-              <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-white focus:outline-none">
+            <div className="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xl space-y-6 text-center">
+              <AlertCircle className="w-10 h-10 text-amber-500 mx-auto" />
+              <h2 ref={headingRef} tabIndex={-1} className="font-display text-xl font-bold text-ink focus:outline-none">
                 Lighting Check Needed
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 {flow.errorMessage || "We couldn't get a clear brightness reading. Try standing facing a window!"}
               </p>
               <Button
@@ -579,22 +579,22 @@ export default function FaceAnalysisPage() {
             <div className="max-w-3xl mx-auto space-y-8">
               
               {/* Gamified Aura Score Card */}
-              <div className="bg-gradient-to-b from-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
-                <div className="absolute -right-12 -top-12 w-48 h-48 bg-brand/20 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-rose-500/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="bg-gradient-to-br from-blue-50/60 via-white to-slate-50 p-6 sm:p-8 rounded-3xl border border-brand/20 shadow-xl space-y-6 relative overflow-hidden">
+                <div className="absolute -right-12 -top-12 w-48 h-48 bg-brand/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 relative z-10">
+                <div className="flex items-center justify-between border-b border-slate-200/80 pb-4 relative z-10">
                   <div>
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-brand block">
                       Gen Z Vibe Report
                     </span>
-                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-black text-white focus:outline-none flex items-center gap-2">
+                    <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-black text-ink focus:outline-none flex items-center gap-2">
                       <span>{getGenZAuraTitle(flow.report.overall)}</span>
                     </h2>
                   </div>
                   <button
                     onClick={() => dispatch({ type: "RETAKE" })}
-                    className="flex items-center gap-1.5 text-xs font-bold text-slate-300 bg-slate-800 px-3 py-2 rounded-xl border border-white/10 hover:bg-slate-700 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 shadow-sm transition-colors"
                   >
                     <RotateCcw className="w-3.5 h-3.5 text-brand" />
                     <span>Scan Again</span>
@@ -603,16 +603,16 @@ export default function FaceAnalysisPage() {
 
                 {/* Score & Vibe Indicators */}
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center relative z-10">
-                  <div className="sm:col-span-5 bg-slate-800/80 p-6 rounded-3xl text-center space-y-2 border border-white/10 backdrop-blur-md">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  <div className="sm:col-span-5 bg-white p-6 rounded-3xl text-center space-y-2 border border-slate-200/80 shadow-md">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
                       Skin Vibe Score
                     </span>
-                    <div className="font-display font-black text-6xl bg-gradient-to-r from-white via-rose-200 to-brand bg-clip-text text-transparent">
+                    <div className="font-display font-black text-6xl bg-gradient-to-r from-ink via-brand to-rose-600 bg-clip-text text-transparent">
                       {flow.report.overall}
-                      <span className="text-xl font-bold text-slate-500">/92</span>
+                      <span className="text-xl font-bold text-slate-400">/92</span>
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 rounded-full inline-flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" /> Live Pixel Sampled
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full inline-flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-emerald-600" /> Live Pixel Sampled
                     </span>
                   </div>
 
@@ -626,14 +626,14 @@ export default function FaceAnalysisPage() {
                       const IconComp = s.icon;
                       return (
                         <div key={s.name} className="space-y-1">
-                          <div className="flex justify-between text-xs font-bold text-slate-200">
+                          <div className="flex justify-between text-xs font-bold text-slate-800">
                             <span className="flex items-center gap-1.5">
                               <IconComp className="w-3.5 h-3.5 text-brand" />
                               {s.name}
                             </span>
-                            <span className="text-slate-400">{s.score}/100</span>
+                            <span className="text-slate-500 font-semibold">{s.score}/100</span>
                           </div>
-                          <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-white/5">
+                          <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
                             <div
                               className={`h-full rounded-full bg-gradient-to-r ${s.color} transition-all duration-700`}
                               style={{ width: `${s.score}%` }}
@@ -645,7 +645,7 @@ export default function FaceAnalysisPage() {
                   </div>
                 </div>
 
-                <div className="bg-slate-800/50 p-4 rounded-2xl border border-white/10 text-xs text-slate-300 leading-relaxed">
+                <div className="bg-white/90 p-4 rounded-2xl border border-slate-200/80 text-xs text-slate-600 leading-relaxed shadow-sm">
                   <p>{getGenZVibeCopy(flow.report.overall)}</p>
                 </div>
               </div>
@@ -654,43 +654,43 @@ export default function FaceAnalysisPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-display font-black text-xl text-white">Your Curated 4-Step Routine</h3>
-                    <p className="text-xs text-slate-400">Exclusively from Minimalist & The Derma Co Excel database</p>
+                    <h3 className="font-display font-black text-xl text-ink">Your Curated 4-Step Routine</h3>
+                    <p className="text-xs text-slate-500">Exclusively from Minimalist & The Derma Co Excel database</p>
                   </div>
-                  <span className="text-[11px] font-bold text-brand bg-brand/20 px-2.5 py-1 rounded-full border border-brand/30">
+                  <span className="text-[11px] font-bold text-brand bg-brand/10 px-2.5 py-1 rounded-full border border-brand/20">
                     5 Products Matched
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {recommendedProducts.map((prod) => (
-                    <div key={prod.id} className="bg-slate-900 p-4 rounded-2xl border border-white/10 flex flex-col justify-between gap-3 hover:border-brand/40 transition-colors">
+                    <div key={prod.id} className="bg-white p-4 rounded-2xl border border-slate-200/80 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md hover:border-brand/30 transition-all">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-brand bg-brand/10 px-2 py-0.5 rounded-md">
                             {prod.brand}
                           </span>
-                          <span className="text-[10px] font-semibold text-slate-400">
+                          <span className="text-[10px] font-semibold text-slate-500">
                             {prod.category}
                           </span>
                         </div>
-                        <h4 className="font-bold text-xs text-white leading-snug">{prod.name}</h4>
-                        <p className="text-[11px] text-slate-400 leading-relaxed">{prod.benefit}</p>
-                        <div className="text-[10px] text-rose-300 font-semibold bg-rose-950/40 p-2 rounded-xl border border-rose-500/20">
+                        <h4 className="font-bold text-xs text-ink leading-snug">{prod.name}</h4>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">{prod.benefit}</p>
+                        <div className="text-[10px] text-rose-800 font-semibold bg-rose-50 p-2 rounded-xl border border-rose-200">
                           Active: {prod.keyActives}
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                         <div className="flex items-baseline gap-1.5">
-                          <span className="text-sm font-black text-white">{formatPrice(prod.price)}</span>
-                          <span className="text-[10px] text-slate-500 line-through">{formatPrice(prod.mrp)}</span>
+                          <span className="text-sm font-black text-ink">{formatPrice(prod.price)}</span>
+                          <span className="text-[10px] text-slate-400 line-through">{formatPrice(prod.mrp)}</span>
                         </div>
                         <Button
                           variant="primary"
                           size="sm"
                           onClick={() => addItem({ id: prod.id, slug: prod.id, name: prod.name, size: "Standard", price: prod.price, mrp: prod.mrp, image: "/images/hero/product.png" })}
-                          className="bg-brand text-white text-xs font-bold py-1.5 px-3 rounded-xl"
+                          className="bg-brand text-white text-xs font-bold py-1.5 px-3 rounded-xl hover:bg-brand/90"
                         >
                           Add Routine
                         </Button>
@@ -701,15 +701,15 @@ export default function FaceAnalysisPage() {
               </div>
 
               {/* DATA COLLECTION FORM (AFTER SCAN PAGE) */}
-              <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-white/15 shadow-2xl space-y-6">
+              <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xl space-y-6">
                 
                 {flow.formSubmitted ? (
                   <div className="text-center py-6 space-y-3">
-                    <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto border border-emerald-200">
                       <Check className="w-6 h-6" />
                     </div>
-                    <h3 className="font-display font-black text-xl text-white">Your Skin Report Is Saved!</h3>
-                    <p className="text-xs text-slate-300 max-w-sm mx-auto">
+                    <h3 className="font-display font-black text-xl text-ink">Your Skin Report Is Saved!</h3>
+                    <p className="text-xs text-slate-600 max-w-sm mx-auto">
                       Thank you, {form.name}! We have saved your custom report and discount code. Check your phone for instant routine updates.
                     </p>
                     <div className="pt-2">
@@ -723,13 +723,13 @@ export default function FaceAnalysisPage() {
                 ) : (
                   <>
                     <div className="space-y-2">
-                      <div className="inline-flex items-center gap-1.5 bg-brand/20 text-brand text-[10px] font-bold px-2.5 py-1 rounded-full border border-brand/30">
+                      <div className="inline-flex items-center gap-1.5 bg-brand/10 text-brand text-[10px] font-bold px-2.5 py-1 rounded-full border border-brand/20">
                         <Lock className="w-3 h-3" /> Save & Unlock Full Report
                       </div>
-                      <h3 className="font-display font-black text-xl sm:text-2xl text-white">
+                      <h3 className="font-display font-black text-xl sm:text-2xl text-ink">
                         Claim Your 15% OFF Event Coupon & Saved Scan Report
                       </h3>
-                      <p className="text-xs text-slate-300">
+                      <p className="text-xs text-slate-600">
                         Enter your details to save your skin vibe score and receive your instant discount code on WhatsApp.
                       </p>
                     </div>
@@ -746,22 +746,22 @@ export default function FaceAnalysisPage() {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="block text-xs font-bold text-slate-200">Full Name *</label>
+                          <label className="block text-xs font-bold text-slate-700">Full Name *</label>
                           <input
                             type="text"
                             required
                             placeholder="e.g. Ananya Roy"
                             value={form.name}
                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white placeholder-slate-500 focus:border-brand focus:outline-none"
+                            className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-ink placeholder-slate-400 focus:border-brand focus:bg-white focus:outline-none transition-colors"
                           />
-                          {errors.name && <p className="text-[11px] font-bold text-rose-400">{errors.name}</p>}
+                          {errors.name && <p className="text-[11px] font-bold text-rose-500">{errors.name}</p>}
                         </div>
 
                         <div className="space-y-1">
-                          <label className="block text-xs font-bold text-slate-200">Phone Number *</label>
+                          <label className="block text-xs font-bold text-slate-700">Phone Number *</label>
                           <div className="flex gap-2">
-                            <span className="px-3.5 py-3 rounded-xl bg-slate-800 text-brand font-bold text-xs border border-white/15">
+                            <span className="px-3.5 py-3 rounded-xl bg-slate-100 text-brand font-bold text-xs border border-slate-200 flex items-center justify-center">
                               +91
                             </span>
                             <input
@@ -771,31 +771,31 @@ export default function FaceAnalysisPage() {
                               placeholder="98765 43210"
                               value={form.phone}
                               onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                              className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white placeholder-slate-500 focus:border-brand focus:outline-none"
+                              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-ink placeholder-slate-400 focus:border-brand focus:bg-white focus:outline-none transition-colors"
                             />
                           </div>
-                          {errors.phone && <p className="text-[11px] font-bold text-rose-400">{errors.phone}</p>}
+                          {errors.phone && <p className="text-[11px] font-bold text-rose-500">{errors.phone}</p>}
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="block text-xs font-bold text-slate-200">Email Address (Optional)</label>
+                          <label className="block text-xs font-bold text-slate-700">Email Address (Optional)</label>
                           <input
                             type="email"
                             placeholder="ananya@example.com"
                             value={form.email}
                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white placeholder-slate-500 focus:border-brand focus:outline-none"
+                            className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-ink placeholder-slate-400 focus:border-brand focus:bg-white focus:outline-none transition-colors"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <label className="block text-xs font-bold text-slate-200">Primary Skin Goal</label>
+                          <label className="block text-xs font-bold text-slate-700">Primary Skin Goal</label>
                           <select
                             value={form.skinConcern}
                             onChange={(e) => setForm({ ...form, skinConcern: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/15 text-xs text-white focus:border-brand focus:outline-none font-semibold"
+                            className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-ink focus:border-brand focus:bg-white focus:outline-none font-semibold transition-colors"
                           >
                             <option value="hydration">Dehydration & Dryness</option>
                             <option value="texture">Uneven Texture & Pores</option>
@@ -807,7 +807,7 @@ export default function FaceAnalysisPage() {
                       </div>
 
                       <div className="space-y-2 pt-2">
-                        <label className="flex items-start gap-2 text-xs text-slate-300 cursor-pointer">
+                        <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
                           <input
                             type="checkbox"
                             required
@@ -820,7 +820,7 @@ export default function FaceAnalysisPage() {
                           </span>
                         </label>
 
-                        <label className="flex items-start gap-2 text-xs text-slate-300 cursor-pointer">
+                        <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={form.marketingOptIn}
@@ -849,18 +849,18 @@ export default function FaceAnalysisPage() {
               {/* Actions & Sharing */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/shop" className="flex-1">
-                  <Button variant="primary" size="md" className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3.5 rounded-2xl border border-white/10 flex items-center justify-center gap-2">
+                  <Button variant="primary" size="md" className="w-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs py-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center gap-2">
                     <span>Explore Full Shop Catalog</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 text-brand" />
                   </Button>
                 </Link>
                 <a
                   href={`https://wa.me/?text=${encodeURIComponent(`I scored ${flow.report.overall}/92 on GLOW VAI Glass Skin Analyzer! Try it now: ${siteConfig.url}/face-analysis`)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-2 bg-emerald-950 text-emerald-300 font-bold text-xs px-5 py-3.5 rounded-2xl border border-emerald-500/30 hover:bg-emerald-900 transition-colors"
+                  className="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-800 font-bold text-xs px-5 py-3.5 rounded-2xl border border-emerald-200 hover:bg-emerald-100 transition-colors shadow-sm"
                 >
-                  <Share2 className="w-4 h-4" />
+                  <Share2 className="w-4 h-4 text-emerald-600" />
                   <span>Share Score on WhatsApp</span>
                 </a>
               </div>
@@ -872,13 +872,13 @@ export default function FaceAnalysisPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-6 bg-slate-900/40 text-xs text-slate-500">
+      <footer className="border-t border-slate-200/80 py-6 bg-white text-xs text-slate-500">
         <Container>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>© {new Date().getFullYear()} {siteConfig.legalName}</span>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
+              <Link href="/privacy" className="hover:text-ink transition-colors font-medium">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-ink transition-colors font-medium">Terms of Service</Link>
             </div>
           </div>
         </Container>
