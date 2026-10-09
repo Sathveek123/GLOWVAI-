@@ -15,6 +15,8 @@ export const routesReady: Record<string, boolean> = {
   "/privacy": true,
   "/terms": true,
   "/returns": true,
+  "/delivery": true,
+  "/faq": true,
   "/#faq": true,
   "/#delivery": true,
   "/#journal": true,
@@ -44,9 +46,9 @@ export const footerLinks = {
     { title: "Contact Us", href: "/contact" },
   ],
   help: [
-    { title: "FAQ", href: "/#faq" },
-    { title: "Delivery", href: "/#delivery" },
-    { title: "Returns Policy", href: "/returns" },
+    { title: "15-Min Delivery", href: "/delivery" },
+    { title: "FAQ & Support", href: "/faq" },
+    { title: "Returns & Refund Policy", href: "/returns" },
   ],
   legal: [
     { title: "Privacy Policy", href: "/privacy" },

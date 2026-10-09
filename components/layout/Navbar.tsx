@@ -2,23 +2,30 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { navLinks } from "@/config/nav";
 import { BRAND_NAME } from "@/config/site";
 import { Button } from "@/components/ui/Button";
 import { Sparkles, ShoppingBag, Search, Menu } from "lucide-react";
 import { MobileMenu } from "./MobileMenu";
 import { CartDrawer } from "./CartDrawer";
-import { cn } from "@/lib/utils";
+import { cn, getAssetPath } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 
-// High-definition 120px wide SVG Logo component for GLOW VAI
 function GlowVaiLogo() {
   return (
-    <div className="flex flex-col justify-center select-none">
-      <span className="font-display font-black text-xl sm:text-2xl text-[#0F172A] tracking-tight leading-none">
-        GLOW<span className="text-[#0050FF]">VAI</span>
-      </span>
-      <span className="text-[9px] font-extrabold tracking-widest text-[#0050FF] uppercase mt-0.5">
+    <div className="flex items-center gap-2 select-none">
+      <div className="relative h-9 w-32 sm:w-36 flex items-center justify-start">
+        <Image
+          src={getAssetPath("/images/logo/glowvai-logo.png")}
+          alt={BRAND_NAME}
+          width={150}
+          height={40}
+          className="h-8 w-auto object-contain"
+          priority
+        />
+      </div>
+      <span className="hidden sm:inline-block text-[9px] font-extrabold tracking-widest bg-[#0050FF]/10 text-[#0050FF] px-2 py-0.5 rounded-full uppercase border border-[#0050FF]/20">
         Quick Commerce
       </span>
     </div>

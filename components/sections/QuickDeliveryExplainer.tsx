@@ -134,56 +134,107 @@ export function QuickDeliveryExplainer() {
           {/* Left (6 cols): Animated Mini Map Demo & Verified Stats */}
           <div className="lg:col-span-6 space-y-6">
             
-            {/* Live-feeling Mini Delivery Map Card (Labeled "Demo") */}
-            <div className="bg-skymist/50 p-5 rounded-3xl border border-brand/15 relative overflow-hidden space-y-3">
-              <div className="flex items-center justify-between">
+            {/* Live-feeling Mini Delivery Map Card with Ultra-Modern Animated Radar Scanner */}
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 rounded-3xl border border-blue-500/30 relative overflow-hidden space-y-4 shadow-2xl text-white">
+              
+              {/* Header Bar */}
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-xs font-extrabold tracking-wider text-blue-200 uppercase">
+                    Vijayawada Dark Store Dispatch #HYD-DS04
+                  </span>
+                </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-xs font-bold text-ink">Live Rider Tracker</span>
+                  <span className="text-[10px] font-extrabold bg-amber-400 text-slate-900 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                    LIVE RADAR
+                  </span>
                 </div>
-                <span className="text-[10px] font-bold bg-yellow text-ink px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Demo
-                </span>
               </div>
 
-              {/* Stylised SVG Map Tile */}
-              <div className="relative w-full h-32 bg-white rounded-2xl border border-ink/10 overflow-hidden flex items-center justify-center">
-                <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 400 120">
-                  <line x1="0" y1="40" x2="400" y2="40" stroke="#0050FF" strokeWidth="6" />
-                  <line x1="0" y1="90" x2="400" y2="90" stroke="#0050FF" strokeWidth="4" />
-                  <line x1="120" y1="0" x2="120" y2="120" stroke="#0050FF" strokeWidth="5" />
-                  <line x1="280" y1="0" x2="280" y2="120" stroke="#0050FF" strokeWidth="5" />
-                </svg>
+              {/* Dynamic Radar Scanner Viewport */}
+              <div className="relative w-full h-44 bg-slate-950/80 rounded-2xl border border-blue-400/20 overflow-hidden flex items-center justify-center">
+                
+                {/* Radar Grid Lines */}
+                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]" />
+                
+                {/* Radar Concentric Pulsing Rings */}
+                <div className="absolute w-40 h-40 rounded-full border border-blue-500/30 animate-ping opacity-25" />
+                <div className="absolute w-28 h-28 rounded-full border border-cyan-400/40" />
+                <div className="absolute w-16 h-16 rounded-full border border-blue-400/50" />
 
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 120">
+                {/* Sweeping Radar Scanner Line */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-full h-full rounded-full animate-spin-slow bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.25)_360deg)]" />
+                </div>
+
+                {/* Animated Rider Delivery Vector Path */}
+                <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 400 160">
+                  {/* Outer Glow Path */}
                   <path
-                    d="M 60 40 C 140 40 180 90 320 90"
+                    d="M 50 120 C 130 120, 160 40, 350 40"
                     fill="none"
-                    stroke="#FF6B57"
-                    strokeWidth="3"
-                    strokeDasharray="4 4"
+                    stroke="#38BDF8"
+                    strokeWidth="4"
+                    className="opacity-40"
                   />
-                  <circle cx="200" cy="65" r="7" fill="#0050FF" className="animate-ping opacity-75 motion-reduce:animate-none" />
-                  <circle cx="200" cy="65" r="6" fill="#0050FF" />
-                  <circle cx="200" cy="65" r="2.5" fill="#FFFFFF" />
+                  {/* Electric Dashed Pulse Path */}
+                  <path
+                    d="M 50 120 C 130 120, 160 40, 350 40"
+                    fill="none"
+                    stroke="#F59E0B"
+                    strokeWidth="3"
+                    strokeDasharray="8 8"
+                    className="animate-pulse"
+                  />
                 </svg>
 
-                <div className="absolute left-8 top-[28px] bg-brand text-white p-1 rounded-full text-[9px] font-bold flex items-center gap-1 shadow-xs">
-                  <Box className="w-3 h-3" />
-                  <span>Micro-Hub</span>
+                {/* Micro-Hub Pin (Start Point) */}
+                <div className="absolute left-4 bottom-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 shadow-lg border border-blue-300/40 z-20">
+                  <Box className="w-3.5 h-3.5 text-amber-300" />
+                  <div>
+                    <div className="leading-tight">Micro-Hub</div>
+                    <div className="text-[8px] text-blue-200 font-medium">Dark Store #04</div>
+                  </div>
                 </div>
 
-                <div className="absolute right-8 bottom-[18px] bg-coral text-ink p-1 rounded-full text-[9px] font-bold flex items-center gap-1 shadow-xs">
-                  <MapPin className="w-3 h-3" />
-                  <span>Your Door</span>
+                {/* Animated Rider Icon Traveling along the route */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shadow-xl ring-4 ring-amber-400/30 animate-bounce z-20">
+                  <Bike className="w-4 h-4 text-slate-900" />
+                  <span>EV Rider</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
+                </div>
+
+                {/* Your Door Pin (End Point) */}
+                <div className="absolute right-4 top-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 shadow-lg border border-emerald-300/40 z-20">
+                  <Home className="w-3.5 h-3.5 text-white" />
+                  <div>
+                    <div className="leading-tight">Your Doorstep</div>
+                    <div className="text-[8px] text-emerald-100 font-medium">Vijayawada</div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs pt-1">
-                <span className="text-ink-muted">Demo Delivery ETA:</span>
-                <span className="font-display font-bold text-brand tabular-nums bg-white px-3 py-1 rounded-full border border-brand/15">
-                  ~{demoCountdown} mins remaining
-                </span>
+              {/* Rider Telemetry & Live Countdown Bar */}
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <div className="bg-slate-900/90 p-3 rounded-2xl border border-blue-500/20 space-y-1">
+                  <span className="text-[9px] font-bold text-blue-300 uppercase tracking-wider block">Live Speed & Temp</span>
+                  <div className="text-xs font-bold text-white flex items-center justify-between">
+                    <span>⚡ 32 km/h</span>
+                    <span className="text-emerald-400">❄️ 4°C Cold</span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/90 p-3 rounded-2xl border border-blue-500/20 space-y-1">
+                  <span className="text-[9px] font-bold text-blue-300 uppercase tracking-wider block">Doorstep ETA</span>
+                  <div className="text-xs font-extrabold text-amber-300 flex items-center justify-between">
+                    <span>~{demoCountdown} Mins</span>
+                    <span className="text-[10px] text-blue-300 font-normal">On Schedule</span>
+                  </div>
+                </div>
               </div>
             </div>
 
