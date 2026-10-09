@@ -207,23 +207,48 @@ export const storyData = {
       name: "Sathveek Nalla",
       role: "Co-Founder & Technical Lead",
       tagline: "Builds the high-speed AI engine, scan telemetry, and quick-commerce platform infrastructure.",
-      bio: "B.Tech student from Visakhapatnam deeply passionate about software engineering, AI, and relentless startup execution.",
+      bio: "B.Tech student from Visakhapatnam, game developer (7WeekStudios), AI creator (Zerina AI), and Co-Founder & Tech Lead at Glow VAI.",
       image: "/images/founders/nalla-satvik.jpg",
       artDirectionNote: "Sathveek Nalla, Co-Founder & Technical Lead.",
       location: "Visakhapatnam, Andhra Pradesh",
-      storyTitle: "SATHVEEK NALLA — September 15, 2026: The New Chapter",
-      storySubtitle: "From an Instagram online connection to Co-Founder & Technical Lead driving relentless engineering.",
+      storyTitle: "Sathveek Nalla: A Journey of Curiosity, Creativity, and Relentless Ambition",
+      storySubtitle: "From programming and game development with 7WeekStudios to AI systems and Co-Founder & Technical Lead at Glow VAI.",
       sections: [
         {
-          title: "September 15, 2026 — The New Chapter Begins",
+          title: "A Journey of Curiosity, Creativity, and Relentless Ambition",
           content: [
-            "Before September 15, 2026, Sardhar Musthafa and Sathweek knew each other through Instagram. They were connected online, but had not yet begun building Glowvai together.",
-            "Sathweek, a B.Tech student from Visakhapatnam, was deeply interested in technology, startups, businesses, and building software. Technology wasn't just an interest to him; it was something he genuinely wanted to build his future around.",
-            "On September 15, 2026, that online connection became something more. They started working together, their friendship grew, and Sathweek joined Glowvai as its new technology partner and co-founder.",
-            "What made this chapter different was his commitment to execution. He wasn't just interested in discussing ideas or imagining what Glowvai could become. He was putting in serious work, often pushing himself even harder than Sardhar expected.",
-            "For Sardhar, who had spent months searching for dependable people and dealing with collaborations that failed to deliver, this marked an important new chapter.",
-            "Glowvai had found someone who shared the ambition to build and was willing to put in the work.",
-            "September 15, 2026 — An online connection became a friendship, a partnership, and a shared commitment to building Glowvai."
+            "The journey of Sathveek Nalla is the story of a young dreamer who refuses to limit himself to a single identity. From exploring the world of programming and game development to building AI-powered applications, experimenting with entrepreneurship, and pursuing opportunities in the technology industry, Sathveek represents a generation that wants to do more than simply follow a conventional career path. He wants to create, innovate, and build something of his own.",
+            "As a B.Tech student specializing in computer science and emerging technologies, Sathveek began developing his technical skills through curiosity and experimentation. Programming was not merely a subject to study; it became a way to transform ideas into reality. Whether exploring Python, web development, artificial intelligence, or software engineering, he continuously looked for opportunities to learn beyond the classroom."
+          ]
+        },
+        {
+          title: "Game Development & 7WeekStudios",
+          content: [
+            "One of his strongest interests has been game development. With experience in Unity and C#, Sathveek explored how ideas could become interactive experiences. His ambition led to the creation of 7WeekStudios, his independent game development identity. Through this journey, he began understanding the challenges of building games, designing user interfaces, implementing mechanics, and turning creative concepts into products people might enjoy.",
+            "But his ambitions extended beyond gaming. Sathveek ventured into full-stack web development, automation, AI integrations, and digital entrepreneurship. He explored technologies such as React, Next.js, TypeScript, and Python while working on projects designed to solve practical problems. His work reflects an interest in combining technical ability with creativity, especially through applications that integrate intelligent systems with useful everyday experiences."
+          ]
+        },
+        {
+          title: "Artificial Intelligence & Zerina AI",
+          content: [
+            "Artificial intelligence became another important chapter in his journey. Rather than treating AI as just another trend, Sathveek explored how it could power assistants, automate repetitive tasks, analyze information, and improve digital products. Projects such as Zerina AI, his envisioned intelligent assistant, demonstrate his interest in creating systems that go beyond simple interfaces and help people accomplish meaningful tasks."
+          ]
+        },
+        {
+          title: "The Reality of Entrepreneurship & Technical Growth",
+          content: [
+            "Entrepreneurship, however, introduced a different reality. Building something valuable requires more than writing code. Finding clients, marketing products, earning trust, managing expectations, and generating consistent revenue can be difficult. Sathveek experienced setbacks while exploring freelancing, digital products, and monetization. Not every project produced the results he hoped for, and some experiences brought financial pressure and uncertainty.",
+            "Yet these challenges became part of his education. They revealed the difference between having an idea and building a sustainable business. They also reinforced the importance of practical execution, understanding customers, validating demand, and developing skills that translate into real opportunities.",
+            "Alongside his entrepreneurial ambitions, Sathveek continued pursuing professional growth. Preparing for technical assessments and interviews pushed him to strengthen his knowledge of Python, SQL, cloud technologies, generative AI, and problem-solving. Balancing academics, projects, and career preparation demanded persistence, particularly when confidence did not always match ambition."
+          ]
+        },
+        {
+          title: "Joining Glow VAI & Building the Future",
+          content: [
+            "On September 15, 2026, Sathveek reconnected with Sardhar Musthafa and joined Glow VAI as Co-Founder and Technical Lead. Bringing his deep experience in Next.js, React, Python, and AI systems, Sathweek took charge of building the high-speed AI skin telemetry engine, scanning algorithms, and quick-commerce dark store infrastructure.",
+            "What makes Sathveek's journey meaningful is not the number of technologies he has explored or projects he has imagined. It is his willingness to keep learning across different fields, confront unfamiliar challenges, and search for ways to turn his abilities into something valuable.",
+            "His journey is still unfolding. He is simultaneously a student, developer, aspiring entrepreneur, and independent creator, learning how to transform ambition into consistent progress. Sathveek Nalla's story is not about having everything figured out. It is about building the person capable of achieving what he dreams of. Every experiment, unsuccessful attempt, new skill, and completed project contributes to that process.",
+            "His ultimate goal is to move beyond merely learning technology and become someone who uses it to build meaningful products, create opportunities, and establish an independent identity in the digital world. The journey continues, and the most important chapter may still be ahead."
           ]
         }
       ]
