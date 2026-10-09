@@ -373,25 +373,31 @@ export function ReferralPortalClient() {
   };
 
   return (
-    <div className="bg-sand/30 py-12 sm:py-20 min-h-screen text-ink">
-      <Container size="md">
+    <div className="bg-white min-h-screen text-slate-900 relative overflow-hidden bg-grid-subtle">
+      {/* Ambient Blue Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#0050FF]/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+
+      <Container size="md" className="py-12 sm:py-20 relative z-10">
         {/* Top Header Badge */}
-        <div className="text-center space-y-4 max-w-2xl mx-auto mb-10">
-          <Badge variant="brand" size="md">
-            GLOW VAI Partner Ecosystem
-          </Badge>
-          <h1 className="font-display font-bold text-h1-hero text-ink leading-tight">
-            Partner <Accent>Referral</Accent> Network
+        <div className="text-center space-y-4 max-w-2xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 bg-[#0050FF]/10 text-[#0050FF] px-4 py-1.5 rounded-full text-xs font-bold border border-[#0050FF]/20 shadow-sm">
+            <Sparkles className="w-4 h-4 text-[#0050FF]" />
+            <span>GLOW VAI Partner Ecosystem</span>
+          </div>
+
+          <h1 className="font-display font-black text-4xl sm:text-5xl text-slate-900 tracking-tight leading-tight">
+            Partner <span className="bg-gradient-to-r from-[#0050FF] via-blue-600 to-indigo-600 bg-clip-text text-transparent">Referral</span> Network
           </h1>
-          <p className="text-body-lg text-ink/80 leading-relaxed">
-            Earn <strong className="text-brand font-extrabold">₹10 per verified referral</strong> + <strong className="text-emerald-700 font-extrabold">₹1,000 milestone bonus</strong>. Direct UPI payouts sent directly to your bank.
+
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-medium max-w-xl mx-auto">
+            Earn <strong className="text-[#0050FF] font-extrabold">₹10 per verified referral</strong> + <strong className="text-emerald-600 font-extrabold">₹1,000 milestone bonus</strong>. Instant UPI settlements directly to your bank account.
           </p>
         </div>
 
         {/* ----------------- SCREEN 1: WELCOME SELECTOR ----------------- */}
         {view === "WELCOME" && (
           <div className="space-y-8 max-w-xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Option 1: Auto Driver */}
               <div
                 onClick={() => {
@@ -399,26 +405,26 @@ export function ReferralPortalClient() {
                   setDriverStep(1);
                   setView("DRIVER_WIZARD");
                 }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-ink/15 hover:border-brand shadow-sm hover:shadow-card transition-all cursor-pointer space-y-4 flex flex-col justify-between group"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-[#0050FF]/50 shadow-sm hover:shadow-xl hover:shadow-[#0050FF]/10 transition-all cursor-pointer space-y-5 flex flex-col justify-between group"
               >
-                <div className="space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center text-2xl">
+                <div className="space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#0050FF]/10 text-[#0050FF] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
                     <Car className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-brand block">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0050FF] block">
                       Transit Campaign
                     </span>
-                    <h2 className="font-display font-bold text-xl text-ink group-hover:text-brand transition-colors">
+                    <h2 className="font-display font-black text-xl text-slate-900 group-hover:text-[#0050FF] transition-colors">
                       Auto Driver Partner
                     </h2>
                   </div>
-                  <p className="text-xs text-ink/70 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
                     Mount our seatback QR poster inside your auto. Passengers scan & earn you ₹10 per referral + ₹1,000 milestone bonus.
                   </p>
                 </div>
                 <div className="pt-2">
-                  <Button variant="primary" size="md" className="w-full text-xs font-bold gap-2">
+                  <Button variant="primary" size="md" className="w-full text-xs font-bold gap-2 bg-[#0050FF] hover:bg-[#003CD6] text-white shadow-md shadow-[#0050FF]/20">
                     <span>Register Auto Driver</span>
                     <ArrowRight className="w-4 h-4" />
                   </Button>
@@ -432,51 +438,51 @@ export function ReferralPortalClient() {
                   setStudentStep(1);
                   setView("STUDENT_WIZARD");
                 }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-ink/15 hover:border-brand shadow-sm hover:shadow-card transition-all cursor-pointer space-y-4 flex flex-col justify-between group"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-purple-500/50 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all cursor-pointer space-y-5 flex flex-col justify-between group"
               >
-                <div className="space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl">
+                <div className="space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
                     <GraduationCap className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 block">
                       Campus Campaign
                     </span>
-                    <h2 className="font-display font-bold text-xl text-ink group-hover:text-brand transition-colors">
+                    <h2 className="font-display font-black text-xl text-slate-900 group-hover:text-purple-700 transition-colors">
                       Campus Ambassador
                     </h2>
                   </div>
-                  <p className="text-xs text-ink/70 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
                     Refer classmates & friends across campus. Get a custom QR badge, earn instant pocket cash, and top performance perks.
                   </p>
                 </div>
                 <div className="pt-2">
-                  <Button variant="outline" size="md" className="w-full text-xs font-bold border-ink/20 gap-2">
+                  <Button variant="outline" size="md" className="w-full text-xs font-bold border-slate-300 hover:border-purple-600 hover:bg-purple-50 text-slate-800 gap-2">
                     <span>Register Ambassador</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 text-purple-700" />
                   </Button>
                 </div>
               </div>
             </div>
 
             {/* Quick Benefits Banner */}
-            <div className="bg-skymist/50 p-6 rounded-3xl border border-brand/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="bg-[#0050FF]/5 p-6 rounded-3xl border border-[#0050FF]/20 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center font-bold text-sm shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#0050FF] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-display font-bold text-sm text-ink">Verified Direct UPI Settlements</h4>
-                  <p className="text-xs text-ink/70">Automatic weekly payouts to your Google Pay or PhonePe UPI.</p>
+                  <h4 className="font-display font-bold text-sm text-slate-900">Verified Direct UPI Settlements</h4>
+                  <p className="text-xs text-slate-600">Automatic weekly payouts to your Google Pay or PhonePe UPI.</p>
                 </div>
               </div>
               <a
-                href="/referral/portal.html"
+                href="/portal.html"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-semibold text-brand hover:underline shrink-0"
+                className="text-xs font-bold text-[#0050FF] hover:underline shrink-0 bg-white px-3.5 py-2 rounded-xl border border-[#0050FF]/20 shadow-sm"
               >
-                Open Legacy Portal &rarr;
+                Open Partner Portal &rarr;
               </a>
             </div>
           </div>
