@@ -100,15 +100,6 @@ export function Navbar() {
 
           {/* Right Action Buttons & Primary CTA */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Search Link / Icon */}
-            <Link
-              href="/shop"
-              aria-label="Search skincare products"
-              className="p-2.5 rounded-xl text-ink/80 hover:text-brand hover:bg-skymist/70 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-            >
-              <Search className="w-5 h-5" />
-            </Link>
-
             {/* Shopping Cart Trigger */}
             <button
               onClick={() => setIsCartOpen(true)}
