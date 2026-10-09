@@ -13,8 +13,11 @@ import { getAssetPath } from "@/lib/utils";
 import { Camera, Lock, ArrowRight, ArrowDown } from "lucide-react";
 
 export const metadata = {
-  title: `Our Story | ${BRAND_NAME}`,
+  title: "Our Story",
   description: `How three founders in Andhra Pradesh built ${BRAND_NAME} to make personalised skincare affordable, transparent, and accessible.`,
+  alternates: {
+    canonical: `${siteConfig.url}/our-story`,
+  },
   openGraph: {
     title: `Our Story | ${BRAND_NAME}`,
     description: `How three founders in Andhra Pradesh built ${BRAND_NAME} to make personalised skincare affordable, transparent, and accessible.`,

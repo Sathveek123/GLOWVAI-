@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GLOW VAI - Partner Referral Gateway</title>
+  <meta name="description" content="GLOW VAI Partner Referral Network - Official QR scan gateway for Auto Driver and Student Ambassador campaigns.">
+
+  <!-- Firebase Web SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Syne:wght@800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #FAF9F5;
+      --card: #FFFFFF;
+      --brand: #0050FF;
+      --text: #09090B;
+      --muted: #71717A;
+      --border: #E4E4E7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 16px; }
+    .scan-card { width: 100%; max-width: 400px; background: var(--card); border: 1px solid var(--border); border-radius: 28px; padding: 36px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 20px 48px rgba(0,80,255,0.12); }
+    .brand-syne { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--brand); letter-spacing: -0.02em; }
+    .pulse-ring-box { width: 72px; height: 72px; background: rgba(0,80,255,0.1); border: 2px solid rgba(0,80,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; animation: pulseAnim 1.4s infinite; }
+    @keyframes pulseAnim {
+      0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,80,255,0.4); }
+      70%  { transform: scale(1);    box-shadow: 0 0 0 14px rgba(0,80,255,0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,80,255,0); }
+    }
+    .btn-direct { width: 100%; height: 52px; background: var(--brand); color: #FFFFFF; font-weight: 800; font-size: 0.96rem; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 6px 20px rgba(0,80,255,0.3); transition: transform 0.1s ease; }
+    .btn-direct:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+  <div class="scan-card">
+    <div class="brand-syne">GLOW VAI</div>
+    <div class="pulse-ring-box">✨</div>
+    <div>
+      <span style="background:rgba(0,80,255,0.1);color:var(--brand);font-size:0.72rem;font-weight:800;padding:4px 12px;border-radius:9999px;text-transform:uppercase;letter-spacing:0.05em;">
+        Verified Partner Referral
+      </span>
+      <h1 style="font-size:1.35rem;font-weight:800;margin-top:12px;">Opening GLOW VAI Diagnostic...</h1>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;">
+        Exclusive partner welcome perk from <span id="lbl-partner-id" style="font-weight:800;color:var(--brand);">GLOW VAI</span>
+      </p>
+      <p style="font-size:0.75rem;color:#71717A;margin-top:6px;">Redirecting in under 0.8 seconds...</p>
+    </div>
+    <a id="targetBtn" href="https://glowvai.in/face-analysis" class="btn-direct">
+      <span>✨ Start Free AI Skin Scan ➔</span>
+    </a>
+    <div style="font-size:0.75rem;color:#71717A;">Official GLOW VAI Referral Network</div>
+  </div>
+
+  <script>
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMKXA3nFFIlX4mmbTjrOMwSa1Vu7JSgx6HIlKqmT6jLcZ0qz5ppqWFcLczaIR1RxkAuw/exec';
+    var TARGET_SITE_URL = 'https://glowvai.in/face-analysis';
+
+    var params = new URLSearchParams(window.location.search);
+    var rawRef = params.get('ref') || params.get('token') || params.get('partnerId') || params.get('driverId') || params.get('studentId');
+
+    if (!rawRef) {
+      window.location.replace('./portal.html');
+    }
+
+    function cleanPartnerId(raw) {
+      if (!raw) return 'GLV-GENERAL';
+      var s = String(raw).trim().toUpperCase();
+      if (s.indexOf('GLV-') === 0) return s;
+      var isStudent = s.indexOf('STUDENT') !== -1 || s.indexOf('STU') !== -1;
+      var prefix = isStudent ? 'GLV-STUDENT-' : 'GLV-AUTO-';
+      var m = s.match(/\d+/);
+      if (m) return prefix + String(parseInt(m[0], 10)).padStart(3, '0');
+      return s;
+    }
+
+    var partnerId = cleanPartnerId(rawRef);
+    var lbl = document.getElementById('lbl-partner-id');
+    if (lbl) lbl.textContent = partnerId;
+    document.getElementById('targetBtn').href = TARGET_SITE_URL + '?ref=' + encodeURIComponent(partnerId);
+
+    function logReferralWithRealIP(pid) {
+      var ua = navigator.userAgent;
+      var clientIp = 'UNKNOWN';
+      var location = '';
+
+      fetch('https://ip-api.com/json/?fields=status,query,city,regionName,country', { mode: 'cors' })
+        .then(function(r) { return r.json(); })
+        .then(function(geo) {
+          if (geo && geo.status === 'success') {
+            clientIp = geo.query || 'UNKNOWN';
+            location = [(geo.city || ''), (geo.regionName || ''), (geo.country || '')].filter(Boolean).join(', ');
+          }
+        })
+        .catch(function() {})
+        .finally(function() {
+          fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            keepalive: true,
+            body: JSON.stringify({
+              action: 'LOG_REFERRAL',
+              partnerId: pid,
+              clientIp: clientIp,
+              location: location,
+              userAgent: ua
+            })
+          }).catch(function() {});
+        });
+    }
+
+    if (rawRef) logReferralWithRealIP(partnerId);
+
+    setTimeout(function() {
+      window.location.replace(TARGET_SITE_URL + '?ref=' + encodeURIComponent(partnerId));
+    }, 850);
+  </script>
+</body>
+</html>

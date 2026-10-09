@@ -7,7 +7,7 @@ import { BRAND_NAME } from "@/config/site";
 import { ArrowLeft, Mail } from "lucide-react";
 
 export const metadata = {
-  title: `Journal | ${BRAND_NAME}`,
+  title: "Journal",
   description: "Skin basics, written plainly. Articles by our team and dermatology advisors coming soon.",
   robots: {
     index: false,

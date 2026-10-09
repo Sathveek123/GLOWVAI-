@@ -7,25 +7,25 @@ import { BRAND_NAME, siteConfig } from "@/config/site";
 import { DataRequestForm } from "@/components/privacy/DataRequestForm";
 import { Lock, ShieldCheck, AlertCircle, FileText, Mail } from "lucide-react";
 
+import { SITE_URL } from "@/lib/site-url";
+
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Learn how GLOW VAI processes personal data and face scans under the DPDP Act 2023.",
   robots: {
-    index: false,
+    index: siteConfig.LEGAL_APPROVED,
     follow: true,
   },
-  alternates: { canonical: "/privacy" },
+  alternates: { canonical: `${SITE_URL}/privacy` },
 };
 
 export default function PrivacyPage() {
-  const isProd = process.env.NODE_ENV === "production";
-
   return (
     <div className="bg-white py-12 sm:py-20 text-ink min-h-screen">
       <Container size="md">
         
-        {/* Lawyer Review Banner - hidden on production */}
-        {!isProd && (
+        {/* Lawyer Review Banner - rendered while LEGAL_APPROVED is false */}
+        {!siteConfig.LEGAL_APPROVED && (
           <div className="bg-yellow/30 border border-yellow/50 p-4 rounded-2xl mb-8 text-xs text-ink font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-ink shrink-0" />
             <span>DRAFT for lawyer review. Do not publish as final without legal approval.</span>

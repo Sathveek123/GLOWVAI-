@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Instrument_Serif, DM_Sans } from "next/font/google";
 import "./globals.css";
-import { siteConfig, BRAND_NAME } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { HeaderAndFooterWrapper } from "@/components/layout/HeaderAndFooterWrapper";
 import { getLocationFromIP } from "@/lib/location";
+import { SITE_URL } from "@/lib/site-url";
 
 const displayFont = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -37,24 +38,31 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glowvai.in";
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION;
+const yandexVerification = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "GLOW VAI | Skincare that starts with a face scan",
     template: "%s | GLOW VAI",
   },
   description: "Scan your face for free, get a plain-language skin report, and shop a routine that fits.",
   alternates: {
-    canonical: "/",
+    canonical: "./",
   },
-  authors: [{ name: siteConfig.name, url: siteUrl }],
+  authors: [{ name: siteConfig.name, url: SITE_URL }],
   creator: siteConfig.name,
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "/",
+    url: SITE_URL,
     title: "GLOW VAI | Skincare that starts with a face scan",
     description: "Scan your face for free, get a plain-language skin report, and shop a routine that fits.",
     siteName: siteConfig.name,
@@ -78,6 +86,14 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  ...(googleVerification || yandexVerification
+    ? {
+        verification: {
+          ...(googleVerification ? { google: googleVerification } : {}),
+          ...(yandexVerification ? { yandex: yandexVerification } : {}),
+        },
+      }
+    : {}),
 };
 
 export default async function RootLayout({
@@ -88,7 +104,7 @@ export default async function RootLayout({
   const locationData = await getLocationFromIP();
 
   return (
-    <html lang="en" className={`${displayFont.variable} ${accentFont.variable} ${bodyFont.variable}`}>
+    <html lang="en-IN" className={`${displayFont.variable} ${accentFont.variable} ${bodyFont.variable}`}>
       <body className="min-h-screen bg-white text-ink flex flex-col font-sans selection:bg-brand selection:text-white">
         <HeaderAndFooterWrapper city={locationData.city}>
           {children}
@@ -97,4 +113,5 @@ export default async function RootLayout({
     </html>
   );
 }
+
 

@@ -154,22 +154,17 @@ export function ReferralAndVendorSection() {
             </div>
 
             <div className="pt-2">
-              <a
-                href="https://earn.glowvai.in/portal.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full"
-              >
+              <Link href="/referral" className="w-full">
                 <Button
                   variant="primary"
                   size="lg"
                   className="w-full bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold py-3.5 rounded-2xl shadow-md text-xs flex items-center justify-center gap-2"
                 >
                   <Share2 className="w-4 h-4" />
-                  <span>Join Referral Program (earn.glowvai.in)</span>
+                  <span>Join Partner Referral Program</span>
                   <ArrowRight className="w-4 h-4" />
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
 

@@ -294,8 +294,8 @@ export default function FaceAnalysisPage() {
           },
         }),
         mode: "no-cors",
-      }).catch(() => {});
-    } catch {}
+      }).catch(() => { });
+    } catch { }
 
     dispatch({ type: "FORM_SUBMIT_SUCCESS", report, sessionId });
   };
@@ -313,204 +313,204 @@ export default function FaceAnalysisPage() {
           {(flow.step === "SCAN_READY" ||
             flow.step === "CAMERA_RUNNING" ||
             flow.step === "ANALYSING") && (
-            <div className="max-w-3xl mx-auto space-y-8">
-              <div className="text-center space-y-3">
-                <Badge variant="brand" size="md" className="bg-[#0050FF]/10 text-[#0050FF] border-[#0050FF]/20 px-3.5 py-1 font-bold">
-                  Step 1 of 3: AI Face Scan
-                </Badge>
-                <h1 className="font-display font-black text-3xl sm:text-4xl text-slate-900 leading-tight">
-                  Instant <span className="font-accent italic text-[#0050FF]">Skin Diagnostic</span> Scan
-                </h1>
-                <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
-                  Center your face in good natural light and click the shutter button below for a 5-second skin check.
-                </p>
-              </div>
+              <div className="max-w-3xl mx-auto space-y-8">
+                <div className="text-center space-y-3">
+                  <Badge variant="brand" size="md" className="bg-[#0050FF]/10 text-[#0050FF] border-[#0050FF]/20 px-3.5 py-1 font-bold">
+                    Step 1 of 3: AI Face Scan
+                  </Badge>
+                  <h1 className="font-display font-black text-3xl sm:text-4xl text-slate-900 leading-tight">
+                    Instant <span className="font-accent italic text-[#0050FF]">Skin Diagnostic</span> Scan
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
+                    Center your face in good natural light and click the shutter button below for a 5-second skin check.
+                  </p>
+                </div>
 
-              {/* Wider Broader Camera Frame */}
-              <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6 text-center">
-                {flow.step === "SCAN_READY" ? (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
-                        <Sun className="w-4 h-4 text-amber-500" />
-                        <h4 className="font-display font-bold text-xs text-slate-900">Natural Light</h4>
-                        <p className="text-[11px] text-slate-600">Face window for clear illumination.</p>
+                {/* Wider Broader Camera Frame */}
+                <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6 text-center">
+                  {flow.step === "SCAN_READY" ? (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
+                          <Sun className="w-4 h-4 text-amber-500" />
+                          <h4 className="font-display font-bold text-xs text-slate-900">Natural Light</h4>
+                          <p className="text-[11px] text-slate-600">Face window for clear illumination.</p>
+                        </div>
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                          <h4 className="font-display font-bold text-xs text-slate-900">Centered Face</h4>
+                          <p className="text-[11px] text-slate-600">Keep face inside scanner oval.</p>
+                        </div>
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
+                          <Lock className="w-4 h-4 text-[#0050FF]" />
+                          <h4 className="font-display font-bold text-xs text-slate-900">100% Private</h4>
+                          <p className="text-[11px] text-slate-600">Analysed strictly in browser.</p>
+                        </div>
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
+                          <ShieldCheck className="w-4 h-4 text-purple-600" />
+                          <h4 className="font-display font-bold text-xs text-slate-900">Instant Match</h4>
+                          <p className="text-[11px] text-slate-600">Matches Minimalist & Derma Co.</p>
+                        </div>
                       </div>
-                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        <h4 className="font-display font-bold text-xs text-slate-900">Centered Face</h4>
-                        <p className="text-[11px] text-slate-600">Keep face inside scanner oval.</p>
-                      </div>
-                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
-                        <Lock className="w-4 h-4 text-[#0050FF]" />
-                        <h4 className="font-display font-bold text-xs text-slate-900">100% Private</h4>
-                        <p className="text-[11px] text-slate-600">Analysed strictly in browser.</p>
-                      </div>
-                      <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
-                        <ShieldCheck className="w-4 h-4 text-purple-600" />
-                        <h4 className="font-display font-bold text-xs text-slate-900">Instant Match</h4>
-                        <p className="text-[11px] text-slate-600">Matches Minimalist & Derma Co.</p>
-                      </div>
-                    </div>
 
-                    {inAppBrowser && (
-                      <div className="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-xs text-amber-900 space-y-2">
-                        <p>In-app browser detected. Open in Chrome or Safari for best camera quality:</p>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(window.location.href);
-                            setIsCopied(true);
-                            setTimeout(() => setIsCopied(false), 2000);
-                          }}
-                          className="bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 mx-auto"
+                      {inAppBrowser && (
+                        <div className="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-xs text-amber-900 space-y-2">
+                          <p>In-app browser detected. Open in Chrome or Safari for best camera quality:</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(window.location.href);
+                              setIsCopied(true);
+                              setTimeout(() => setIsCopied(false), 2000);
+                            }}
+                            className="bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 mx-auto"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                            <span>{isCopied ? "Link Copied!" : "Copy Page Link"}</span>
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="space-y-3 pt-2">
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          onClick={handleOpenCamera}
+                          className="w-full bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          <span>{isCopied ? "Link Copied!" : "Copy Page Link"}</span>
-                        </button>
-                      </div>
-                    )}
+                          <Camera className="w-5 h-5" />
+                          <span>Start Camera Scan</span>
+                        </Button>
 
-                    <div className="space-y-3 pt-2">
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={handleOpenCamera}
-                        className="w-full bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm"
-                      >
-                        <Camera className="w-5 h-5" />
-                        <span>Start Camera Scan</span>
-                      </Button>
+                        <div className="relative flex py-2 items-center">
+                          <div className="flex-grow border-t border-slate-200"></div>
+                          <span className="flex-shrink mx-4 text-xs font-semibold text-slate-400">OR</span>
+                          <div className="flex-grow border-t border-slate-200"></div>
+                        </div>
 
-                      <div className="relative flex py-2 items-center">
-                        <div className="flex-grow border-t border-slate-200"></div>
-                        <span className="flex-shrink mx-4 text-xs font-semibold text-slate-400">OR</span>
-                        <div className="flex-grow border-t border-slate-200"></div>
-                      </div>
-
-                      <label className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs py-3.5 px-4 rounded-2xl border border-slate-200 cursor-pointer transition-colors">
-                        <Upload className="w-4 h-4 text-[#0050FF]" />
-                        <span>Upload Photo / Selfie</span>
-                        <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-                      </label>
-                    </div>
-                  </div>
-                ) : (
-                  /* Broader Wider Camera Frame + Manual Shutter Button */
-                  <div className="space-y-4">
-                    <div className="relative w-full h-80 sm:h-96 rounded-3xl overflow-hidden bg-slate-900 border-4 border-[#0050FF] shadow-lg flex items-center justify-center">
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        className="w-full h-full object-cover scale-x-[-1]"
-                      />
-                      {/* Vertical Portrait Head/Face Alignment Oval Guide */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 h-60 sm:h-72 rounded-[50%] border-2 border-dashed border-white/95 pointer-events-none flex flex-col items-center justify-center gap-1 shadow-2xl">
-                        <span className="text-[10px] text-white/90 font-bold bg-slate-900/80 px-2.5 py-0.5 rounded-full border border-white/30 backdrop-blur-sm">
-                          Align Face Vertical
-                        </span>
-                      </div>
-
-                      {/* Manual Shutter Button Bar Overlay */}
-                      <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                        <button
-                          type="button"
-                          onClick={handleShutterClick}
-                          className="bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold text-xs px-6 py-3 rounded-full border-2 border-white shadow-xl flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
-                        >
-                          <Camera className="w-4 h-4 text-white" />
-                          <span>📷 Click Shutter / Take Photo</span>
-                        </button>
+                        <label className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs py-3.5 px-4 rounded-2xl border border-slate-200 cursor-pointer transition-colors">
+                          <Upload className="w-4 h-4 text-[#0050FF]" />
+                          <span>Upload Photo / Selfie</span>
+                          <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                        </label>
                       </div>
                     </div>
+                  ) : (
+                    /* Broader Wider Camera Frame + Manual Shutter Button */
+                    <div className="space-y-4">
+                      <div className="relative w-full h-80 sm:h-96 rounded-3xl overflow-hidden bg-slate-900 border-4 border-[#0050FF] shadow-lg flex items-center justify-center">
+                        <video
+                          ref={videoRef}
+                          autoPlay
+                          playsInline
+                          muted
+                          className="w-full h-full object-cover scale-x-[-1]"
+                        />
+                        {/* Vertical Portrait Head/Face Alignment Oval Guide */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 h-60 sm:h-72 rounded-[50%] border-2 border-dashed border-white/95 pointer-events-none flex flex-col items-center justify-center gap-1 shadow-2xl">
+                          <span className="text-[10px] text-white/90 font-bold bg-slate-900/80 px-2.5 py-0.5 rounded-full border border-white/30 backdrop-blur-sm">
+                            Align Face Vertical
+                          </span>
+                        </div>
 
-                    <div className="text-xs font-semibold text-slate-500">
-                      Center your face in the oval frame and press the blue shutter button to capture photo.
+                        {/* Manual Shutter Button Bar Overlay */}
+                        <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+                          <button
+                            type="button"
+                            onClick={handleShutterClick}
+                            className="bg-[#0050FF] hover:bg-[#003CD6] text-white font-bold text-xs px-6 py-3 rounded-full border-2 border-white shadow-xl flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
+                          >
+                            <Camera className="w-4 h-4 text-white" />
+                            <span>📷 Click Shutter / Take Photo</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="text-xs font-semibold text-slate-500">
+                        Center your face in the oval frame and press the blue shutter button to capture photo.
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
 
-              {/* 5-IMAGE GALLERY SHOWCASE ON FACE ANALYSIS */}
-              <div className="space-y-3 pt-4">
-                <h3 className="font-display font-extrabold text-lg text-slate-900 text-center">
-                  Trusted AI Face Diagnostic Technology
-                </h3>
-                <p className="text-xs text-slate-500 text-center max-w-md mx-auto">
-                  Over 18,000+ Indian men and women analyze their skin parameters using mobile scan tech.
-                </p>
+                {/* 5-IMAGE GALLERY SHOWCASE ON FACE ANALYSIS */}
+                <div className="space-y-3 pt-4">
+                  <h3 className="font-display font-extrabold text-lg text-slate-900 text-center">
+                    Trusted AI Face Diagnostic Technology
+                  </h3>
+                  <p className="text-xs text-slate-500 text-center max-w-md mx-auto">
+                    Over 18,000+ Indian men and women analyze their skin parameters using mobile scan tech.
+                  </p>
 
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
-                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
-                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
-                      <Image
-                        src="/images/face-scan/indian_female.png"
-                        alt="Indian woman AI face scan on mobile"
-                        fill
-                        className="object-cover"
-                      />
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+                    <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                        <Image
+                          src="/images/face-scan/indian_female.png"
+                          alt="Indian woman AI face scan on mobile"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="font-display font-bold text-[11px] text-slate-900">Female AI Scan</p>
+                      <p className="text-[10px] text-slate-500">Live skin check</p>
                     </div>
-                    <p className="font-display font-bold text-[11px] text-slate-900">Female AI Scan</p>
-                    <p className="text-[10px] text-slate-500">Live skin check</p>
-                  </div>
 
-                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
-                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
-                      <Image
-                        src="/images/face-scan/indian_male.png"
-                        alt="Indian man AI face scan on mobile"
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                        <Image
+                          src="/images/face-scan/indian_male.png"
+                          alt="Indian man AI face scan on mobile"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="font-display font-bold text-[11px] text-slate-900">Male AI Scan</p>
+                      <p className="text-[10px] text-slate-500">Texture reading</p>
                     </div>
-                    <p className="font-display font-bold text-[11px] text-slate-900">Male AI Scan</p>
-                    <p className="text-[10px] text-slate-500">Texture reading</p>
-                  </div>
 
-                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
-                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
-                      <Image
-                        src="/images/face-scan/skin_grid.png"
-                        alt="AI skin diagnostic moisture grid"
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                        <Image
+                          src="/images/face-scan/skin_grid.png"
+                          alt="AI skin diagnostic moisture grid"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="font-display font-bold text-[11px] text-slate-900">Diagnostic Grid</p>
+                      <p className="text-[10px] text-slate-500">Pixel sampling</p>
                     </div>
-                    <p className="font-display font-bold text-[11px] text-slate-900">Diagnostic Grid</p>
-                    <p className="text-[10px] text-slate-500">Pixel sampling</p>
-                  </div>
 
-                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
-                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
-                      <Image
-                        src="/images/home-ai/express_delivery.png"
-                        alt="15-minute express delivery in Vijayawada"
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center">
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                        <Image
+                          src="/images/home-ai/express_delivery.png"
+                          alt="15-minute express delivery in Vijayawada"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="font-display font-bold text-[11px] text-slate-900">15-Min Delivery</p>
+                      <p className="text-[10px] text-slate-500">Vijayawada hub</p>
                     </div>
-                    <p className="font-display font-bold text-[11px] text-slate-900">15-Min Delivery</p>
-                    <p className="text-[10px] text-slate-500">Vijayawada hub</p>
-                  </div>
 
-                  <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center col-span-2 sm:col-span-1">
-                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
-                      <Image
-                        src="/images/hero/product.png"
-                        alt="Skincare routine match"
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-center col-span-2 sm:col-span-1">
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100">
+                        <Image
+                          src="/images/hero/product.png"
+                          alt="Skincare routine match"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="font-display font-bold text-[11px] text-slate-900">Routine Match</p>
+                      <p className="text-[10px] text-slate-500">Minimalist & Derma Co</p>
                     </div>
-                    <p className="font-display font-bold text-[11px] text-slate-900">Routine Match</p>
-                    <p className="text-[10px] text-slate-500">Minimalist & Derma Co</p>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* FACE NOT DETECTED ERROR SCREEN */}
           {flow.step === "FACE_NOT_DETECTED" && (

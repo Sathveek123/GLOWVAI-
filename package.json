@@ -7,7 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seo:sitemap": "npx tsx scripts/check-sitemap.ts",
+    "seo:links": "npx tsx scripts/check-links.ts",
+    "seo:test": "npx tsx scripts/check-sitemap.ts && npx tsx scripts/check-links.ts"
   },
   "keywords": [],
   "author": "",

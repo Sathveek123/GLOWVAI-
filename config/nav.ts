@@ -9,6 +9,7 @@ export const routesReady: Record<string, boolean> = {
   "/shop": true,
   "/our-story": true,
   "/face-analysis": true,
+  "/referral": true,
   "/journal": true,
   "/contact": true,
   "/privacy": true,
@@ -24,7 +25,7 @@ export const navLinks: NavItem[] = [
   { title: "Shop", href: "/shop" },
   { title: "Our Story", href: "/our-story" },
   { title: "Face Analysis", href: "/face-analysis", badge: "Free" },
-  { title: "Referral Program", href: "https://earn.glowvai.in/portal.html", badge: "Earn" },
+  { title: "Referral Program", href: "/referral", badge: "Earn" },
 ];
 
 export const footerLinks = {
@@ -37,7 +38,7 @@ export const footerLinks = {
   ],
   company: [
     { title: "Our Story", href: "/our-story" },
-    { title: "Referral Program (Earn)", href: "https://earn.glowvai.in/portal.html" },
+    { title: "Referral Program (Earn)", href: "/referral" },
     { title: "Journal", href: "/journal" },
     { title: "Face Scan AI", href: "/face-analysis" },
     { title: "Contact Us", href: "/contact" },

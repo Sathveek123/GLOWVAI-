@@ -1,0 +1,21 @@
+{
+  "name": "GLOW VAI",
+  "short_name": "GLOW VAI",
+  "description": "Scan your face for free, get a plain-language skin report, and shop a routine that fits.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0050FF",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

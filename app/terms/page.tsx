@@ -6,25 +6,25 @@ import { Badge } from "@/components/ui/Badge";
 import { BRAND_NAME, siteConfig } from "@/config/site";
 import { AlertCircle, FileText, Mail, ShieldCheck } from "lucide-react";
 
+import { SITE_URL } from "@/lib/site-url";
+
 export const metadata: Metadata = {
   title: "Terms & Conditions",
   description: "Terms and conditions governing the use of GLOW VAI skin analysis and product purchases.",
   robots: {
-    index: false,
+    index: siteConfig.LEGAL_APPROVED,
     follow: true,
   },
-  alternates: { canonical: "/terms" },
+  alternates: { canonical: `${SITE_URL}/terms` },
 };
 
 export default function TermsPage() {
-  const isProd = process.env.NODE_ENV === "production";
-
   return (
     <div className="bg-white py-12 sm:py-20 text-ink min-h-screen">
       <Container size="md">
         
-        {/* Lawyer Review Banner - hidden on production */}
-        {!isProd && (
+        {/* Lawyer Review Banner - rendered while LEGAL_APPROVED is false */}
+        {!siteConfig.LEGAL_APPROVED && (
           <div className="bg-yellow/30 border border-yellow/50 p-4 rounded-2xl mb-8 text-xs text-ink font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-ink shrink-0" />
             <span>DRAFT for lawyer review. Do not publish as final without legal approval.</span>

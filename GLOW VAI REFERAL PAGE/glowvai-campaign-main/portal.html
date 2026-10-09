@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Glowvai Partner Portal — Driver & Campus Ambassador</title>
+  <meta name="description" content="Register as a Glowvai Auto Driver Partner or Student Campus Ambassador. Get your unique QR code and earn ₹10 per verified referral.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #F4F4F5; --card: #FFFFFF; --text: #09090B; --muted: #71717A; --border: #E4E4E7;
+      --accent-green: #10B981; --accent-black: #000000; --accent-dark: #18181B;
+      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 16px 12px 48px; font-size: 14px; line-height: 1.45; }
+    .brand-syne { font-family: 'Syne', sans-serif; }
+    .num-font { font-feature-settings: 'tnum' 1, 'lnum' 1; font-variant-numeric: tabular-nums; font-weight: 800; }
+    .app-shell { width: 100%; max-width: 440px; background: var(--card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 10px 30px -4px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .app-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #FFFFFF; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+    .header-logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 900; letter-spacing: -0.02em; color: #000000; }
+    .header-tag { font-size: 0.65rem; font-weight: 700; color: #71717A; text-transform: uppercase; letter-spacing: 0.05em; }
+    .view-screen { display: none; padding: 22px 18px 28px; flex-direction: column; gap: 16px; }
+    .view-screen.active { display: flex; }
+    .btn-solid-black { width: 100%; height: 48px; background: #000000; color: #FFFFFF; border: none; border-radius: var(--radius-md); font-size: 0.92rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.15); transition: all 0.15s ease; }
+    .btn-solid-black:active { transform: scale(0.98); }
+    .btn-outline { width: 100%; height: 44px; background: #FFFFFF; color: #09090B; border: 1.5px solid var(--border); border-radius: var(--radius-md); font-size: 0.86rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
+    .btn-whatsapp { width: 100%; height: 48px; background: #000000; color: #FFFFFF; border: 1.5px solid #27272A; border-radius: var(--radius-md); font-size: 0.92rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+    .campaign-tile { background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 18px; padding: 18px; cursor: pointer; display: flex; flex-direction: column; gap: 12px; transition: all 0.2s ease; }
+    .campaign-tile:hover, .campaign-tile:active { border-color: #000000; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+    .campaign-tile.student-theme { background: #09090B; color: #FAFAFA; border-color: #27272A; }
+    .campaign-tile.student-theme:hover { border-color: #FFFFFF; }
+    .progress-track-wrapper { display: flex; flex-direction: column; gap: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .progress-bar-line { display: flex; gap: 6px; width: 100%; }
+    .progress-seg { flex: 1; height: 4px; background: #E4E4E7; border-radius: 99px; }
+    .progress-seg.active { background: #000000; }
+    .form-box { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+    .form-lbl { font-size: 0.8rem; font-weight: 700; color: #09090B; }
+    .form-ctrl { width: 100%; height: 46px; background: #FAFAFA; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0 14px; font-size: 0.92rem; font-weight: 600; color: #09090B; outline: none; }
+    .form-ctrl:focus { border-color: #000000; background: #FFFFFF; }
+    .err-msg { color: #EF4444; font-size: 0.72rem; font-weight: 700; display: none; }
+    .student-theme-body { background: #09090B !important; color: #FAFAFA !important; border-color: #27272A !important; }
+    .student-theme-body .form-ctrl { background: #18181B !important; color: #FFFFFF !important; border-color: #27272A !important; }
+    .student-theme-body .form-ctrl:focus { border-color: #FFFFFF !important; }
+    .student-theme-body .form-lbl { color: #D4D4D8 !important; }
+    .student-theme-body .progress-seg { background: #27272A !important; }
+    .student-theme-body .progress-seg.active { background: #FFFFFF !important; }
+    .student-theme-body .btn-solid-black { background: #FFFFFF !important; color: #000000 !important; }
+    .student-theme-body .btn-outline { background: #18181B !important; color: #FAFAFA !important; border-color: #27272A !important; }
+    .student-theme-body .upload-box { background: #18181B !important; border-color: #27272A !important; color: #FAFAFA !important; }
+    .upload-box { border: 1.5px dashed var(--border); border-radius: var(--radius-md); background: #FAFAFA; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-align: center; gap: 6px; }
+    .upload-box.uploaded { border-style: solid; border-color: #000000; }
+    .metric-grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .dash-metric-card { background: #FFFFFF; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+    .dash-metric-title { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .dash-metric-number { font-size: 1.6rem; font-weight: 900; line-height: 1.1; color: #000000; }
+    .dash-metric-sub { font-size: 0.68rem; font-weight: 600; color: var(--muted); }
+    .road-track { background: #09090B; color: #FFFFFF; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .road-bar { width: 100%; height: 40px; background: #18181B; border: 1px solid #27272A; border-radius: 10px; position: relative; display: flex; align-items: center; padding: 0 8px; overflow: hidden; }
+    .road-dashed { position: absolute; left: 0; right: 0; height: 1px; border-top: 2px dashed rgba(255,255,255,0.2); }
+    .road-vehicle { position: absolute; left: 4px; transition: left 0.6s cubic-bezier(0.34,1.56,0.64,1); z-index: 2; }
+    .qr-card-holder { background: #FAFAFA; border: 1px solid var(--border); border-radius: 20px; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+    .qr-inner { width: 180px; height: 180px; background: #FFFFFF; border: 2px solid #000000; border-radius: 14px; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .footer-box { padding: 16px; text-align: center; font-size: 0.72rem; color: var(--muted); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <div class="app-shell" id="mainAppShell">
+
+    <header class="app-header">
+      <div>
+        <div class="header-logo">GLOWVAI</div>
+        <div class="header-tag" id="headerCategoryTag">Referral Network</div>
+      </div>
+      <div id="partnerStatusPill" style="display:none;background:#000000;color:#FFFFFF;font-size:0.72rem;font-weight:800;padding:4px 10px;border-radius:99px;">PARTNER ACTIVE</div>
+    </header>
+
+    <!-- SCREEN 1: CAMPAIGN SELECTOR -->
+    <section class="view-screen active" id="screen-welcome">
+      <div style="text-align:center;padding:6px 0 2px;">
+        <span style="background:#000000;color:#FFFFFF;font-size:0.7rem;font-weight:800;padding:4px 12px;border-radius:99px;text-transform:uppercase;">Referral Partner Program</span>
+        <h1 style="font-size:1.35rem;font-weight:900;margin-top:10px;">Select Your Referral Category</h1>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:2px;">Choose your campaign to get a unique QR &amp; earn ₹10 per verified referral.</p>
+      </div>
+
+      <div class="campaign-tile" onclick="openAutoDriverFlow()">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:28px;">🛺</span>
+            <div>
+              <div style="font-weight:900;font-size:1rem;color:#000000;">Auto Driver Partner</div>
+              <div style="font-size:0.74rem;color:var(--muted);">Seatback poster referral program</div>
+            </div>
+          </div>
+          <span style="background:#ECFDF5;color:#047857;font-size:0.72rem;font-weight:800;padding:3px 8px;border-radius:6px;">₹5,000+/mo</span>
+        </div>
+        <p style="font-size:0.76rem;color:#475569;line-height:1.4;">Stick our transit poster in your auto. Earn <strong>₹10 per passenger referral</strong> + <strong>₹1,000 milestone bonus</strong>.</p>
+        <button type="button" class="btn-solid-black" style="height:42px;font-size:0.85rem;"><span>Start Auto Driver Registration</span> ➔</button>
+      </div>
+
+      <div class="campaign-tile student-theme" onclick="openStudentFlow()">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:28px;">🎓</span>
+            <div>
+              <div style="font-weight:900;font-size:1rem;color:#FFFFFF;">Student Campus Ambassador</div>
+              <div style="font-size:0.74rem;color:#A1A1AA;">College student referral program</div>
+            </div>
+          </div>
+          <span style="background:#27272A;color:#FFFFFF;font-size:0.72rem;font-weight:800;padding:3px 8px;border-radius:6px;">Pocket Cash</span>
+        </div>
+        <p style="font-size:0.76rem;color:#A1A1AA;line-height:1.4;">Refer campus classmates &amp; friends. Earn <strong>₹10 direct cash per referral</strong> + <strong>₹1,000 top performer perk</strong>.</p>
+        <button type="button" class="btn-solid-black" style="height:42px;font-size:0.85rem;background:#FFFFFF;color:#000000;"><span>Start Student Ambassador Registration</span> ➔</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: AUTO DRIVER WIZARD -->
+    <section class="view-screen" id="screen-driver-wizard">
+      <div class="progress-track-wrapper">
+        <div style="display:flex;justify-content:space-between;font-size:0.74rem;font-weight:800;">
+          <span id="d-step-title">Step 1 of 3: Driver Details</span>
+          <span id="d-step-pct">33%</span>
+        </div>
+        <div class="progress-bar-line">
+          <div class="progress-seg active" id="d-seg-1"></div>
+          <div class="progress-seg" id="d-seg-2"></div>
+          <div class="progress-seg" id="d-seg-3"></div>
+        </div>
+      </div>
+
+      <div id="d-page-1" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="form-box">
+          <label class="form-lbl">Full Name *</label>
+          <input type="text" id="d-name" class="form-ctrl" placeholder="e.g. Rajesh Kumar">
+          <div class="err-msg" id="err-d-name">Please enter your full name.</div>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Mobile Number *</label>
+          <input type="tel" id="d-phone" class="form-ctrl" placeholder="10-digit mobile number" maxlength="10">
+          <div class="err-msg" id="err-d-phone">Please enter a valid 10-digit mobile number.</div>
+        </div>
+        <button type="button" class="btn-solid-black" onclick="nextDriverStep(2)">Next ➔</button>
+        <button type="button" class="btn-outline" onclick="showScreen('screen-welcome')">Back</button>
+      </div>
+
+      <div id="d-page-2" style="display:none;flex-direction:column;gap:14px;">
+        <div class="form-box">
+          <label class="form-lbl">Vehicle Number *</label>
+          <input type="text" id="d-vehicle" class="form-ctrl" placeholder="AP 16 XX 1234" style="text-transform:uppercase;">
+          <div class="err-msg" id="err-d-vehicle">Please enter a valid vehicle number.</div>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Hub / Stand Location *</label>
+          <select id="d-hub" class="form-ctrl">
+            <option value="Benz Circle">Benz Circle</option>
+            <option value="Bus Stand / Railway Station">Bus Stand / Railway Station</option>
+            <option value="Kanuru / Time Hospital">Kanuru / Time Hospital</option>
+            <option value="Bhavanipuram / Gollapudi">Bhavanipuram / Gollapudi</option>
+          </select>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Google Pay / PhonePe UPI ID *</label>
+          <input type="text" id="d-upi" class="form-ctrl" placeholder="9876543210@ybl">
+          <div class="err-msg" id="err-d-upi">Please enter a valid UPI ID.</div>
+        </div>
+        <button type="button" class="btn-solid-black" onclick="nextDriverStep(3)">Next ➔</button>
+        <button type="button" class="btn-outline" onclick="nextDriverStep(1)">Back</button>
+      </div>
+
+      <div id="d-page-3" style="display:none;flex-direction:column;gap:14px;">
+        <div style="font-size:0.8rem;font-weight:800;">KYC Photos (Selfie &amp; License) *</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <label class="upload-box" id="box-d-selfie">
+            <input type="file" accept="image/*" capture="user" style="display:none;" onchange="previewPhoto(event,'d-selfie')">
+            <span style="font-size:24px;">🤳</span>
+            <span id="lbl-d-selfie" style="font-size:0.72rem;font-weight:700;">Selfie Photo</span>
+          </label>
+          <label class="upload-box" id="box-d-license">
+            <input type="file" accept="image/*" style="display:none;" onchange="previewPhoto(event,'d-license')">
+            <span style="font-size:24px;">🪪</span>
+            <span id="lbl-d-license" style="font-size:0.72rem;font-weight:700;">License Photo</span>
+          </label>
+        </div>
+        <div class="err-msg" id="err-d-photos">Please upload both selfie and license photos.</div>
+        <button type="button" class="btn-solid-black" id="btnSubmitDriver" onclick="submitDriverRegistration()">Get My Unique QR Code ➔</button>
+        <button type="button" class="btn-outline" onclick="nextDriverStep(2)">Back</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: STUDENT AMBASSADOR WIZARD -->
+    <section class="view-screen student-theme-body" id="screen-student-wizard">
+      <div class="progress-track-wrapper">
+        <div style="display:flex;justify-content:space-between;font-size:0.74rem;font-weight:800;color:#FAFAFA;">
+          <span id="s-step-title">Step 1 of 3: Personal Details</span>
+          <span id="s-step-pct">33%</span>
+        </div>
+        <div class="progress-bar-line">
+          <div class="progress-seg active" id="s-seg-1"></div>
+          <div class="progress-seg" id="s-seg-2"></div>
+          <div class="progress-seg" id="s-seg-3"></div>
+        </div>
+      </div>
+
+      <div id="s-page-1" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="form-box">
+          <label class="form-lbl">Full Name *</label>
+          <input type="text" id="s-name" class="form-ctrl" placeholder="e.g. Sai Teja">
+          <div class="err-msg" id="err-s-name">Please enter your legal full name.</div>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Age *</label>
+          <input type="number" id="s-age" class="form-ctrl" placeholder="e.g. 20" min="16" max="35">
+          <div class="err-msg" id="err-s-age">Please enter a valid age (16–35).</div>
+        </div>
+        <button type="button" class="btn-solid-black" onclick="nextStudentStep(2)">Continue to Step 2 ➔</button>
+        <button type="button" class="btn-outline" onclick="showScreen('screen-welcome')">Back to Selector</button>
+      </div>
+
+      <div id="s-page-2" style="display:none;flex-direction:column;gap:14px;">
+        <div class="form-box">
+          <label class="form-lbl">College / University Name *</label>
+          <input type="text" id="s-college" class="form-ctrl" placeholder="e.g. VR Siddhartha Engineering College">
+          <div class="err-msg" id="err-s-college">Please enter your college name.</div>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Gmail Address *</label>
+          <input type="email" id="s-email" class="form-ctrl" placeholder="student@gmail.com">
+          <div class="err-msg" id="err-s-email">Please enter a valid Gmail address.</div>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Phone Number *</label>
+          <input type="tel" id="s-phone" class="form-ctrl" placeholder="10-digit mobile number" maxlength="10">
+          <div class="err-msg" id="err-s-phone">Please enter a valid 10-digit phone number.</div>
+        </div>
+        <button type="button" class="btn-solid-black" onclick="nextStudentStep(3)">Continue to Step 3 ➔</button>
+        <button type="button" class="btn-outline" onclick="nextStudentStep(1)">Back</button>
+      </div>
+
+      <div id="s-page-3" style="display:none;flex-direction:column;gap:14px;">
+        <div class="form-box">
+          <label class="form-lbl">Google Pay / PhonePe UPI ID *</label>
+          <input type="text" id="s-upi" class="form-ctrl" placeholder="username@upi / mobile@ybl">
+          <div class="err-msg" id="err-s-upi">Please enter a valid UPI ID for payout.</div>
+        </div>
+        <div class="form-box">
+          <label class="form-lbl">Upload Student ID Card *</label>
+          <label class="upload-box" id="box-s-id">
+            <input type="file" accept="image/*" style="display:none;" onchange="previewPhoto(event,'s-id')">
+            <span style="font-size:26px;">🪪</span>
+            <span id="lbl-s-id" style="font-size:0.74rem;font-weight:700;">Click to upload College ID Card Photo</span>
+          </label>
+          <div class="err-msg" id="err-s-photos">Please upload your college student ID card.</div>
+        </div>
+        <button type="button" class="btn-solid-black" id="btnSubmitStudent" onclick="submitStudentRegistration()">Generate My Ambassador QR ➔</button>
+        <button type="button" class="btn-outline" onclick="nextStudentStep(2)">Back</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: LIVE DASHBOARD -->
+    <section class="view-screen" id="screen-dashboard">
+      <div style="background:#FAFAFA;border:1.5px solid var(--border);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="dashEmoji" style="font-size:22px;">🛺</span>
+            <div>
+              <div id="dashName" style="font-weight:900;font-size:1.05rem;color:#000000;">Partner</div>
+              <div id="dashMeta" style="font-size:0.72rem;color:var(--muted);">Auto Captain</div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:monospace;font-size:0.8rem;font-weight:900;background:#000000;color:#FFFFFF;padding:4px 10px;border-radius:8px;" id="dashPartnerId">GLV-AUTO-001</div>
+          <div style="font-size:0.65rem;color:#10B981;font-weight:800;margin-top:3px;">● LIVE ACTIVE</div>
+        </div>
+      </div>
+
+      <div class="metric-grid-2x2">
+        <div class="dash-metric-card">
+          <div class="dash-metric-title">Referrals Done</div>
+          <div class="dash-metric-number num-font" id="m-count">0</div>
+          <div class="dash-metric-sub">Verified referrals</div>
+        </div>
+        <div class="dash-metric-card">
+          <div class="dash-metric-title">Total Earned</div>
+          <div class="dash-metric-number num-font" id="m-earned" style="color:#059669;">₹0</div>
+          <div class="dash-metric-sub">₹10 per referral</div>
+        </div>
+        <div class="dash-metric-card">
+          <div class="dash-metric-title">Declined</div>
+          <div class="dash-metric-number num-font" id="m-declined" style="color:#DC2626;">0</div>
+          <div class="dash-metric-sub">Duplicate / invalid</div>
+        </div>
+        <div class="dash-metric-card">
+          <div class="dash-metric-title">Payout Cycle</div>
+          <div class="dash-metric-number num-font" id="m-days">3</div>
+          <div class="dash-metric-sub">Days left for UPI settlement</div>
+        </div>
+      </div>
+
+      <div class="road-track">
+        <div style="display:flex;justify-content:space-between;font-size:0.76rem;font-weight:800;">
+          <span>Target Milestone (₹1,000 Bonus)</span>
+          <span style="color:#FBBF24;">100 Referrals</span>
+        </div>
+        <div class="road-bar">
+          <div class="road-dashed"></div>
+          <div class="road-vehicle" id="animatedVehicleSprite"><span id="spriteEmoji" style="font-size:22px;">🛺</span></div>
+          <div style="position:absolute;right:10px;font-size:18px;">🏁</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:#A1A1AA;font-weight:700;">
+          <span id="txtCompletedStat">0 Referrals Completed</span>
+          <span id="txtRemainingStat">100 remaining for ₹1,000 bonus</span>
+        </div>
+      </div>
+
+      <div class="qr-card-holder">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+          <span style="font-size:0.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">Your Unique Referral QR Code</span>
+          <span style="font-size:0.68rem;font-weight:800;background:#ECFDF5;color:#047857;padding:2px 8px;border-radius:9999px;">Active &amp; Verified</span>
+        </div>
+        <div class="qr-inner"><div id="partnerQrCanvas"></div></div>
+
+        <div style="width:100%;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;text-align:left;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.68rem;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.04em;">Official Referral Link</span>
+            <span id="copyFeedbackBadge" style="font-size:0.68rem;font-weight:800;color:#16A34A;display:none;">✅ Copied!</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input type="text" id="displayRefUrl" readonly style="flex:1;min-width:0;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:8px;padding:8px 10px;font-size:0.75rem;font-family:monospace;font-weight:700;color:#0F172A;text-overflow:ellipsis;outline:none;" value="https://glowvai.in/?ref=GLV-AUTO-001">
+            <button type="button" onclick="copyReferralLink()" style="background:#000000;color:#FFFFFF;border:none;border-radius:8px;padding:8px 14px;font-size:0.76rem;font-weight:800;cursor:pointer;white-space:nowrap;">📋 Copy</button>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;width:100%;">
+          <button type="button" class="btn-solid-black" onclick="downloadQrImage()"><span>📥 Download QR Code</span></button>
+          <button type="button" class="btn-whatsapp" onclick="shareOnWhatsApp()"><span>📲 Share on WhatsApp</span></button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-outline" onclick="resetSessionForNewRegistration()">+ Register Another Partner</button>
+    </section>
+
+    <footer class="footer-box">
+      <div class="brand-syne" style="font-size:1.05rem;font-weight:900;color:#000000;margin-bottom:4px;">GLOWVAI</div>
+      <div>Official Transit &amp; Campus Referral Network • Sub-0.8s Instant Redirect</div>
+      <div style="margin-top:4px;">© 2026 Glowvai Technologies</div>
+    </footer>
+  </div>
+
+  <script>
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMKXA3nFFIlX4mmbTjrOMwSa1Vu7JSgx6HIlKqmT6jLcZ0qz5ppqWFcLczaIR1RxkAuw/exec';
+
+    var firebaseConfig = {
+      apiKey: 'AIzaSyBmnNTVqZ5vmSjimFLv3YXnQ_agHwR5H3s',
+      authDomain: 'glowvai-v2.firebaseapp.com',
+      projectId: 'glowvai-v2',
+      storageBucket: 'glowvai-v2.firebasestorage.app',
+      messagingSenderId: '1094835664474',
+      appId: '1:1094835664474:web:6333c6d5be3a998b0a8a63'
+    };
+
+    var db = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        if (firebase.firestore) db = firebase.firestore();
+      }
+    } catch(e) {}
+
+    // Image compressor
+    function compressImage(file, maxWidth, quality) {
+      maxWidth = maxWidth || 720; quality = quality || 0.6;
+      return new Promise(function(resolve) {
+        if (!file || !file.type || file.type.indexOf('image') === -1) return resolve('PHOTO_ATTACHED');
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var w = img.width, h = img.height;
+            if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
+            var canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = function() { resolve(e.target.result); };
+          img.src = e.target.result;
+        };
+        reader.onerror = function() { resolve('PHOTO_ATTACHED'); };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadKycFileToFirebase(file, remotePath) {
+      if (!file) return 'PENDING';
+      var compressed = await compressImage(file, 720, 0.6);
+      try {
+        if (typeof firebase !== 'undefined' && firebase.storage) {
+          var ref = firebase.storage().ref().child(remotePath);
+          var uploadTask = ref.putString(compressed, 'data_url', { contentType: 'image/jpeg' });
+          var timeout = new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 2000); });
+          var snap = await Promise.race([uploadTask, timeout]);
+          return await snap.ref.getDownloadURL();
+        }
+      } catch(e) {}
+      return compressed;
+    }
+
+    // Restore session from URL param or localStorage
+    var urlParams = new URLSearchParams(window.location.search);
+    var queryPid = urlParams.get('partnerId') || urlParams.get('ref') || urlParams.get('driverId') || urlParams.get('studentId');
+    var currentCategory = localStorage.getItem('v_partner_category') || '';
+    var activePartnerId = queryPid || localStorage.getItem('v_partner_id') || '';
+    var activePartnerName = localStorage.getItem('v_partner_name') || '';
+    var activePartnerMeta = localStorage.getItem('v_partner_meta') || '';
+
+    if (queryPid) {
+      activePartnerId = queryPid;
+      localStorage.setItem('v_partner_id', activePartnerId);
+      currentCategory = (activePartnerId.indexOf('STUDENT') !== -1 || activePartnerId.indexOf('STU') !== -1) ? 'STUDENT' : 'DRIVER';
+      localStorage.setItem('v_partner_category', currentCategory);
+    }
+
+    var filesHolder = { dSelfie: null, dLicense: null, sId: null };
+
+    function calculateDaysLeft() {
+      var now = new Date(), next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      return Math.max(1, Math.ceil((next - now) / 86400000));
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.view-screen').forEach(function(el) { el.classList.remove('active'); });
+      var s = document.getElementById(id);
+      if (s) { s.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      var shell = document.getElementById('mainAppShell');
+      if (id === 'screen-student-wizard') { shell.classList.add('student-theme-body'); }
+      else { shell.classList.remove('student-theme-body'); }
+      if (id === 'screen-dashboard') { renderDashboard(); subscribeLiveFirestore(activePartnerId); pollLivePartnerStats(); }
+    }
+
+    function openAutoDriverFlow() { currentCategory = 'DRIVER'; nextDriverStep(1); showScreen('screen-driver-wizard'); }
+    function openStudentFlow() { currentCategory = 'STUDENT'; nextStudentStep(1); showScreen('screen-student-wizard'); }
+
+    function nextDriverStep(step) {
+      ['d-page-1','d-page-2','d-page-3'].forEach(function(id, i) { document.getElementById(id).style.display = (i + 1 === step) ? 'flex' : 'none'; });
+      ['d-seg-1','d-seg-2','d-seg-3'].forEach(function(id, i) { document.getElementById(id).classList.toggle('active', i < step); });
+      var titles = ['Step 1 of 3: Driver Details', 'Step 2 of 3: Vehicle & UPI', 'Step 3 of 3: KYC Photos'];
+      document.getElementById('d-step-title').textContent = titles[step - 1];
+      document.getElementById('d-step-pct').textContent = ['33%','66%','100%'][step - 1];
+    }
+
+    function nextStudentStep(step) {
+      ['s-page-1','s-page-2','s-page-3'].forEach(function(id, i) { document.getElementById(id).style.display = (i + 1 === step) ? 'flex' : 'none'; });
+      ['s-seg-1','s-seg-2','s-seg-3'].forEach(function(id, i) { document.getElementById(id).classList.toggle('active', i < step); });
+      var titles = ['Step 1 of 3: Personal Details', 'Step 2 of 3: College & Contact', 'Step 3 of 3: UPI & College ID'];
+      document.getElementById('s-step-title').textContent = titles[step - 1];
+      document.getElementById('s-step-pct').textContent = ['33%','66%','100%'][step - 1];
+    }
+
+    function previewPhoto(e, type) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (type === 'd-selfie') { filesHolder.dSelfie = file; document.getElementById('lbl-d-selfie').textContent = '✓ Selfie Ready'; document.getElementById('box-d-selfie').classList.add('uploaded'); }
+      else if (type === 'd-license') { filesHolder.dLicense = file; document.getElementById('lbl-d-license').textContent = '✓ License Uploaded'; document.getElementById('box-d-license').classList.add('uploaded'); }
+      else if (type === 's-id') { filesHolder.sId = file; document.getElementById('lbl-s-id').textContent = '✓ College ID Uploaded'; document.getElementById('box-s-id').classList.add('uploaded'); }
+    }
+
+    async function submitDriverRegistration() {
+      var name = document.getElementById('d-name').value.trim();
+      var phone = document.getElementById('d-phone').value.trim();
+      var vehicle = document.getElementById('d-vehicle').value.trim().toUpperCase();
+      var hub = document.getElementById('d-hub').value;
+      var upi = document.getElementById('d-upi').value.trim();
+      if (!filesHolder.dSelfie || !filesHolder.dLicense) { document.getElementById('err-d-photos').style.display = 'block'; return; }
+      document.getElementById('err-d-photos').style.display = 'none';
+      var btn = document.getElementById('btnSubmitDriver');
+      btn.disabled = true;
+      var ts = Date.now(), cleanVeh = vehicle.replace(/\s+/g,'');
+      btn.textContent = 'Uploading Selfie (1/2)...';
+      var selfieUrl = await uploadKycFileToFirebase(filesHolder.dSelfie, 'kyc/drivers/' + cleanVeh + '_selfie_' + ts + '.jpg');
+      btn.textContent = 'Uploading License (2/2)...';
+      var licenseUrl = await uploadKycFileToFirebase(filesHolder.dLicense, 'kyc/drivers/' + cleanVeh + '_license_' + ts + '.jpg');
+      btn.textContent = 'Allocating Driver ID & Generating QR...';
+      try {
+        var resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'REGISTER_DRIVER', fullName: name, phone: phone, vehicleNumber: vehicle, hub: hub, upiId: upi, selfieUrl: selfieUrl, idDocUrl: licenseUrl }) });
+        var data = await resp.json();
+        if (data && (data.driverId || data.partnerId)) {
+          activePartnerId = data.driverId || data.partnerId;
+          activePartnerName = name; activePartnerMeta = vehicle + ' • ' + hub; currentCategory = 'DRIVER';
+          localStorage.setItem('v_partner_id', activePartnerId);
+          localStorage.setItem('v_partner_name', activePartnerName);
+          localStorage.setItem('v_partner_meta', activePartnerMeta);
+          localStorage.setItem('v_partner_category', 'DRIVER');
+          if (db) db.collection('referralPartners').doc(activePartnerId).set({ partnerId: activePartnerId, partnerName: name, category: 'DRIVER', vehicle: vehicle, hub: hub, upiId: upi, totalScans: 0, totalReferrals: 0, registeredAt: new Date().toISOString() }, { merge: true }).catch(function(){});
+        }
+      } catch(e) { console.error(e); }
+      btn.disabled = false; btn.textContent = 'Get My Unique QR Code ➔';
+      if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60 });
+      showScreen('screen-dashboard');
+    }
+
+    async function submitStudentRegistration() {
+      var name = document.getElementById('s-name').value.trim();
+      var age = document.getElementById('s-age').value.trim();
+      var college = document.getElementById('s-college').value.trim();
+      var email = document.getElementById('s-email').value.trim();
+      var phone = document.getElementById('s-phone').value.trim();
+      var upi = document.getElementById('s-upi').value.trim();
+      if (!filesHolder.sId) { document.getElementById('err-s-photos').style.display = 'block'; return; }
+      document.getElementById('err-s-photos').style.display = 'none';
+      var btn = document.getElementById('btnSubmitStudent');
+      btn.disabled = true; btn.textContent = 'Uploading Student ID...';
+      var idCardUrl = await uploadKycFileToFirebase(filesHolder.sId, 'kyc/students/' + phone.replace(/\D/g,'') + '_id_' + Date.now() + '.jpg');
+      btn.textContent = 'Generating Ambassador QR...';
+      try {
+        var resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'REGISTER_STUDENT', fullName: name, age: age, collegeName: college, gmailId: email, phone: phone, upiId: upi, idDocUrl: idCardUrl }) });
+        var data = await resp.json();
+        if (data && (data.studentId || data.partnerId)) {
+          activePartnerId = data.studentId || data.partnerId;
+          activePartnerName = name; activePartnerMeta = college + ' • Ambassador'; currentCategory = 'STUDENT';
+          localStorage.setItem('v_partner_id', activePartnerId);
+          localStorage.setItem('v_partner_name', activePartnerName);
+          localStorage.setItem('v_partner_meta', activePartnerMeta);
+          localStorage.setItem('v_partner_category', 'STUDENT');
+          if (db) db.collection('referralPartners').doc(activePartnerId).set({ partnerId: activePartnerId, partnerName: name, category: 'STUDENT', college: college, email: email, upiId: upi, totalScans: 0, totalReferrals: 0, registeredAt: new Date().toISOString() }, { merge: true }).catch(function(){});
+        }
+      } catch(e) { console.error(e); }
+      btn.disabled = false; btn.textContent = 'Generate My Ambassador QR ➔';
+      if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60 });
+      showScreen('screen-dashboard');
+    }
+
+    function renderDashboard() {
+      if (!activePartnerId) activePartnerId = currentCategory === 'STUDENT' ? 'GLV-STUDENT-001' : 'GLV-AUTO-001';
+      if (!activePartnerName) activePartnerName = currentCategory === 'STUDENT' ? 'Student Ambassador' : 'Auto Captain';
+      if (!activePartnerMeta) activePartnerMeta = currentCategory === 'STUDENT' ? 'Campus Ambassador' : 'Benz Circle Hub';
+      if (window.history && window.history.replaceState)
+        window.history.replaceState(null, '', window.location.pathname + '?partnerId=' + encodeURIComponent(activePartnerId));
+      var isStudent = currentCategory === 'STUDENT';
+      document.getElementById('dashEmoji').textContent = isStudent ? '🎓' : '🛺';
+      document.getElementById('spriteEmoji').textContent = isStudent ? '🎓' : '🛺';
+      document.getElementById('dashName').textContent = activePartnerName;
+      document.getElementById('dashMeta').textContent = activePartnerMeta;
+      document.getElementById('dashPartnerId').textContent = activePartnerId;
+      document.getElementById('m-days').textContent = calculateDaysLeft();
+      try {
+        var cached = localStorage.getItem('v_partner_metrics_' + activePartnerId) || localStorage.getItem('v_partner_metrics');
+        if (cached) { var cm = JSON.parse(cached); updateMetricsUI(cm.count, cm.earned, cm.declined); }
+      } catch(e) {}
+      var url = 'https://glowvai.in/?ref=' + encodeURIComponent(activePartnerId);
+      var inp = document.getElementById('displayRefUrl');
+      if (inp) inp.value = url;
+      var container = document.getElementById('partnerQrCanvas');
+      container.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(container, { text: url, width: 164, height: 164, colorDark: '#000000', colorLight: '#FFFFFF', correctLevel: QRCode.CorrectLevel.H });
+      } else {
+        container.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=164x164&data=' + encodeURIComponent(url) + '" width="164" height="164" alt="QR">';
+      }
+    }
+
+    function copyReferralLink() {
+      var url = 'https://glowvai.in/?ref=' + encodeURIComponent(activePartnerId);
+      if (navigator.clipboard) { navigator.clipboard.writeText(url).then(showCopied).catch(function(){ fallbackCopy(url); }); }
+      else { fallbackCopy(url); }
+      function fallbackCopy(u) { var i = document.getElementById('displayRefUrl'); if (i) { i.value = u; i.select(); document.execCommand('copy'); showCopied(); } }
+      function showCopied() { var b = document.getElementById('copyFeedbackBadge'); if (b) { b.style.display = 'inline-block'; setTimeout(function(){ b.style.display = 'none'; }, 2500); } }
+    }
+
+    function updateMetricsUI(count, earned, declined) {
+      count = parseInt(count, 10) || 0; declined = parseInt(declined, 10) || 0;
+      earned = (earned !== undefined && earned !== null) ? parseInt(earned, 10) : (count * 10);
+      document.getElementById('m-count').textContent = count;
+      document.getElementById('m-earned').textContent = '₹' + earned;
+      document.getElementById('m-declined').textContent = declined;
+      document.getElementById('txtCompletedStat').textContent = count + ' Referrals Completed';
+      document.getElementById('txtRemainingStat').textContent = Math.max(0, 100 - count) + ' remaining for ₹1,000 bonus';
+      var pct = Math.min(88, Math.max(2, Math.round((count / 100) * 100)));
+      var sprite = document.getElementById('animatedVehicleSprite');
+      if (sprite) sprite.style.left = 'calc(' + pct + '% - 6px)';
+    }
+
+    var firestoreUnsubscribe = null;
+    function subscribeLiveFirestore(pid) {
+      if (!db || !pid) return;
+      if (firestoreUnsubscribe) firestoreUnsubscribe();
+      try {
+        firestoreUnsubscribe = db.collection('referralPartners').doc(pid).onSnapshot(function(doc) {
+          if (doc && doc.exists) {
+            var d = doc.data();
+            var cnt = d.totalReferrals !== undefined ? d.totalReferrals : (d.totalScans || 0);
+            updateMetricsUI(cnt, cnt * 10, d.declinedScans || 0);
+          }
+        }, function(){});
+      } catch(e) {}
+    }
+
+    window.onPartnerStatsLoaded = function(data) {
+      if (data && data.metrics) {
+        var m = data.metrics;
+        var count = m.verifiedReferrals !== undefined ? m.verifiedReferrals : (m.totalReferrals || 0);
+        var earned = m.accruedBalance !== undefined ? m.accruedBalance : (count * 10);
+        var declined = m.declinedReferrals || 0;
+        updateMetricsUI(count, earned, declined);
+        try {
+          var p = JSON.stringify({ count: count, earned: earned, declined: declined });
+          localStorage.setItem('v_partner_metrics', p);
+          if (activePartnerId) localStorage.setItem('v_partner_metrics_' + activePartnerId, p);
+        } catch(e) {}
+      }
+      if (data && data.partner) {
+        if (data.partner.fullName) { activePartnerName = data.partner.fullName; localStorage.setItem('v_partner_name', activePartnerName); var el = document.getElementById('dashName'); if (el) el.textContent = activePartnerName; }
+        if (data.partner.shortId) { var role = data.partner.partnerType === 'STUDENT' ? 'Campus Ambassador' : 'Auto Captain'; activePartnerMeta = role + ' • ' + data.partner.shortId; localStorage.setItem('v_partner_meta', activePartnerMeta); var em = document.getElementById('dashMeta'); if (em) em.textContent = activePartnerMeta; }
+      }
+    };
+
+    function pollLivePartnerStats() {
+      if (!activePartnerId) return;
+      fetch(APPS_SCRIPT_URL + '?action=GET_PARTNER_STATS&partnerId=' + encodeURIComponent(activePartnerId) + '&t=' + Date.now(), { method: 'GET', mode: 'cors' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { if (d && d.metrics) window.onPartnerStatsLoaded(d); })
+        .catch(function() {
+          var old = document.getElementById('jsonp-poll'); if (old) old.remove();
+          var s = document.createElement('script'); s.id = 'jsonp-poll';
+          s.src = APPS_SCRIPT_URL + '?action=GET_PARTNER_STATS&partnerId=' + encodeURIComponent(activePartnerId) + '&callback=onPartnerStatsLoaded&t=' + Date.now();
+          document.body.appendChild(s);
+        });
+    }
+
+    function downloadQrImage() {
+      var img = document.querySelector('#partnerQrCanvas img');
+      if (img && img.src) { var a = document.createElement('a'); a.download = 'Glowvai_QR_' + activePartnerId + '.png'; a.href = img.src; a.click(); }
+    }
+
+    function shareOnWhatsApp() {
+      var url = 'https://glowvai.in/?ref=' + encodeURIComponent(activePartnerId);
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent('My Glowvai referral link: ' + url + '\nGet exclusive welcome reward!'), '_blank');
+    }
+
+    function resetSessionForNewRegistration() {
+      if (firestoreUnsubscribe) firestoreUnsubscribe();
+      localStorage.removeItem('v_partner_id'); localStorage.removeItem('v_partner_name'); localStorage.removeItem('v_partner_meta');
+      activePartnerId = ''; activePartnerName = ''; activePartnerMeta = '';
+      showScreen('screen-welcome');
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (activePartnerId) { showScreen('screen-dashboard'); }
+      else { showScreen('screen-welcome'); }
+      setInterval(function() {
+        if (document.getElementById('screen-dashboard').classList.contains('active')) pollLivePartnerStats();
+      }, 3500);
+    });
+  </script>
+</body>
+</html>

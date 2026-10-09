@@ -14,6 +14,8 @@ import { BRAND_NAME, siteConfig } from "@/config/site";
 import { testimonials } from "@/config/testimonials";
 import { Camera, Lock, ShieldCheck, MapPin, CheckCircle2, ChevronRight } from "lucide-react";
 
+import { SITE_URL, getAbsoluteUrl } from "@/lib/site-url";
+
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -28,13 +30,35 @@ export async function generateMetadata({ params }: ProductPageProps) {
   const product = getProductBySlug(slug);
   if (!product) return {};
 
+  const titleClean = (product.seo.title || product.name).replace(/\s*\|\s*GLOW VAI/gi, "");
+  const canonicalUrl = getAbsoluteUrl(`/product/${product.slug}`);
+  const ogImageUrl = product.images[0] ? getAbsoluteUrl(product.images[0]) : `${SITE_URL}/og.jpg`;
+
   return {
-    title: product.seo.title || `${product.name} | ${BRAND_NAME}`,
+    title: titleClean,
     description: product.seo.description || product.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: product.name,
-      description: product.description,
-      images: [product.images[0] || siteConfig.ogImage],
+      type: "website",
+      title: `${titleClean} | ${BRAND_NAME}`,
+      description: product.seo.description || product.description,
+      url: canonicalUrl,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${titleClean} | ${BRAND_NAME}`,
+      description: product.seo.description || product.description,
+      images: [ogImageUrl],
     },
   };
 }
@@ -54,16 +78,16 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: product.images[0],
+    image: product.images[0] ? getAbsoluteUrl(product.images[0]) : `${SITE_URL}/og.jpg`,
     description: product.description,
     sku: product.id,
     brand: {
       "@type": "Brand",
-      name: BRAND_NAME,
+      name: product.marketerName || BRAND_NAME,
     },
     offers: {
       "@type": "Offer",
-      url: `${siteConfig.url}/product/${product.slug}`,
+      url: getAbsoluteUrl(`/product/${product.slug}`),
       priceCurrency: "INR",
       price: product.price,
       itemCondition: "https://schema.org/NewCondition",

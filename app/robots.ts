@@ -1,15 +1,35 @@
 import { MetadataRoute } from "next";
-import { siteConfig } from "@/config/site";
+import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
+  const isProduction = process.env.NODE_ENV === "production" && SITE_URL === "https://glowvai.in";
+
+  if (!isProduction) {
+    return {
+      rules: {
+        userAgent: "*",
+        disallow: "/",
+      },
+      sitemap: `${SITE_URL}/sitemap.xml`,
+    };
+  }
+
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/journal"],
+      disallow: [
+        "/*?*",
+        "/admin/",
+        "/api/",
+        "/checkout/",
+        "/account/",
+        "/draft/",
+        "/journal/",
+      ],
     },
-    sitemap: `${siteConfig.url}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
