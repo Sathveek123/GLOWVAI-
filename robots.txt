@@ -1,6 +1,11 @@
 User-Agent: *
 Allow: /
+Disallow: /*?*
+Disallow: /admin/
 Disallow: /api/
-Disallow: /journal
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /draft/
+Disallow: /journal/
 
 Sitemap: https://glowvai.in/sitemap.xml
