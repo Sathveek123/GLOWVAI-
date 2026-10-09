@@ -17,6 +17,8 @@ export const routesReady: Record<string, boolean> = {
   "/returns": true,
   "/delivery": true,
   "/faq": true,
+  "/admin": true,
+  "/admin2006": true,
   "/#faq": true,
   "/#delivery": true,
   "/#journal": true,

@@ -25,9 +25,6 @@ function GlowVaiLogo() {
           priority
         />
       </div>
-      <span className="hidden sm:inline-block text-[9px] font-extrabold tracking-widest bg-[#0050FF]/10 text-[#0050FF] px-2 py-0.5 rounded-full uppercase border border-[#0050FF]/20">
-        Quick Commerce
-      </span>
     </div>
   );
 }
