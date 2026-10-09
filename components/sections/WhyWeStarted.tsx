@@ -9,8 +9,8 @@ import { assetConfig } from "@/config/assets";
 import { ArrowRight } from "lucide-react";
 
 export function WhyWeStarted() {
-  // Filter timeline rows: hide any row where happened is false
-  const activeTimelineRows = storyData.timeline.filter((row) => row.happened === true);
+  // Take the first 4 milestones for the home page teaser
+  const activeTimelineRows = storyData.timeline.slice(0, 4);
   const showTimelineCard = activeTimelineRows.length >= 2;
 
   return (
@@ -61,9 +61,9 @@ export function WhyWeStarted() {
               <div className="flex items-center justify-between border-b border-brand/10 pb-2 px-1">
                 <span className="text-[11px] font-bold text-brand uppercase tracking-wider flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
-                  <span>Founding Team • Andhra Pradesh</span>
+                  <span>Founding Team • Vijayawada & Visakhapatnam</span>
                 </span>
-                <span className="text-[10px] text-ink-muted font-medium">3 Co-Founders</span>
+                <span className="text-[10px] text-ink-muted font-medium">3 Founders</span>
               </div>
 
               {/* 3 Founder Cards Side-by-Side (0 Overlaps - All 3 Faces 100% Clear) */}
@@ -73,7 +73,7 @@ export function WhyWeStarted() {
                 <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 sm:border-4 border-white bg-white group hover:scale-[1.03] transition-transform">
                   <PlaceholderImage
                     src={assetConfig.story.teamAtDesk.src}
-                    alt="SK Sardhar Musthafa - Founder"
+                    alt="Sardhar Musthafa - Founder & CEO"
                     caption={assetConfig.story.teamAtDesk.caption}
                     objectPosition="object-center"
                   />
@@ -87,13 +87,13 @@ export function WhyWeStarted() {
                 <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-2 sm:border-4 border-white bg-white group hover:scale-[1.03] transition-transform">
                   <PlaceholderImage
                     src={assetConfig.story.workingMoment.src}
-                    alt="Nalla Satvik - Lead Technologist"
+                    alt="Sathveek Nalla - Co-Founder & Tech Lead"
                     caption={assetConfig.story.workingMoment.caption}
                     objectPosition="object-center"
                   />
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent p-2 text-white">
-                    <p className="text-[10px] sm:text-xs font-extrabold leading-tight">Nalla Satvik</p>
-                    <p className="text-[8px] sm:text-[9px] text-cyan-300 font-semibold truncate">Lead Tech</p>
+                    <p className="text-[10px] sm:text-xs font-extrabold leading-tight">Sathveek Nalla</p>
+                    <p className="text-[8px] sm:text-[9px] text-cyan-300 font-semibold truncate">Co-Founder & Tech Lead</p>
                   </div>
                 </div>
 
@@ -121,9 +121,9 @@ export function WhyWeStarted() {
                       <div key={idx} className="bg-white/80 p-2 rounded-xl border border-ink/5">
                         <div className="flex items-center gap-1 font-bold text-ink">
                           <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
-                          <span className="truncate">{row.label}</span>
+                          <span className="truncate">{row.period}</span>
                         </div>
-                        {row.date && <p className="text-[9px] text-ink-muted pl-2.5">{row.date}</p>}
+                        <p className="text-[9px] text-ink-muted pl-2.5 truncate">{row.title}</p>
                       </div>
                     ))}
                   </div>

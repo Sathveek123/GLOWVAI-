@@ -18,8 +18,8 @@ function GlowVaiLogo() {
       <span className="font-display font-black text-xl sm:text-2xl text-[#0F172A] tracking-tight leading-none">
         GLOW<span className="text-[#0050FF]">VAI</span>
       </span>
-      <span className="text-[9px] font-extrabold tracking-widest text-[#64748B] uppercase mt-0.5">
-        Retail Store
+      <span className="text-[9px] font-extrabold tracking-widest text-[#0050FF] uppercase mt-0.5">
+        Quick Commerce
       </span>
     </div>
   );
