@@ -14,16 +14,14 @@ import { useCartStore } from "@/lib/store/cart";
 
 function GlowVaiLogo() {
   return (
-    <div className="flex items-center gap-2 select-none">
-      <div className="relative h-9 w-32 sm:w-36 flex items-center justify-start">
-        <Image
-          src={getAssetPath("/images/logo/glowvai-logo.png")}
-          alt={BRAND_NAME}
-          width={150}
-          height={40}
-          className="h-8 w-auto object-contain"
-          priority
-        />
+    <div className="flex items-center gap-2 select-none group">
+      <div className="flex items-baseline gap-1.5">
+        <span className="font-display font-extrabold text-2xl tracking-tight text-[#0050FF] group-hover:text-blue-700 transition-colors">
+          GLOW VAI
+        </span>
+        <span className="text-[10px] font-extrabold tracking-widest text-amber-500 uppercase bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 shadow-2xs">
+          Quick Commerce
+        </span>
       </div>
     </div>
   );

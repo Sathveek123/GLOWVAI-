@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-  <rect width="100" height="100" rx="24" fill="#0050FF"/>
-  <path d="M50 20C33.4315 20 20 33.4315 20 50C20 66.5685 33.4315 80 50 80C66.5685 80 80 66.5685 80 50C80 33.4315 66.5685 20 50 20ZM50 70C38.9543 70 30 61.0457 30 50C30 38.9543 38.9543 30 50 30C61.0457 30 70 38.9543 70 50C70 61.0457 61.0457 70 50 70Z" fill="white"/>
-  <circle cx="50" cy="50" r="12" fill="#38BDF8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="128" fill="#0050FF"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="12"/>
+  <text x="256" y="270" font-family="system-ui, -apple-system, 'Bricolage Grotesque', sans-serif" font-weight="900" font-size="140" fill="#FFFFFF" text-anchor="middle" letter-spacing="-2">GLOW</text>
+  <text x="256" y="390" font-family="system-ui, -apple-system, 'Bricolage Grotesque', sans-serif" font-weight="900" font-size="95" fill="#FFD84D" text-anchor="middle" letter-spacing="8">VAI</text>
+  <path d="M410 80 L420 110 L450 120 L420 130 L410 160 L400 130 L370 120 L400 110 Z" fill="#FFD84D"/>
 </svg>

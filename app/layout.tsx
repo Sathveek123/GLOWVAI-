@@ -105,6 +105,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en-IN" className={`${displayFont.variable} ${accentFont.variable} ${bodyFont.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </head>
       <body className="min-h-screen bg-white text-ink flex flex-col font-sans selection:bg-brand selection:text-white">
         <HeaderAndFooterWrapper city={locationData.city}>
           {children}

@@ -86,17 +86,14 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-5">
             <Link
               href="/"
-              className="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0050FF] rounded-2xl group"
+              className="inline-flex items-center gap-2 group focus-visible:outline-none"
             >
-              <div className="relative h-12 w-auto inline-flex items-center bg-white px-4 py-2 rounded-2xl shadow-md border border-blue-400/30 group-hover:scale-105 transition-transform duration-300">
-                <Image
-                  src={getAssetPath("/images/logo/glowvai-logo.png")}
-                  alt={BRAND_NAME}
-                  width={180}
-                  height={48}
-                  className="h-8 w-auto object-contain"
-                />
-              </div>
+              <span className="font-display font-extrabold text-3xl tracking-tight text-white group-hover:text-cyan-400 transition-colors">
+                GLOW VAI
+              </span>
+              <span className="text-[10px] font-extrabold tracking-widest text-slate-900 uppercase bg-amber-400 px-2.5 py-1 rounded-lg shadow-sm">
+                Quick Commerce
+              </span>
             </Link>
 
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm font-normal">

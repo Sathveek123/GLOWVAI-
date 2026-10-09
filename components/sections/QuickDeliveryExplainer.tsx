@@ -72,17 +72,17 @@ export function QuickDeliveryExplainer() {
   const verifiedCities = cityCoverageClaims.filter((item) => item.verified === true);
 
   return (
-    <section id="delivery" className="py-16 sm:py-24 bg-brand text-white rounded-[40px] my-12 relative overflow-hidden">
+    <section id="delivery" className="py-16 sm:py-24 bg-slate-50 border border-slate-200/80 text-slate-900 rounded-[40px] my-12 relative overflow-hidden shadow-sm">
       <Container>
         {/* Section Header */}
         <div className="space-y-3 max-w-2xl mb-12">
-          <span className="text-xs font-bold tracking-widest text-yellow uppercase block">
+          <span className="text-xs font-bold tracking-widest text-[#0050FF] uppercase block">
             How it reaches you
           </span>
-          <h2 className="font-display text-h2-section text-white text-wrap-balance">
-            Order from your couch. Someone nearby <Accent className="text-yellow">brings</Accent> it over.
+          <h2 className="font-display text-h2-section text-slate-900 text-wrap-balance">
+            Order from your couch. Someone nearby <Accent className="text-[#0050FF]">brings</Accent> it over.
           </h2>
-          <p className="text-body-lg text-skymist font-normal">
+          <p className="text-body-lg text-slate-600 font-normal">
             We store fresh formulations in temperature-controlled neighborhood micro hubs for instant doorstep dispatch.
           </p>
         </div>
@@ -94,10 +94,10 @@ export function QuickDeliveryExplainer() {
             <svg className="w-full h-full" viewBox="0 0 800 4" fill="none">
               <path
                 d="M 0 2 H 800"
-                stroke="#FFD84D"
+                stroke="#0050FF"
                 strokeWidth="2.5"
                 strokeDasharray="6 6"
-                className="opacity-60"
+                className="opacity-40"
               />
             </svg>
           </div>
@@ -108,19 +108,19 @@ export function QuickDeliveryExplainer() {
               return (
                 <ol
                   key={s.step}
-                  className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 space-y-3 relative group hover:bg-white/15 transition-all list-none m-0"
+                  className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-md space-y-3 relative group hover:border-[#0050FF]/40 hover:shadow-lg transition-all list-none m-0"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-display font-extrabold text-2xl text-yellow">
+                    <span className="font-display font-extrabold text-2xl text-[#0050FF]">
                       {s.step}
                     </span>
-                    <div className="w-9 h-9 rounded-2xl bg-white/20 flex items-center justify-center text-white">
-                      <Icon className="w-4 h-4" />
+                    <div className="w-9 h-9 rounded-2xl bg-blue-50 text-[#0050FF] flex items-center justify-center">
+                      <Icon className="w-4.5 h-4.5" />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-bold text-base text-white">{s.title}</h3>
-                    <p className="text-xs text-skymist leading-relaxed">{s.desc}</p>
+                    <h3 className="font-bold text-base text-slate-900">{s.title}</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">{s.desc}</p>
                   </div>
                 </ol>
               );
@@ -134,8 +134,8 @@ export function QuickDeliveryExplainer() {
           {/* Left (6 cols): Animated Mini Map Demo & Verified Stats */}
           <div className="lg:col-span-6 space-y-6">
             
-            {/* Live-feeling Mini Delivery Map Card with Ultra-Modern Animated Radar Scanner */}
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 rounded-3xl border border-blue-500/30 relative overflow-hidden space-y-4 shadow-2xl text-white">
+            {/* Live-feeling Mini Delivery Map Card with Light Clean White UI */}
+            <div className="bg-white p-6 rounded-3xl border-2 border-blue-200/80 relative overflow-hidden space-y-4 shadow-xl text-slate-900">
               
               {/* Header Bar */}
               <div className="flex items-center justify-between relative z-10">
@@ -144,31 +144,31 @@ export function QuickDeliveryExplainer() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                   </span>
-                  <span className="text-xs font-extrabold tracking-wider text-blue-200 uppercase">
+                  <span className="text-xs font-extrabold tracking-wider text-[#0050FF] uppercase">
                     Vijayawada Dark Store Dispatch #HYD-DS04
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-extrabold bg-amber-400 text-slate-900 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                  <span className="text-[10px] font-extrabold bg-amber-400 text-slate-900 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
                     LIVE RADAR
                   </span>
                 </div>
               </div>
 
-              {/* Dynamic Radar Scanner Viewport */}
-              <div className="relative w-full h-44 bg-slate-950/80 rounded-2xl border border-blue-400/20 overflow-hidden flex items-center justify-center">
+              {/* Dynamic Radar Scanner Viewport (Bright Sky Mist Theme) */}
+              <div className="relative w-full h-44 bg-blue-50/70 rounded-2xl border border-blue-200 overflow-hidden flex items-center justify-center">
                 
                 {/* Radar Grid Lines */}
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]" />
+                <div className="absolute inset-0 opacity-25 bg-[radial-gradient(#0050FF_1px,transparent_1px)] [background-size:16px_16px]" />
                 
                 {/* Radar Concentric Pulsing Rings */}
-                <div className="absolute w-40 h-40 rounded-full border border-blue-500/30 animate-ping opacity-25" />
-                <div className="absolute w-28 h-28 rounded-full border border-cyan-400/40" />
-                <div className="absolute w-16 h-16 rounded-full border border-blue-400/50" />
+                <div className="absolute w-40 h-40 rounded-full border border-blue-400/40 animate-ping opacity-30" />
+                <div className="absolute w-28 h-28 rounded-full border border-blue-500/30" />
+                <div className="absolute w-16 h-16 rounded-full border border-blue-500/40" />
 
                 {/* Sweeping Radar Scanner Line */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-full h-full rounded-full animate-spin-slow bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.25)_360deg)]" />
+                  <div className="w-full h-full rounded-full animate-spin-slow bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(0,80,255,0.15)_360deg)]" />
                 </div>
 
                 {/* Animated Rider Delivery Vector Path */}
@@ -177,39 +177,39 @@ export function QuickDeliveryExplainer() {
                   <path
                     d="M 50 120 C 130 120, 160 40, 350 40"
                     fill="none"
-                    stroke="#38BDF8"
+                    stroke="#0050FF"
                     strokeWidth="4"
-                    className="opacity-40"
+                    className="opacity-75"
                   />
                   {/* Electric Dashed Pulse Path */}
                   <path
                     d="M 50 120 C 130 120, 160 40, 350 40"
                     fill="none"
                     stroke="#F59E0B"
-                    strokeWidth="3"
+                    strokeWidth="3.5"
                     strokeDasharray="8 8"
                     className="animate-pulse"
                   />
                 </svg>
 
                 {/* Micro-Hub Pin (Start Point) */}
-                <div className="absolute left-4 bottom-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 shadow-lg border border-blue-300/40 z-20">
+                <div className="absolute left-4 bottom-4 bg-[#0050FF] text-white px-3 py-1.5 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 shadow-md z-20">
                   <Box className="w-3.5 h-3.5 text-amber-300" />
                   <div>
                     <div className="leading-tight">Micro-Hub</div>
-                    <div className="text-[8px] text-blue-200 font-medium">Dark Store #04</div>
+                    <div className="text-[8px] text-blue-100 font-medium">Dark Store #04</div>
                   </div>
                 </div>
 
                 {/* Animated Rider Icon Traveling along the route */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shadow-xl ring-4 ring-amber-400/30 animate-bounce z-20">
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shadow-lg ring-4 ring-amber-400/30 animate-bounce z-20">
                   <Bike className="w-4 h-4 text-slate-900" />
                   <span>EV Rider</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
                 </div>
 
                 {/* Your Door Pin (End Point) */}
-                <div className="absolute right-4 top-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 shadow-lg border border-emerald-300/40 z-20">
+                <div className="absolute right-4 top-4 bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 shadow-md z-20">
                   <Home className="w-3.5 h-3.5 text-white" />
                   <div>
                     <div className="leading-tight">Your Doorstep</div>
@@ -218,21 +218,21 @@ export function QuickDeliveryExplainer() {
                 </div>
               </div>
 
-              {/* Rider Telemetry & Live Countdown Bar */}
+              {/* Rider Telemetry & Live Countdown Bar (Light Slate Theme) */}
               <div className="grid grid-cols-2 gap-3 pt-1">
-                <div className="bg-slate-900/90 p-3 rounded-2xl border border-blue-500/20 space-y-1">
-                  <span className="text-[9px] font-bold text-blue-300 uppercase tracking-wider block">Live Speed & Temp</span>
-                  <div className="text-xs font-bold text-white flex items-center justify-between">
+                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1">
+                  <span className="text-[9px] font-extrabold text-[#0050FF] uppercase tracking-wider block">Live Speed & Temp</span>
+                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
                     <span>⚡ 32 km/h</span>
-                    <span className="text-emerald-400">❄️ 4°C Cold</span>
+                    <span className="text-emerald-600 font-extrabold">❄️ 4°C Cold</span>
                   </div>
                 </div>
 
-                <div className="bg-slate-900/90 p-3 rounded-2xl border border-blue-500/20 space-y-1">
-                  <span className="text-[9px] font-bold text-blue-300 uppercase tracking-wider block">Doorstep ETA</span>
-                  <div className="text-xs font-extrabold text-amber-300 flex items-center justify-between">
-                    <span>~{demoCountdown} Mins</span>
-                    <span className="text-[10px] text-blue-300 font-normal">On Schedule</span>
+                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1">
+                  <span className="text-[9px] font-extrabold text-[#0050FF] uppercase tracking-wider block">Doorstep ETA</span>
+                  <div className="text-xs font-extrabold text-slate-900 flex items-center justify-between">
+                    <span className="text-amber-600 font-extrabold">~{demoCountdown} Mins</span>
+                    <span className="text-[10px] text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">On Schedule</span>
                   </div>
                 </div>
               </div>

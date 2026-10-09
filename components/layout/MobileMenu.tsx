@@ -50,12 +50,16 @@ export function MobileMenu({
         <Link
           href="/"
           onClick={onClose}
-          className="font-display text-2xl font-extrabold text-ink tracking-tight flex items-center gap-1.5"
+          className="flex items-center gap-2 select-none"
         >
-          <span className="w-8 h-8 rounded-xl bg-brand text-white flex items-center justify-center font-bold text-lg shadow-sm">
-            A
-          </span>
-          <span>{BRAND_NAME}</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-display font-extrabold text-2xl tracking-tight text-[#0050FF]">
+              GLOW VAI
+            </span>
+            <span className="text-[10px] font-extrabold tracking-widest text-amber-600 uppercase bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+              Quick Commerce
+            </span>
+          </div>
         </Link>
 
         <button
