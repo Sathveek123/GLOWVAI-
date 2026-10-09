@@ -485,6 +485,150 @@ export function ReferralPortalClient() {
                 Open Partner Portal &rarr;
               </a>
             </div>
+
+            {/* 6 AI Image Showcase Section */}
+            <div className="pt-8 space-y-6">
+              <div className="text-center space-y-2">
+                <div className="inline-flex items-center gap-2 bg-[#0050FF]/10 text-[#0050FF] px-3.5 py-1 rounded-full text-xs font-bold border border-[#0050FF]/20">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Partner Program Visuals</span>
+                </div>
+                <h3 className="font-display font-black text-2xl text-slate-900">
+                  How You Earn With GLOW VAI
+                </h3>
+                <p className="text-xs text-slate-600 max-w-md mx-auto font-medium">
+                  From auto rickshaw transit posters to campus ambassador badges and instant UPI payouts in Vijayawada.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {/* 1. Auto Poster */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-[#0050FF]/40 shadow-sm transition-all space-y-3 group">
+                  <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <Image
+                      src="/images/referral/auto_poster.png"
+                      alt="Seatback QR Poster inside Autos"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-[#0050FF] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                      1. Transit Poster
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">1. Auto Seatback QR Poster</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Mount our durable QR poster inside your auto. Passengers scan & scan skin for free.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2. Direct UPI Payout */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-[#0050FF]/40 shadow-sm transition-all space-y-3 group">
+                  <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <Image
+                      src="/images/referral/upi_payout.png"
+                      alt="Instant Direct UPI Settlements"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                      2. Instant Payout
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">2. ₹10 Per Scan Instant UPI</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Direct cash transfer to Google Pay or PhonePe as soon as referral is verified.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 3. Campus Ambassador */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-[#0050FF]/40 shadow-sm transition-all space-y-3 group">
+                  <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <Image
+                      src="/images/referral/campus_ambassador.png"
+                      alt="Student Campus QR Badge Program"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                      3. Campus Ambassador
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">3. College QR ID Badge</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Campus ambassadors share skin scan badges with classmates across colleges.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4. WhatsApp Share */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-[#0050FF]/40 shadow-sm transition-all space-y-3 group">
+                  <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <Image
+                      src="/images/referral/whatsapp_share.png"
+                      alt="Instant WhatsApp Share Link"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-teal-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                      4. WhatsApp Share
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">4. 1-Click WhatsApp Invites</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Send personalized referral links directly to your WhatsApp groups and friends.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 5. Vijayawada Hubs */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-[#0050FF]/40 shadow-sm transition-all space-y-3 group">
+                  <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <Image
+                      src="/images/referral/vijayawada_hubs.png"
+                      alt="Vijayawada Hub Transit Network"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-[#0050FF] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                      5. Local Hubs
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">5. Vijayawada Transit Map</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Benz Circle, Bus Stand & Kanuru stands connected to neighborhood micro-hubs.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 6. Milestone Bonus */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-[#0050FF]/40 shadow-sm transition-all space-y-3 group">
+                  <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <Image
+                      src="/images/referral/milestone_bonus.png"
+                      alt="₹1,000 Milestone Cash Bonus"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                      6. ₹1,000 Bonus
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">6. ₹1,000 Milestone Bonus</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Hit 100 verified referrals in a month to unlock your extra ₹1,000 cash bonus.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

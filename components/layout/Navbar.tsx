@@ -14,18 +14,13 @@ import { useCartStore } from "@/lib/store/cart";
 // High-definition 120px wide SVG Logo component for GLOW VAI
 function GlowVaiLogo() {
   return (
-    <div className="flex items-center gap-2.5 w-[125px] sm:w-[140px] select-none">
-      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#0050FF] to-[#003CD6] text-white flex items-center justify-center font-black text-base shadow-md shadow-[#0050FF]/25 shrink-0">
-        G
-      </div>
-      <div className="flex flex-col justify-center">
-        <span className="font-display font-extrabold text-lg sm:text-xl text-[#0F172A] tracking-tight leading-none">
-          GLOW<span className="text-[#0050FF]">VAI</span>
-        </span>
-        <span className="text-[9px] font-extrabold tracking-widest text-[#64748B] uppercase mt-0.5">
-          Retail Store
-        </span>
-      </div>
+    <div className="flex flex-col justify-center select-none">
+      <span className="font-display font-black text-xl sm:text-2xl text-[#0F172A] tracking-tight leading-none">
+        GLOW<span className="text-[#0050FF]">VAI</span>
+      </span>
+      <span className="text-[9px] font-extrabold tracking-widest text-[#64748B] uppercase mt-0.5">
+        Retail Store
+      </span>
     </div>
   );
 }
