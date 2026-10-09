@@ -599,27 +599,6 @@ export function ReferralPortalClient() {
                   </div>
                 </div>
               </div>
-
-              {/* Quick Benefits Banner */}
-              <div className="bg-[#0050FF]/5 p-6 rounded-3xl border border-[#0050FF]/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#0050FF] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-display font-bold text-sm text-slate-900">Verified Direct UPI Settlements</h4>
-                    <p className="text-xs text-slate-600">Automatic weekly payouts to your Google Pay or PhonePe UPI.</p>
-                  </div>
-                </div>
-                <a
-                  href="/portal.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-[#0050FF] hover:underline shrink-0 bg-white px-3.5 py-2 rounded-xl border border-[#0050FF]/20 shadow-sm"
-                >
-                  Open Partner Portal &rarr;
-                </a>
-              </div>
             </div>
           </div>
         )}
@@ -1096,21 +1075,23 @@ export function ReferralPortalClient() {
               </div>
             </div>
 
-            {/* Animated Milestone Track */}
-            <div className="bg-ink text-white p-6 rounded-3xl space-y-4 shadow-md">
+            {/* Animated Milestone Track (Bright Royal Blue Gradient) */}
+            <div className="bg-gradient-to-r from-[#0050FF] via-blue-600 to-indigo-600 text-white p-6 rounded-3xl space-y-4 shadow-xl border border-blue-400/30">
               <div className="flex items-center justify-between text-xs font-bold">
-                <span>Target Milestone (₹1,000 Bonus)</span>
-                <span className="text-yellow font-extrabold">100 Referrals</span>
+                <span className="text-white">Target Milestone (₹1,000 Bonus)</span>
+                <span className="text-amber-300 font-extrabold px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20">
+                  100 Referrals
+                </span>
               </div>
 
-              <div className="relative w-full h-8 bg-ink-muted/40 rounded-full overflow-hidden border border-white/20 flex items-center px-2">
+              <div className="relative w-full h-4 bg-white/20 rounded-full overflow-hidden border border-white/30 flex items-center p-0.5 backdrop-blur-sm">
                 <div
-                  className="h-2 bg-brand rounded-full transition-all duration-700"
+                  className="h-full bg-gradient-to-r from-amber-300 to-yellow rounded-full transition-all duration-700 shadow-md"
                   style={{ width: `${Math.min(100, Math.max(5, (metrics.count / 100) * 100))}%` }}
                 />
               </div>
 
-              <div className="flex justify-between text-[11px] text-white/70 font-semibold">
+              <div className="flex justify-between text-[11px] text-blue-100 font-bold">
                 <span>{metrics.count} Referrals Completed</span>
                 <span>{Math.max(0, 100 - metrics.count)} remaining for ₹1,000 bonus</span>
               </div>
