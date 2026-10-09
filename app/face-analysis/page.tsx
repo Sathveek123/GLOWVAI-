@@ -326,7 +326,108 @@ export default function FaceAnalysisPage() {
                   </p>
                 </div>
 
-                {/* Wider Broader Camera Frame */}
+                {/* 4 AI Image Diagnostic Showcase Grid FIRST */}
+                <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6">
+                  <div className="text-center space-y-1">
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0050FF] block">
+                      Advanced AI Diagnostic Engine
+                    </span>
+                    <h2 className="font-display font-black text-2xl text-slate-900">
+                      4-Step Skin Telemetry Technology
+                    </h2>
+                    <p className="text-xs text-slate-600 max-w-md mx-auto font-medium">
+                      Review how our browser AI evaluates hydration, pore depth, barrier defense, and radiance score.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                    {/* Image 1: Camera Scan */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
+                      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
+                        <Image
+                          src="/images/face-analysis/camera_scan.png"
+                          alt="AI Camera Scan & Mesh Mapping"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 left-2 bg-[#0050FF] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                          01. Facial Mesh
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-bold text-xs text-slate-900">1. AI Camera Scan & Mesh</h4>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                          Maps 128 micro-nodes across forehead, cheeks, and chin in natural lighting.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Image 2: Barrier Depth */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
+                      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
+                        <Image
+                          src="/images/face-analysis/barrier_depth.png"
+                          alt="Barrier Hydration Depth Diagnostic"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 left-2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                          02. Barrier Telemetry
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-bold text-xs text-slate-900">2. Barrier Hydration Depth</h4>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                          Evaluates ceramide retention, trans-epidermal water loss, and pore smoothness.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Image 3: Routine Match */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
+                      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
+                        <Image
+                          src="/images/face-analysis/routine_match.png"
+                          alt="Minimalist & Derma Co Formulation Match"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                          03. Active Match
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-bold text-xs text-slate-900">3. Active Routine Match</h4>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                          Selects precise Niacinamide & Salicylic Acid ratios for Vijayawada weather.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Image 4: Glow Results */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
+                      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
+                        <Image
+                          src="/images/face-analysis/glow_results.png"
+                          alt="30-Day Radiance Score Tracking"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 left-2 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                          04. Score Growth
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-bold text-xs text-slate-900">4. 30-Day Radiance Score</h4>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                          Tracks skin barrier score improvement with weekly re-scan updates.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Camera Scanner Container NEXT */}
                 <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6 text-center">
                   {flow.step === "SCAN_READY" ? (
                     <div className="space-y-6">
@@ -393,107 +494,6 @@ export default function FaceAnalysisPage() {
                           <span>Upload Photo / Selfie</span>
                           <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
                         </label>
-                      </div>
-
-                      {/* 4 AI Image Diagnostic Showcase Grid */}
-                      <div className="pt-8 border-t border-slate-200 space-y-6">
-                        <div className="text-center space-y-1">
-                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0050FF] block">
-                            Advanced AI Diagnostic Engine
-                          </span>
-                          <h3 className="font-display font-black text-xl text-slate-900">
-                            4-Layer Skin Telemetry Technology
-                          </h3>
-                          <p className="text-xs text-slate-600 max-w-md mx-auto">
-                            Evaluates hydration, pore depth, barrier defense, and radiance scores in 30 seconds.
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                          {/* Image 1: Camera Scan */}
-                          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
-                            <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
-                              <Image
-                                src="/images/face-analysis/camera_scan.png"
-                                alt="AI Camera Scan & Mesh Mapping"
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                              <div className="absolute top-2 left-2 bg-[#0050FF] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-                                01. Facial Mesh
-                              </div>
-                            </div>
-                            <div>
-                              <h4 className="font-display font-bold text-xs text-slate-900">1. AI Camera Scan & Mesh</h4>
-                              <p className="text-[11px] text-slate-600 leading-relaxed">
-                                Maps 128 micro-nodes across forehead, cheeks, and chin in natural lighting.
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Image 2: Barrier Depth */}
-                          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
-                            <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
-                              <Image
-                                src="/images/face-analysis/barrier_depth.png"
-                                alt="Barrier Hydration Depth Diagnostic"
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                              <div className="absolute top-2 left-2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-                                02. Barrier Telemetry
-                              </div>
-                            </div>
-                            <div>
-                              <h4 className="font-display font-bold text-xs text-slate-900">2. Barrier Hydration Depth</h4>
-                              <p className="text-[11px] text-slate-600 leading-relaxed">
-                                Evaluates ceramide retention, trans-epidermal water loss, and pore smoothness.
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Image 3: Routine Match */}
-                          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
-                            <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
-                              <Image
-                                src="/images/face-analysis/routine_match.png"
-                                alt="Minimalist & Derma Co Formulation Match"
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                              <div className="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-                                03. Active Match
-                              </div>
-                            </div>
-                            <div>
-                              <h4 className="font-display font-bold text-xs text-slate-900">3. Active Routine Match</h4>
-                              <p className="text-[11px] text-slate-600 leading-relaxed">
-                                Selects precise Niacinamide & Salicylic Acid ratios for Vijayawada weather.
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Image 4: Glow Results */}
-                          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 group hover:border-[#0050FF]/40 transition-all">
-                            <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-200 border border-slate-200">
-                              <Image
-                                src="/images/face-analysis/glow_results.png"
-                                alt="30-Day Radiance Score Tracking"
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                              <div className="absolute top-2 left-2 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-                                04. Score Growth
-                              </div>
-                            </div>
-                            <div>
-                              <h4 className="font-display font-bold text-xs text-slate-900">4. 30-Day Radiance Score</h4>
-                              <p className="text-[11px] text-slate-600 leading-relaxed">
-                                Tracks skin barrier score improvement with weekly re-scan updates.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   ) : (

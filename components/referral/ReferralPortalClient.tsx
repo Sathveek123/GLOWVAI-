@@ -153,7 +153,7 @@ export function ReferralPortalClient() {
     return () => clearInterval(interval);
   }, [view, partnerId]);
 
-  // Generate QR Code on canvas when dashboard opens
+  // Generate REAL Scannable QR Code on canvas when dashboard opens
   useEffect(() => {
     if (view !== "DASHBOARD" || !partnerId || !qrCanvasRef.current) return;
     const canvas = qrCanvasRef.current;
@@ -161,46 +161,26 @@ export function ReferralPortalClient() {
     if (!ctx) return;
 
     const refUrl = `${SITE_URL}/?ref=${encodeURIComponent(partnerId)}`;
-    
-    // Quick canvas QR generator / placeholder visual
-    const width = 200;
-    const height = 200;
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
+      refUrl
+    )}&color=0050ff&format=png`;
+
+    const width = 240;
+    const height = 240;
     canvas.width = width;
     canvas.height = height;
 
-    // Background
+    // Fill white background initial
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, width, height);
 
-    // Border
-    ctx.strokeStyle = "#0050FF";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(4, 4, width - 8, height - 8);
-
-    // Draw stylized QR grid simulation
-    ctx.fillStyle = "#09090B";
-    const cellSize = 8;
-    const padding = 16;
-    for (let r = padding; r < height - padding; r += cellSize) {
-      for (let c = padding; c < width - padding; c += cellSize) {
-        if (Math.random() > 0.45) {
-          ctx.fillRect(c, r, cellSize - 1, cellSize - 1);
-        }
-      }
-    }
-
-    // Corner Markers (QR Positioning Squares)
-    function drawSquare(x: number, y: number) {
-      ctx!.fillStyle = "#0050FF";
-      ctx!.fillRect(x, y, 40, 40);
-      ctx!.fillStyle = "#FFFFFF";
-      ctx!.fillRect(x + 6, y + 6, 28, 28);
-      ctx!.fillStyle = "#0050FF";
-      ctx!.fillRect(x + 12, y + 12, 16, 16);
-    }
-    drawSquare(16, 16);
-    drawSquare(width - 56, 16);
-    drawSquare(16, height - 56);
+    // Load real scannable QR Code image onto canvas
+    const img = new window.Image();
+    img.crossOrigin = "anonymous";
+    img.src = qrApiUrl;
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, width, height);
+    };
   }, [view, partnerId]);
 
   const daysLeftInMonth = () => {
@@ -396,108 +376,19 @@ export function ReferralPortalClient() {
 
         {/* ----------------- SCREEN 1: WELCOME SELECTOR ----------------- */}
         {view === "WELCOME" && (
-          <div className="space-y-8 max-w-xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Option 1: Auto Driver */}
-              <div
-                onClick={() => {
-                  setCategory("DRIVER");
-                  setDriverStep(1);
-                  setView("DRIVER_WIZARD");
-                }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-[#0050FF]/50 shadow-sm hover:shadow-xl hover:shadow-[#0050FF]/10 transition-all cursor-pointer space-y-5 flex flex-col justify-between group"
-              >
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#0050FF]/10 text-[#0050FF] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                    <Car className="w-6 h-6" />
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0050FF] block">
-                      Transit Campaign
-                    </span>
-                    <h2 className="font-display font-black text-xl text-slate-900 group-hover:text-[#0050FF] transition-colors">
-                      Auto Driver Partner
-                    </h2>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                    Mount our seatback QR poster inside your auto. Passengers scan & earn you ₹10 per referral + ₹1,000 milestone bonus.
-                  </p>
-                </div>
-                <div className="pt-2">
-                  <Button variant="primary" size="md" className="w-full text-xs font-bold gap-2 bg-[#0050FF] hover:bg-[#003CD6] text-white shadow-md shadow-[#0050FF]/20">
-                    <span>Register Auto Driver</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Option 2: Student Campus Ambassador */}
-              <div
-                onClick={() => {
-                  setCategory("STUDENT");
-                  setStudentStep(1);
-                  setView("STUDENT_WIZARD");
-                }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-purple-500/50 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all cursor-pointer space-y-5 flex flex-col justify-between group"
-              >
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                    <GraduationCap className="w-6 h-6" />
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 block">
-                      Campus Campaign
-                    </span>
-                    <h2 className="font-display font-black text-xl text-slate-900 group-hover:text-purple-700 transition-colors">
-                      Campus Ambassador
-                    </h2>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                    Refer classmates & friends across campus. Get a custom QR badge, earn instant pocket cash, and top performance perks.
-                  </p>
-                </div>
-                <div className="pt-2">
-                  <Button variant="outline" size="md" className="w-full text-xs font-bold border-slate-300 hover:border-purple-600 hover:bg-purple-50 text-slate-800 gap-2">
-                    <span>Register Ambassador</span>
-                    <ArrowRight className="w-4 h-4 text-purple-700" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Benefits Banner */}
-            <div className="bg-[#0050FF]/5 p-6 rounded-3xl border border-[#0050FF]/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#0050FF] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-slate-900">Verified Direct UPI Settlements</h4>
-                  <p className="text-xs text-slate-600">Automatic weekly payouts to your Google Pay or PhonePe UPI.</p>
-                </div>
-              </div>
-              <a
-                href="/portal.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-bold text-[#0050FF] hover:underline shrink-0 bg-white px-3.5 py-2 rounded-xl border border-[#0050FF]/20 shadow-sm"
-              >
-                Open Partner Portal &rarr;
-              </a>
-            </div>
-
-            {/* 6 AI Image Showcase Section */}
-            <div className="pt-8 space-y-6">
+          <div className="space-y-8 max-w-2xl mx-auto">
+            {/* 6 AI Image Showcase Section FIRST */}
+            <div className="space-y-6">
               <div className="text-center space-y-2">
                 <div className="inline-flex items-center gap-2 bg-[#0050FF]/10 text-[#0050FF] px-3.5 py-1 rounded-full text-xs font-bold border border-[#0050FF]/20">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Partner Program Visuals</span>
+                  <span>Partner Program Visual Guidance</span>
                 </div>
                 <h3 className="font-display font-black text-2xl text-slate-900">
                   How You Earn With GLOW VAI
                 </h3>
                 <p className="text-xs text-slate-600 max-w-md mx-auto font-medium">
-                  From auto rickshaw transit posters to campus ambassador badges and instant UPI payouts in Vijayawada.
+                  Review how Auto Rickshaw posters, campus ambassador badges, and instant UPI payouts work in Vijayawada before registering below.
                 </p>
               </div>
 
@@ -627,6 +518,107 @@ export function ReferralPortalClient() {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Registration Selector Cards NEXT */}
+            <div className="pt-4 space-y-6 max-w-xl mx-auto">
+              <div className="text-center space-y-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0050FF] block">
+                  Select Campaign & Register Below
+                </span>
+                <h3 className="font-display font-black text-xl text-slate-900">
+                  Ready to Become a Partner?
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Option 1: Auto Driver */}
+                <div
+                  onClick={() => {
+                    setCategory("DRIVER");
+                    setDriverStep(1);
+                    setView("DRIVER_WIZARD");
+                  }}
+                  className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-[#0050FF]/50 shadow-sm hover:shadow-xl hover:shadow-[#0050FF]/10 transition-all cursor-pointer space-y-5 flex flex-col justify-between group"
+                >
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#0050FF]/10 text-[#0050FF] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                      <Car className="w-6 h-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0050FF] block">
+                        Transit Campaign
+                      </span>
+                      <h2 className="font-display font-black text-xl text-slate-900 group-hover:text-[#0050FF] transition-colors">
+                        Auto Driver Partner
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Mount our seatback QR poster inside your auto. Passengers scan & earn you ₹10 per referral + ₹1,000 milestone bonus.
+                    </p>
+                  </div>
+                  <div className="pt-2">
+                    <Button variant="primary" size="md" className="w-full text-xs font-bold gap-2 bg-[#0050FF] hover:bg-[#003CD6] text-white shadow-md shadow-[#0050FF]/20">
+                      <span>Register Auto Driver</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Option 2: Student Campus Ambassador */}
+                <div
+                  onClick={() => {
+                    setCategory("STUDENT");
+                    setStudentStep(1);
+                    setView("STUDENT_WIZARD");
+                  }}
+                  className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-purple-500/50 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all cursor-pointer space-y-5 flex flex-col justify-between group"
+                >
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                      <GraduationCap className="w-6 h-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 block">
+                        Campus Campaign
+                      </span>
+                      <h2 className="font-display font-black text-xl text-slate-900 group-hover:text-purple-700 transition-colors">
+                        Campus Ambassador
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Refer classmates & friends across campus. Get a custom QR badge, earn instant pocket cash, and top performance perks.
+                    </p>
+                  </div>
+                  <div className="pt-2">
+                    <Button variant="outline" size="md" className="w-full text-xs font-bold border-slate-300 hover:border-purple-600 hover:bg-purple-50 text-slate-800 gap-2">
+                      <span>Register Ambassador</span>
+                      <ArrowRight className="w-4 h-4 text-purple-700" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Benefits Banner */}
+              <div className="bg-[#0050FF]/5 p-6 rounded-3xl border border-[#0050FF]/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#0050FF] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-900">Verified Direct UPI Settlements</h4>
+                    <p className="text-xs text-slate-600">Automatic weekly payouts to your Google Pay or PhonePe UPI.</p>
+                  </div>
+                </div>
+                <a
+                  href="/portal.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-bold text-[#0050FF] hover:underline shrink-0 bg-white px-3.5 py-2 rounded-xl border border-[#0050FF]/20 shadow-sm"
+                >
+                  Open Partner Portal &rarr;
+                </a>
               </div>
             </div>
           </div>
