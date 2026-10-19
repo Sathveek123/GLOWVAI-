@@ -6,6 +6,5 @@ Disallow: /api/
 Disallow: /checkout/
 Disallow: /account/
 Disallow: /draft/
-Disallow: /journal/
 
 Sitemap: https://glowvai.in/sitemap.xml
