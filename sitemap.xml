@@ -132,16 +132,4 @@
 <changefreq>weekly</changefreq>
 <priority>0.8</priority>
 </url>
-<url>
-<loc>https://glowvai.in/privacy</loc>
-<lastmod>2026-10-11T05:25:54.000Z</lastmod>
-<changefreq>yearly</changefreq>
-<priority>0.3</priority>
-</url>
-<url>
-<loc>https://glowvai.in/terms</loc>
-<lastmod>2026-10-11T05:26:21.916Z</lastmod>
-<changefreq>yearly</changefreq>
-<priority>0.3</priority>
-</url>
 </urlset>
